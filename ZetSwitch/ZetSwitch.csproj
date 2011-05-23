@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{335C21C4-AE82-41D9-B258-6E1D3FC017A1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZetSwitch</RootNamespace>
+    <AssemblyName>Zet Switch</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>false</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.3.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IPAddressControlLib, Version=1.1.3128.29827, Culture=neutral, PublicKeyToken=55e96405d8fd6d61, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\IPAddressControlLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Src\Configuration\DataStore.cs" />
+    <Compile Include="Src\Configuration\ILoader.cs" />
+    <Compile Include="Src\Configuration\ILoaderFactory.cs" />
+    <Compile Include="Src\Configuration\LoaderDefault.cs" />
+    <Compile Include="Src\Configuration\LoaderFactorySerialization.cs" />
+    <Compile Include="Src\Configuration\LoaderFactoryXML.cs" />
+    <Compile Include="Src\Configuration\LoaderSerializationV0_3.cs" />
+    <Compile Include="Src\Configuration\LoaderXMLV_03.cs" />
+    <Compile Include="Src\Forms\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Src\Browsers\Browser.cs" />
+    <Compile Include="Src\Browsers\BrowserFactory.cs" />
+    <Compile Include="Src\Browsers\Firefox.cs" />
+    <Compile Include="Src\Browsers\IE.cs" />
+    <Compile Include="Src\DataModel.cs" />
+    <Compile Include="Src\Forms\ExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
+      <DependentUpon>ExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Src\Network\AdapterDataHelper.cs" />
+    <Compile Include="Src\Arguments.cs" />
+    <Compile Include="Src\Network\IPAddress.cs" />
+    <Compile Include="Src\Lanugage.cs" />
+    <Compile Include="Src\Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Src\ImgCollection.cs" />
+    <Compile Include="Src\Forms\ItemConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\ItemConfig.Designer.cs">
+      <DependentUpon>ItemConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Src\Network\NetworkInterfaceSettings.cs" />
+    <Compile Include="Src\Network\NetworkManager.cs" />
+    <Compile Include="Src\ProfileManager.cs" />
+    <Compile Include="Src\ProfileNetworkSettings.cs" />
+    <Compile Include="Src\Tools\Path.cs" />
+    <Compile Include="Src\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Src\Forms\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\ExceptionForm.resx">
+      <DependentUpon>ExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\ItemConfig.resx">
+      <DependentUpon>ItemConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.cs-cz.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.cs-cz1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\Setting.resx">
+      <DependentUpon>Setting.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\WelcomeScreen.resx">
+      <DependentUpon>WelcomeScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Lang\cz.lng" />
+    <None Include="Lang\en.lng" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Properties\Resources.cs-cz1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.cs-cz.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Src\Browsers\ProxySettings.cs" />
+    <Compile Include="Src\Forms\SettingPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\Setting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\Setting.Designer.cs">
+      <DependentUpon>Setting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Src\Profile.cs" />
+    <Compile Include="Src\Settings.cs" />
+    <Compile Include="Src\Forms\WelcomeScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\WelcomeScreen.Designer.cs">
+      <DependentUpon>WelcomeScreen.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\accept.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\change.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IPAddressControlLib.dll" />
+    <Content Include="IPAddressControlLib.txt" />
+    <Content Include="icon.ico" />
+    <None Include="Resources\Copy of Icon.ico" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="TODO.txt" />
+    <None Include="Resources\opera.png" />
+    <None Include="Resources\ff.png" />
+    <None Include="Resources\ie.png" />
+    <None Include="Resources\DefaultLang.txt" />
+    <None Include="app.manifest" />
+    <None Include="Resources\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\Data\Images\" />
+    <Folder Include="Icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

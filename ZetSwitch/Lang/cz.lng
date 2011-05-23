@@ -1,0 +1,57 @@
+NewUserWeb;novy-uzivatel.php?lang=cs
+ProgramName;Zet Switch
+MenuFile;Soubor
+MenuAction;Akce
+MenuHelp;Nápověda
+Exit;Konec
+MenuAbout;O Programu
+Ok;Ok
+Cancel;Zrušit
+ProfileNew;Nový Profil
+ProfileChange;Změnit Profil
+ProfileDelete;Smazat Profil
+ProfileApply;Použít Profil
+New;Nový
+Profile;Profile
+Change;Změnit
+Delete;Smazat
+Apply;Použít
+StatusBarVer;Zet Switch verze 
+Name;Jméno:
+TextConSelect;Výběr připojení:
+TextObtainIP;Získat IP z DHCP serveru
+TextUseThisSetting;Použít toto nastavení
+TextMask;Maska podsítě
+TextDefGate;Výchozí brána
+TextOtainDNS;Získat DNS z DHCP serveru
+TrayOpen;Otevřít Zet Switch
+Welcome;Vítejte
+ZetSwitch;ZetSwitch
+Email;Email:
+Author;Autor:
+Lang;Jazyk:
+DontShowAgain;Znovu nezobrazovat
+ProgramDesc;Program je pro nekomeční použití zdarma. Doufám že Vám usnadní používání Vašeho počítače a budete s ním spokojeni. Pokud se objeví cokoliv co by jste rádi vylepšili, nebo upravili, ozvěte se prosím na výše uvedený email, budu rád za každou připomínku.
+RunAuto;Spouštět automaticky po startu systému
+Settings;Nastavení  
+OnlineHelp;Online nápověda
+CanLoadIconFile;Nebylo možné načíst soubor ikonky: 
+ProfileApplied;Profil byl úspěšně aplikován.
+Succes;Úspěch
+UseProfile;Použít profil
+DeleteQuestion;Opravdu chcete smazat profil:  
+DeleteProfile;Smazat profil
+CannotSetProfile;Profil nelze nastavit
+CantWorkSetFile;Nelze pracovat se souborem s nastavenim. Program bude ukončen.
+CantLoadSetFile;Soubor s nastavenim nelze načíst ani vytvořit.
+SettingFileCorrupted;Soubor s nastavenim je poškozen. Chcete vytvořit nový? Všechna nastaveni budou ztracena.
+NonValidSubNetMask;- Neplatna maska podsítě.
+NonValidIPAgainMask;- IP adresa neodpovídá masce podsítě
+NonValidGWAgainMask;- Výchozí brána neodpovídá masce podsítě
+GWAndIPNotInSameNet;- Výchozí brána a IP adresa nejsou ve stejné síti.
+GWNotInIPQuest;- IP adresa a výchozí brána nejsou na stejném segmentu. Chcete přesto použít toto nastavení?.
+ProfileNameIsEmpty;- Jméno profilu je povinné.
+AtLeastOneConSel;- Minimálně jedno připojení musí být vybráno.
+RequiredIP;- IP adresa je vyžadována.
+ExecptionError;Něco je opravdu moc špatně. Nepropadejte panice a napište mi:
+ExceptionAttach;Prosím přiložte i následující informace:
