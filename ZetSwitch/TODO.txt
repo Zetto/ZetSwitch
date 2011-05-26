@@ -1,2 +1,2 @@
-﻿Dat na SF
-pridat nejake defaultni ikonky
+﻿pridat nejake defaultni ikonky
+porad se spatne vyhodnocuje zobrazeni DNS

@@ -153,8 +153,8 @@
       <DependentUpon>WelcomeScreen.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Lang\cz.lng" />
-    <None Include="Lang\en.lng" />
+    <None Include="Data\Lang\cz.lng" />
+    <None Include="Data\Lang\en.lng" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -252,7 +252,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\Data\Images\" />
-    <Folder Include="Icons\" />
+    <Folder Include="Data\Icons\" />
+    <Folder Include="Setup\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
