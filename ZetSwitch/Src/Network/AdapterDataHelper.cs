@@ -25,12 +25,14 @@ using System.Text;
 using System.Management;
 using System.Windows;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ZetSwitch
 {
     public class AdapterDataHelper
     {
         ManagementObject obj;
+	
 
         public AdapterDataHelper(ManagementObject Ob)
         {
@@ -104,6 +106,7 @@ namespace ZetSwitch
                 ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher();
                 SearchAdapt.Query = new ObjectQuery("Select * from Win32_NetworkAdapter Where MACAddress ='" + obj["MACAddress"]+"'");
                 ManagementObjectCollection Name = SearchAdapt.Get();
+				
               
                 foreach (ManagementObject O in Name)
                 {
@@ -124,8 +127,8 @@ namespace ZetSwitch
         {
             get
             {
-                IPAddress[] MIP = new IPAddress[2];
-                string[] IP =(string[]) obj["DNSServerSearchOrder"];
+				IPAddress[] MIP = new IPAddress[2];
+				string[] IP =(string[]) obj["DNSServerSearchOrder"];
                 if (IP == null)
                     return MIP;
                 for (int i = 0; i < IP.Length && i < MIP.Length; i++)

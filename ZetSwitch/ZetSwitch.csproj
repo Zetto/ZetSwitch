@@ -215,6 +215,7 @@
     <Content Include="icon.ico" />
     <None Include="Resources\Copy of Icon.ico" />
     <Content Include="LICENSE.txt" />
+    <Content Include="Setup\innoSetup.iss" />
     <Content Include="TODO.txt" />
     <None Include="Resources\opera.png" />
     <None Include="Resources\ff.png" />
@@ -253,7 +254,6 @@
   <ItemGroup>
     <Folder Include="bin\Release\Data\Images\" />
     <Folder Include="Data\Icons\" />
-    <Folder Include="Setup\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

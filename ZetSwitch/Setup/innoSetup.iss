@@ -50,3 +50,10 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, "&", "&&")}}"; Flags: nowait postinstall skipifsilent
 
+[UninstallDelete]
+Type: files; Name: "{app}\errorlog.txt"
+Type: files; Name: "{app}\Data\profiles.xml"
+Type: files; Name: "{app}\Data\Images\*.bmp"
+Type: dirifempty; Name: "{app}\Data\Images"
+Type: dirifempty; Name: "{app}\Data"
+Type: dirifempty; Name: "{app}"
