@@ -31,34 +31,34 @@ namespace ZetSwitch
     class LanguagesStore
     {
 
-        public bool LoadLanguage(string LangName, Hashtable Words)
+        public bool LoadLanguage(string LangName, Hashtable words)
         {
-			StreamReader Read = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + LangName + ".lng");
-			Words.Clear();
-            string Line;
-            string[] Buf = new string[2];
-            while ((Line = Read.ReadLine())!=null)
-            {
-                Buf = Line.Split(';');
-                if (Buf == null || Buf[0] == null || Buf[1] == null)
-                    continue;
-                Words.Add(Buf[0],Buf[1]);
-            }
+			using (StreamReader Read = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + LangName + ".lng")) {
+				words.Clear();
+				string line;
+				string[] buf = new string[2];
+				while ((line = Read.ReadLine()) != null) {
+					buf = line.Split(';');
+					if (buf == null || buf[0] == null || buf[1] == null)
+						continue;
+					words.Add(buf[0], buf[1]);
+				}
+			}
 
             return true;
         }
 
-        public bool LoadLanguage(StringReader Read, Hashtable Words)
+        public bool LoadLanguage(StringReader read, Hashtable words)
         {
-            string Line;
-            Words.Clear();
-            string[] Buf = new string[2];
-            while ((Line = Read.ReadLine()) != null)
+            string line;
+            words.Clear();
+            string[] buf = new string[2];
+            while ((line = read.ReadLine()) != null)
             {
-                Buf = Line.Split(';');
-                if (Buf == null || Buf.Length!=2 || Buf[0] == null || Buf[1] == null)
+                buf = line.Split(';');
+                if (buf == null || buf.Length!=2 || buf[0] == null || buf[1] == null)
                     continue;
-                Words.Add(Buf[0], Buf[1]);
+                words.Add(buf[0], buf[1]);
             }
 
             return true;
@@ -98,14 +98,16 @@ namespace ZetSwitch
 
         static public bool LoadWords()
         {
-            LanguagesStore Store = new LanguagesStore();
-            Store.LoadLanguage(new StringReader(Properties.Resources.DefaultLang), _Default);
+            LanguagesStore store = new LanguagesStore();
+			using (StringReader reader = new StringReader(Properties.Resources.DefaultLang)) {
+				store.LoadLanguage(reader, _Default);
+			}
 
             if (_LanguageName.Length != 0)
             {
 				try
 				{
-					Store.LoadLanguage(_LanguageName, _Words);
+					store.LoadLanguage(_LanguageName, _Words);
 				}
 				catch (Exception e)
 				{

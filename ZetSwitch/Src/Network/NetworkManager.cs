@@ -68,22 +68,23 @@ namespace ZetSwitch.Network
 
 		private ManagementObjectCollection LoadAdapters()
 		{
-			ManagementObjectSearcher objMC = new ManagementObjectSearcher();
-			ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher();
-			objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
+			ManagementObjectCollection AdaptersCollection = null;
+			using (ManagementObjectSearcher objMC = new ManagementObjectSearcher()) {
+				using (ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher()) {
+					objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
 
-			if (objMC == null)
-			{
-				Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
-				Trace.Flush();
-				return null;
-			}
-			ManagementObjectCollection AdaptersCollection = objMC.Get();
-			if (AdaptersCollection == null)
-			{
-				Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
-				Trace.Flush();
-				return null;
+					if (objMC == null) {
+						Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
+						Trace.Flush();
+						return null;
+					}
+					AdaptersCollection = objMC.Get();
+					if (AdaptersCollection == null) {
+						Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
+						Trace.Flush();
+						return null;
+					}
+				}
 			}
 			return AdaptersCollection;
 		}
@@ -145,20 +146,24 @@ namespace ZetSwitch.Network
 
 		public bool Save(NetworkInterfaceSettings settings)
 		{
-			ManagementObjectSearcher objMC = new ManagementObjectSearcher();
-			objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
+			ManagementObjectCollection AdaptersCollection = null;
 
-			if (objMC == null)
-			{
-				Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
-				Trace.Flush();
-			}
+			using (ManagementObjectSearcher objMC = new ManagementObjectSearcher()) {
+				objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
 
-			ManagementObjectCollection AdaptersCollection = objMC.Get();
-			if (AdaptersCollection == null)
-			{
-				Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
-				Trace.Flush();
+				if (objMC == null)
+				{
+					Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
+					Trace.Flush();
+				}
+
+				AdaptersCollection = objMC.Get();
+				if (AdaptersCollection == null)
+				{
+					Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
+					Trace.Flush();
+					return false;
+				}
 			}
 
 			foreach (ManagementObject ObjMo in AdaptersCollection)

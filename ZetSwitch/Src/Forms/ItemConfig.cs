@@ -132,16 +132,16 @@ namespace ZetSwitch
 
 		private void SelectProfileIcon()
 		{
-			OpenFileDialog Dialog = new OpenFileDialog();
-			Dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
-			Dialog.Filter = "Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif";
+			using (OpenFileDialog Dialog = new OpenFileDialog()) {
+				Dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
+				Dialog.Filter = "Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif";
 
-			if (Dialog.ShowDialog() == DialogResult.OK)
-			{
-				string fileName = Dialog.FileName;
-				fileName = ImgCollection.Instance.InitImage(fileName);
-				LoadItemIcon(fileName);
-				profile.IconFile = fileName;
+				if (Dialog.ShowDialog() == DialogResult.OK) {
+					string fileName = Dialog.FileName;
+					fileName = ImgCollection.Instance.InitImage(fileName);
+					LoadItemIcon(fileName);
+					profile.IconFile = fileName;
+				}
 			}
 		}
 

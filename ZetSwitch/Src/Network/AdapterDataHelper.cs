@@ -103,16 +103,17 @@ namespace ZetSwitch
         {
             get
             {
-                ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher();
-                SearchAdapt.Query = new ObjectQuery("Select * from Win32_NetworkAdapter Where MACAddress ='" + obj["MACAddress"]+"'");
-                ManagementObjectCollection Name = SearchAdapt.Get();
+				ManagementObjectCollection name = null;
+				using (ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher()) {
+					SearchAdapt.Query = new ObjectQuery("Select * from Win32_NetworkAdapter Where MACAddress ='" + obj["MACAddress"] + "'");
+					name = SearchAdapt.Get();
+				}
 				
-              
-                foreach (ManagementObject O in Name)
+                foreach (ManagementObject o in name)
                 {
                     try
                     {
-                           return O["NetConnectionID"].ToString();
+                           return o["NetConnectionID"].ToString();
                     }
                     catch (Exception e)
                     {

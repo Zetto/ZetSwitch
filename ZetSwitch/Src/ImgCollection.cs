@@ -83,9 +83,10 @@ namespace ZetSwitch
 				NewName = iName.ToString() + ".bmp";
 			}
 
-			Bitmap picture = new Bitmap(Image.FromFile(name), new Size(40, 40));
-			picture.Save(DirName + NewName);
-			SaveNewName(++iName);
+			using (Bitmap picture = new Bitmap(Image.FromFile(name), new Size(40, 40))) {
+				picture.Save(DirName + NewName);
+				SaveNewName(++iName);
+			}
 			return NewName;
 		}
 
@@ -97,6 +98,7 @@ namespace ZetSwitch
 
 			if (!ValidateBitmap(picture))
 			{
+				picture.Dispose();
 				Name = SaveImage(Name);
 				picture = new Bitmap(collectionPath.DirectoryName + Name);
 			}

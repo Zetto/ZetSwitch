@@ -56,14 +56,14 @@ namespace ZetSwitch
 
             if (!Arg.Parse(Args))    //bad arguments
             {
-                Win32.AllocConsole();
+				NativeMethods.AllocConsole();
                 Console.Write(Arg.Errors);
-                Win32.FreeConsole();
+				NativeMethods.FreeConsole();
                 return;
             }
             else if (Arg.Count != 0)  //console
             {
-                Win32.AllocConsole();
+				NativeMethods.AllocConsole();
                 try
                 {
 					ProfileManager.GetInstance().Model = model;
@@ -92,15 +92,16 @@ namespace ZetSwitch
                             break;
                     }
                 }
-                Win32.FreeConsole();
+				NativeMethods.FreeConsole();
             }
             else   //win form
             {
 
                 if (Properties.Settings.Default.ShowWelcomeDialog)
                 {
-                    WelcomeScreen WlcDlg = new WelcomeScreen();
-                    WlcDlg.ShowDialog();
+					using (WelcomeScreen WlcDlg = new WelcomeScreen()) {
+						WlcDlg.ShowDialog();
+					}
                 }
 
                 try
@@ -113,11 +114,10 @@ namespace ZetSwitch
                     UseTrace(e);
                 }
 
+				MainForm Frm = new MainForm();
                 try
                 {
-					MainForm Frm = new MainForm();
 					Frm.Model = model;
-					
                     if (Arg.Minimalize)
                     {
                         Frm.GoToTray();
@@ -128,12 +128,16 @@ namespace ZetSwitch
                 }
                 catch (Exception e)
                 {
-					ExceptionForm form = new ExceptionForm(e.Message+"\n\n"+e.StackTrace);
-					form.FormBorderStyle = FormBorderStyle.FixedDialog;
-					form.StartPosition = FormStartPosition.CenterScreen;
-					form.ShowDialog();
+					using (ExceptionForm form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
+						form.FormBorderStyle = FormBorderStyle.FixedDialog;
+						form.StartPosition = FormStartPosition.CenterScreen;
+						form.ShowDialog();
+					}
                     UseTrace(e);
-                }
+                } 
+				finally {
+					Frm.Dispose();
+				}
             }
             FlushDebug();
             
@@ -169,11 +173,10 @@ namespace ZetSwitch
 
         private static void SetDebugSettings()
         {
-          // File.Create("errorlog.txt");
-
-            TextWriterTraceListener fileListener = new TextWriterTraceListener("errorlog.txt");
-            Trace.Listeners.Clear();
-            Trace.Listeners.Add(fileListener);
+			using (TextWriterTraceListener fileListener = new TextWriterTraceListener("errorlog.txt")) {
+				Trace.Listeners.Clear();
+				Trace.Listeners.Add(fileListener);
+			}
         }
 
         private static void FlushDebug()
@@ -186,12 +189,13 @@ namespace ZetSwitch
         }
     }
 
-    public class Win32
+
+	internal static class NativeMethods
     {
         [DllImport("kernel32.dll")]
-        public static extern Boolean AllocConsole();
+        internal static extern Boolean AllocConsole();
         [DllImport("kernel32.dll")]
-        public static extern Boolean FreeConsole();
+        internal static extern Boolean FreeConsole();
     }
 
 }

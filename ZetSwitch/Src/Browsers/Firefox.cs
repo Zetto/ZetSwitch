@@ -31,28 +31,28 @@ namespace ZetSwitch.Browsers
 	public class Firefox : Browser
 	{
 		[NonSerialized]
-		Hashtable _Config;
-		string _PathToConfig;
+		Hashtable config;
+		string pathToConfig;
 
 		public Firefox()
 		{
-			_Config = new Hashtable();
-			_PathToConfig = "";
+			config = new Hashtable();
+			pathToConfig = "";
 		}
 
 		#region private
 
 		private string GetConfig(string Item)
 		{
-			if (_Config.ContainsKey(Item))
-				return _Config[Item].ToString();
+			if (config.ContainsKey(Item))
+				return config[Item].ToString();
 			else
 				return "";
 		}
 
 		private int GetConfigInt(string Item)
 		{
-			string I = _Config.ContainsKey(Item) ? (string)_Config[Item] : "";
+			string I = config.ContainsKey(Item) ? (string)config[Item] : "";
 			return I.Length == 0 ? 0 : Convert.ToInt32(I);
 		}
 
@@ -61,22 +61,20 @@ namespace ZetSwitch.Browsers
 
 			if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox"))
 				throw new FileNotFoundException(Language.GetText("FirefoxSettingsFileNotFound"));
-			StreamReader f = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\profiles.ini");
-			_PathToConfig = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\";
-			string Line;
-			while ((Line = f.ReadLine()) != null)
-			{
-				string[] Conf = Line.Split('=');  //TODO: nalezeni spravneho profilu
-				if (Conf.Length != 2)
-					continue;
-				if (Conf[0] == "Path")
-				{
-					_PathToConfig += Conf[1].Replace('/', '\\');
-					_PathToConfig += "\\prefs.js";
-					if (!File.Exists(_PathToConfig))
-						throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
-					f.Close();
-					return true;
+			using (StreamReader f = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\profiles.ini")) {
+				pathToConfig = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\";
+				string Line;
+				while ((Line = f.ReadLine()) != null) {
+					string[] Conf = Line.Split('=');  //TODO: nalezeni spravneho profilu
+					if (Conf.Length != 2)
+						continue;
+					if (Conf[0] == "Path") {
+						pathToConfig += Conf[1].Replace('/', '\\');
+						pathToConfig += "\\prefs.js";
+						if (!File.Exists(pathToConfig))
+							throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
+						return true;
+					}
 				}
 			}
 			throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
@@ -138,30 +136,26 @@ namespace ZetSwitch.Browsers
 
 		public override bool LoadData()
 		{
-			if (_PathToConfig.Length == 0)
+			if (pathToConfig.Length == 0)
 			{
 				try { FindConfigFileAddres(); }
 				catch (Exception) { return false; }
 			}
 
-			StreamReader f = new StreamReader(_PathToConfig);
-
-			string Line;
-			while ((Line = f.ReadLine()) != null)
-			{
-				if (Line.IndexOf("user_pref", 0) != 0)  //non config lines
-					continue;
-				string Data = Line.Substring(10, Line.Length - 12);
-				string[] Items = Data.Split(',');
-				if (Items.Length != 2)
-					continue;
-				try
-				{
-					_Config[Items[0]] = Items[1][1] == '\"' ? Items[1].Substring(2, Items[1].Length - 3) : Items[1];
+			using (StreamReader f = new StreamReader(pathToConfig)) {
+				string line;
+				while ((line = f.ReadLine()) != null) {
+					if (line.IndexOf("user_pref", 0) != 0)  //non config lines
+						continue;
+					string data = line.Substring(10, line.Length - 12);
+					string[] Items = data.Split(',');
+					if (Items.Length != 2)
+						continue;
+					try {
+						config[Items[0]] = Items[1][1] == '\"' ? Items[1].Substring(2, Items[1].Length - 3) : Items[1];
+					} catch (Exception) { }
 				}
-				catch (Exception) { }
 			}
-			f.Close();
 
 			base.LoadData();
 			return true;

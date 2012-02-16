@@ -32,38 +32,35 @@ namespace ZetSwitch
 	{
 		string fileName;
 
-		public List<Profile> LoadProfiles()
-		{
+		public List<Profile> LoadProfiles() {
 			List<Profile> profiles = new List<Profile>();
 			if (fileName == null)
 				return profiles;
 
-			Stream Strm = new FileStream(fileName, FileMode.Open);
-			if (Strm.Length == 0)
-				return profiles;
-			BinaryFormatter Form = new BinaryFormatter();
-			profiles = (List<Profile>)Form.Deserialize(Strm);
-			Strm.Close();
+			using (Stream stream = new FileStream(fileName, FileMode.Open)) {
+				if (stream.Length == 0)
+					return profiles;
+				BinaryFormatter form = new BinaryFormatter();
+				profiles = (List<Profile>)form.Deserialize(stream);
+			}
 			return profiles;
 		}
 
-		public bool SaveProfiles(List<Profile> list)
-		{
+		public bool SaveProfiles(List<Profile> list) {
 			if (fileName == null)
 				return false;
-			if (!File.Exists(fileName))
-			{
-				File.Create(fileName);
+			if (!File.Exists(fileName)) {
+				using (File.Create(fileName)) {}
 			}
-			BinaryFormatter Form = new BinaryFormatter();
-			Stream Strm = new FileStream(fileName, FileMode.Open);
-			Form.Serialize(Strm, list);
-			Strm.Close();
+
+			using (Stream stream = new FileStream(fileName, FileMode.Open)) {
+				BinaryFormatter form = new BinaryFormatter();
+				form.Serialize(stream, list);
+			}
 			return true;
 		}
 
-		public void SetFileName(string name)
-		{
+		public void SetFileName(string name) {
 			fileName = name;
 		}
 	}

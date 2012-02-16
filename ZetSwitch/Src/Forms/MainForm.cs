@@ -63,15 +63,14 @@ namespace ZetSwitch
 		private void NewProfile()
 		{
 			Profile profile = ProfileManager.GetInstance().GetNewProfile();
-			ItemConfig dlg = new ItemConfig(true, profile);
-			AddOwnedForm(dlg);
-			if (dlg.ShowDialog() == DialogResult.OK)
-			{
-				ProfileManager.GetInstance().Add(profile);
-				ReloadList();
-				SetSelectByName(profile.Name);
+			using (ItemConfig dlg = new ItemConfig(true, profile)) {
+				AddOwnedForm(dlg);
+				if (dlg.ShowDialog() == DialogResult.OK) {
+					ProfileManager.GetInstance().Add(profile);
+					ReloadList();
+					SetSelectByName(profile.Name);
+				}
 			}
-			dlg.Dispose();
 			return;
 		}
 
@@ -81,15 +80,14 @@ namespace ZetSwitch
 				return;
 			string Name = ListBoxItems.Items[ListBoxItems.SelectedIndex].ToString();
 			Profile profile = ProfileManager.GetInstance().GetCloneProfile(Name);
-			ItemConfig dlg = new ItemConfig(false, profile);
-			AddOwnedForm(dlg);
-			if (dlg.ShowDialog() == DialogResult.OK)
-			{
-				ProfileManager.GetInstance().Change(Name, profile);
-				ReloadList();
-				SetSelectByName(profile.Name);
+			using (ItemConfig dlg = new ItemConfig(false, profile)) {
+				AddOwnedForm(dlg);
+				if (dlg.ShowDialog() == DialogResult.OK) {
+					ProfileManager.GetInstance().Change(Name, profile);
+					ReloadList();
+					SetSelectByName(profile.Name);
+				}
 			}
-			dlg.Dispose();
 		}
 
 		private void ApplyActualProfile()
@@ -313,17 +311,18 @@ namespace ZetSwitch
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AboutBox About = new AboutBox();
-			About.ShowDialog();
+			using (AboutBox About = new AboutBox()) {
+				About.ShowDialog();
+			}
 
 		}
 
 		private void nastaveniToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Setting Dlg = new Setting();
-			if (Dlg.ShowDialog() == DialogResult.OK)
-			{
-				ResetLanguage();
+			using (Setting Dlg = new Setting()) {
+				if (Dlg.ShowDialog() == DialogResult.OK) {
+					ResetLanguage();
+				}
 			}
 		}
 
@@ -385,46 +384,60 @@ namespace ZetSwitch
 				return;
 
 			ListBox List = (ListBox)sender;
-			StringFormat sf = new StringFormat();
-			sf.LineAlignment = StringAlignment.Center;
-			sf.Alignment = StringAlignment.Center;
-			Brush Br = new SolidBrush(Color.LightGray);
-
 			string str = (string)List.Items[e.Index];
-
-
-			if (e.State != (DrawItemState.Selected | DrawItemState.Focus))
-			{
-				e.Graphics.FillRectangle(new SolidBrush(Color.White), rc);
-				e.Graphics.DrawString(str, new Font("Ariel", 12), new SolidBrush(Color.Black), rc, sf);
-
-			}
-			else
-			{
-				e.Graphics.FillRectangle(new SolidBrush(Color.LightBlue), rc);
-				e.Graphics.DrawString(str, new Font("Ariel", 12), new SolidBrush(Color.Black), rc, sf);
-				Br = new SolidBrush(Color.Gray);
-			}
-
-
-			//draw ip address
-
 			Profile profile = ProfileManager.GetInstance().GetProfile(str);
 			NetworkInterfaceSettings settings;
 
-			if (profile != null && profile.Connections.Count != 0)
-			{
-				settings = profile.Connections[0].Settings;
-				sf.Alignment = StringAlignment.Far;
-				if (settings.IsDHCP)
-				{
-					e.Graphics.DrawString("DHCP", new Font("Ariel", 8), Br, rc, sf);
+			StringFormat sf = null;
+			Brush br = null, solid = null, selected = null, nonselected = null;
+			Font titleFont = null, ipFont = null;
+
+			try {
+				sf = new StringFormat();
+				solid = new SolidBrush(Color.Black);
+				titleFont = new Font("Ariel", 12);
+				ipFont = new Font("Ariel", 8);
+				selected = new SolidBrush(Color.LightBlue);
+				nonselected = new SolidBrush(Color.White);
+
+				sf.LineAlignment = StringAlignment.Center;
+				sf.Alignment = StringAlignment.Center;
+		
+				if (e.State == (DrawItemState.Selected | DrawItemState.Focus)) {
+					e.Graphics.FillRectangle(selected, rc);
+					e.Graphics.DrawString(str, titleFont, solid, rc, sf);
+					br = new SolidBrush(Color.Gray);
+
 				}
-				else
-				{
-					e.Graphics.DrawString(settings.IP.ToString(), new Font("Ariel", 8), Br, rc, sf);
+				else {
+					e.Graphics.FillRectangle(nonselected, rc);
+					e.Graphics.DrawString(str, titleFont, solid, rc, sf);
+					br = new SolidBrush(Color.LightGray);
+
 				}
 
+				//draw ip address
+
+				if (profile != null && profile.Connections.Count != 0) {
+					settings = profile.Connections[0].Settings;
+					sf.Alignment = StringAlignment.Far;
+					if (settings.IsDHCP) {
+						e.Graphics.DrawString("DHCP", ipFont, br, rc, sf);
+					}
+					else {
+						e.Graphics.DrawString(settings.IP.ToString(), ipFont, br, rc, sf);
+					}
+
+				}
+			}
+			finally {
+				if (sf!=null) sf.Dispose();
+				if (br != null) br.Dispose();
+				if (solid != null) solid.Dispose();
+				if (nonselected != null) nonselected.Dispose();
+				if (selected != null) selected.Dispose();
+				if (titleFont != null) titleFont.Dispose();
+				if (ipFont != null) ipFont.Dispose();
 			}
 
 			//draw icon

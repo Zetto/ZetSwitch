@@ -74,7 +74,6 @@ namespace ZetSwitch
 				formatter.Serialize(ms, this);
 				ms.Position = 0;
 				result = (Profile)formatter.Deserialize(ms);
-				ms.Close();
 			}
 
 			return result;
