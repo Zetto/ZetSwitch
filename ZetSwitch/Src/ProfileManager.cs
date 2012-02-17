@@ -44,12 +44,6 @@ namespace ZetSwitch
 		{
 		}
 
-		private void MergeNetworkSettings()
-		{
-			foreach (Profile profile in profiles)
-				profile.MergeNetworkInterfaces(model.GetNetworkInterfaceSettings());
-		}
-
 		#endregion
 
 		#region public
@@ -62,6 +56,7 @@ namespace ZetSwitch
 		public DataModel Model
 		{
 			set { model = value; }
+			get { return model; }
 		}
 
 		
@@ -76,7 +71,6 @@ namespace ZetSwitch
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
 			factory.InitString(".\\Data\\profiles.xml");
 			profiles = factory.GetLoader().LoadProfiles();
-			MergeNetworkSettings();
 		}
 
 		public void SaveSettings()
@@ -110,7 +104,6 @@ namespace ZetSwitch
 		{
 			Profile profile = new Profile();
 			profile.Name = GetNewProfileName();
-			profile.Connections = new ProfileNetworkSettingsList(model.GetNetworkInterfaceSettings());
 			profile.Browsers = model.GetBrowsers();
 			return profile;
 		}

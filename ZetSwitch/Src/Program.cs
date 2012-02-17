@@ -46,7 +46,6 @@ namespace ZetSwitch
             Application.SetCompatibleTextRenderingDefault(false);
 
 			DataModel model = new DataModel();
-			model.LoadData(); // todo: strcit nekam do paze ... Musi byt volano pred loadconfig v manageru, nebo tuhle zavislost nejak rozbit...
 			ProfileManager.GetInstance().Model = model;
 
             SetDebugSettings();

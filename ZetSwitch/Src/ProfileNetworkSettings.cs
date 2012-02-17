@@ -105,35 +105,13 @@ namespace ZetSwitch
 			return names;
 		}
 
-		public void MergeNetworkInterfaces(List<NetworkInterfaceSettings> other) 
-		{
-			foreach (NetworkInterfaceSettings setting in other)
-			{
-				ProfileNetworkSettings profileSettings = Find(item => item.Settings.Name == setting.Name);
-				if (profileSettings == null) 
-				{
-					Add(new ProfileNetworkSettings(setting));
-				}
-				else 
-				{
-					if (profileSettings.Settings.IsDHCP)
-					{
-						profileSettings.Settings.IP = setting.IP;
-						profileSettings.Settings.GateWay = setting.GateWay;
-						profileSettings.Settings.Mask = setting.Mask;
-					}
-					if (profileSettings.Settings.IsDNSDHCP)
-					{
-						profileSettings.Settings.DNS1 = setting.DNS1;
-						profileSettings.Settings.DNS2 = setting.DNS2;
-					}
-				}
-			}
-		}
-
 		public ProfileNetworkSettings GetSetting(string Name)
 		{
 			return Find(item => item.Settings.Name == Name);
+		}
+
+		public bool Contains(string name) {
+			return GetSetting(name) != null;
 		}
 
 		public void PrepareSave()
@@ -159,6 +137,12 @@ namespace ZetSwitch
 			if (set == null)
 				return;
 			set.Use = use;
+		}
+
+		internal void RemoveUnused() {
+			var items = FindAll(item => item.Use == false);
+			foreach (var item in items) 
+				Remove(item);
 		}
 	}
 }

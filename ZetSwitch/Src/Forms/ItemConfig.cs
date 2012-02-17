@@ -48,8 +48,18 @@ namespace ZetSwitch
 
 		private void LoadData()
 		{
+			ProfileManager.GetInstance().Model.LoadData(); 
+			
 			TextBoxName.Text = profile.Name;
 			List<string> names = profile.GetNetworkInterfaceNames();
+			List<NetworkInterfaceSettings> ifs = ProfileManager.GetInstance().Model.GetNetworkInterfaceSettings();
+
+			foreach (NetworkInterfaceSettings setting in ifs) {
+				if (!names.Contains(setting.Name)) {
+					names.Add(setting.Name);
+					profile.AddNetworkInterface(setting);
+				}
+			}
 
 			foreach (string name in names)
 			{
@@ -153,10 +163,10 @@ namespace ZetSwitch
 
 			SaveTabPage(TabControl.SelectedIndex);
 			
-			foreach (string name in ListBoxInterfaces.Items)
-			{
+			foreach (string name in ListBoxInterfaces.Items) {
 				profile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
 			}
+			profile.RemoveUnusedItenrfaces();
 			return true;
 		}
 

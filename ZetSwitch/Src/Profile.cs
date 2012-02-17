@@ -85,6 +85,10 @@ namespace ZetSwitch
 			set { connections = value; }
 		}
 
+		public bool ContainsIF(string name) {
+			return connections.Contains(name);
+		}
+
 		public Dictionary<BROWSERS, Browser> Browsers
 		{
 			set { browsers = value; }
@@ -110,11 +114,6 @@ namespace ZetSwitch
 		{
 		}
 
-		public void MergeNetworkInterfaces(List<NetworkInterfaceSettings> other)
-		{
-			connections.MergeNetworkInterfaces(other);
-		}
-
 		public void PrepareSave()
 		{
 			connections.PrepareSave();
@@ -128,6 +127,10 @@ namespace ZetSwitch
 		public void UseNetworkInterface(string name, bool use)
 		{
 			connections.UseNetworkInterface(name, use);
+		}
+
+		public void RemoveUnusedItenrfaces() {
+			connections.RemoveUnused();
 		}
 
         public string Name
@@ -154,5 +157,9 @@ namespace ZetSwitch
 				return false;
 			return other.Name == name;
 		}
-    }
+
+		internal void AddNetworkInterface(NetworkInterfaceSettings setting) {
+			connections.Add(new ProfileNetworkSettings(setting));
+		}
+	}
 }

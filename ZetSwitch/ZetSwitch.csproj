@@ -221,7 +221,9 @@
     <None Include="Resources\ff.png" />
     <None Include="Resources\ie.png" />
     <None Include="Resources\DefaultLang.txt" />
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\about.png" />
   </ItemGroup>
   <ItemGroup>
