@@ -140,6 +140,8 @@ namespace ZetSwitch
 			return true;
 		}
 
+		
+
 		private void SelectProfileIcon()
 		{
 			using (OpenFileDialog Dialog = new OpenFileDialog()) {
@@ -237,27 +239,6 @@ namespace ZetSwitch
 			//tabPageProxy.ChangeBrowser();
 		}
 
-
-		private void IPDHCPManual_CheckedChanged(object sender, EventArgs e)
-		{
-			tabPageIP.SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-		}
-
-		private void IPDHCPAuto_CheckedChanged(object sender, EventArgs e)
-		{
-			tabPageIP.SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-		}
-
-		private void DNSDHCPAuto_CheckedChanged(object sender, EventArgs e)
-		{
-			tabPageIP.SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-		}
-
-		private void DNSDHCPManual_CheckedChanged(object sender, EventArgs e)
-		{
-			tabPageIP.SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-		}
-
 		#endregion
 
 
@@ -269,6 +250,7 @@ namespace ZetSwitch
 			isNew = newProfile;
 			InitializeComponent();
 			oldName = profile.Name;
+			tabPageIP.DataChanged += new EventHandler(OnDataChange);
 			
 			panels.Add(tabPageIP);
 		/*	panels.Add(tabPageProxy);
@@ -282,6 +264,17 @@ namespace ZetSwitch
 
 			LoadData();	
 			ResetLanguage();
+		}
+
+		private void OnDataChange(object o, EventArgs e) {
+			SetUseActualSelection();
+		}
+
+		private void SetUseActualSelection() {
+			int index = ListBoxInterfaces.SelectedIndex;
+			if (index < 0 )
+				return;
+			ListBoxInterfaces.SetItemChecked(index,true);
 		}
 
 		#endregion

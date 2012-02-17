@@ -86,8 +86,26 @@ namespace ZetSwitch
             IpDNS2 = (IPAddressControl)Controls["groupBox2"].Controls["IpDNS2"];
             IpDNS1 = (IPAddressControl)Controls["groupBox2"].Controls["IpDNS1"];
 
+			this.IpGW.TextChanged += new System.EventHandler(this.OnDataChanged);
+			this.IpMask.TextChanged += new System.EventHandler(this.OnDataChanged);
+			this.IpIpAddress.TextChanged += new System.EventHandler(this.OnDataChanged);
+			this.IpDNS2.TextChanged += new System.EventHandler(this.OnDataChanged);
+			this.IpDNS1.TextChanged += new System.EventHandler(this.OnDataChanged);
+
+			this.IPDHCPManual.CheckedChanged += new System.EventHandler(this.IPDHCPManual_CheckedChanged);
+			this.IPDHCPManual.CheckedChanged += new System.EventHandler(this.OnDataChanged);
+			this.IPDHCPAuto.CheckedChanged += new System.EventHandler(this.IPDHCPAuto_CheckedChanged);
+			this.IPDHCPAuto.CheckedChanged += new System.EventHandler(this.OnDataChanged);
+			this.DNSDHCPAuto.CheckedChanged += new System.EventHandler(this.DNSDHCPAuto_CheckedChanged);
+			this.DNSDHCPAuto.CheckedChanged += new System.EventHandler(this.OnDataChanged);
+			this.DNSDHCPManual.CheckedChanged += new System.EventHandler(this.DNSDHCPManual_CheckedChanged);
+			this.DNSDHCPManual.CheckedChanged += new System.EventHandler(this.OnDataChanged);
+			
+
             #endregion		
         }
+
+		public event EventHandler DataChanged;
 
         public void SetDisableControl(bool DHCPIP, bool DHCPDNS)
         {
@@ -107,10 +125,10 @@ namespace ZetSwitch
             IpDNS2.Enabled = !DHCPDNS;
         }
 
-        public void IPDHCPAuto_CheckedChanged(object sender, EventArgs e)
-        {
-            SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-        }
+		public void OnDataChanged(object sender, EventArgs e) {
+			if (DataChanged != null)
+				DataChanged(this, null);
+		}
 
 		public override bool SavePanel()
 		{
@@ -182,6 +200,22 @@ namespace ZetSwitch
 			error = "";
 			NetworkInterfaceSettings settings = profile.Connections.GetNetworkSettings(interfaceName);
 			return settings == null ? true : settings.Validate(out error);
+		}
+
+		private void IPDHCPManual_CheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		}
+
+		private void IPDHCPAuto_CheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		}
+
+		private void DNSDHCPAuto_CheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		}
+
+		private void DNSDHCPManual_CheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
 		}
 
     }

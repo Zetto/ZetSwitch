@@ -200,7 +200,6 @@
 			this.DNSDHCPManual.TabStop = true;
 			this.DNSDHCPManual.Text = "Use the following DNS server addresses";
 			this.DNSDHCPManual.UseVisualStyleBackColor = true;
-			this.DNSDHCPManual.CheckedChanged += new System.EventHandler(this.DNSDHCPManual_CheckedChanged);
 			// 
 			// DNSDHCPAuto
 			// 
@@ -212,7 +211,6 @@
 			this.DNSDHCPAuto.TabStop = true;
 			this.DNSDHCPAuto.Text = "Obtain DNS server addres automatically";
 			this.DNSDHCPAuto.UseVisualStyleBackColor = true;
-			this.DNSDHCPAuto.CheckedChanged += new System.EventHandler(this.DNSDHCPAuto_CheckedChanged);
 			// 
 			// label5
 			// 
@@ -288,7 +286,6 @@
 			this.IPDHCPManual.TabStop = true;
 			this.IPDHCPManual.Text = "Use the following IP addresses";
 			this.IPDHCPManual.UseVisualStyleBackColor = true;
-			this.IPDHCPManual.CheckedChanged += new System.EventHandler(this.IPDHCPManual_CheckedChanged);
 			// 
 			// label3
 			// 
@@ -309,7 +306,6 @@
 			this.IPDHCPAuto.TabStop = true;
 			this.IPDHCPAuto.Text = "Obtain an IP addres automatically";
 			this.IPDHCPAuto.UseVisualStyleBackColor = true;
-			this.IPDHCPAuto.CheckedChanged += new System.EventHandler(this.IPDHCPAuto_CheckedChanged);
 			// 
 			// IpGW
 			// 
