@@ -55,6 +55,7 @@ GWNotInIPQuest;IP address and gateway aren't in the same segment. Do you want to
 ProfileNameIsEmpty;- Profile name is empty.
 AtLeastOneConSel;- At least one connection must be selected.
 RequiredIP;- IP address is required.
+loading;loading
 
 
 

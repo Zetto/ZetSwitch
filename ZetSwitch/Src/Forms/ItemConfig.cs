@@ -47,6 +47,7 @@ namespace ZetSwitch
 		#region private
 
 		private void PopulateListBox() {
+			ListBoxInterfaces.IsLoaded = true;
 			List<string> names = profile.GetNetworkInterfaceNames();
 			List<NetworkInterfaceSettings> ifs = ProfileManager.GetInstance().Model.GetNetworkInterfaceSettings();
 			foreach (NetworkInterfaceSettings setting in ifs) {
@@ -262,9 +263,8 @@ namespace ZetSwitch
 
 			LoadData();
 
-			ProfileManager.GetInstance().Model.LoadData();
-			if (ProfileManager.GetInstance().Model.IsIFLoaded())
-				PopulateListBox();	
+			if (ProfileManager.GetInstance().Model.IsIFLoaded()) 
+				PopulateListBox();
 			else
 				ProfileManager.GetInstance().Model.DataLoaded += new EventHandler(model_DataLoaded);
 			ResetLanguage();

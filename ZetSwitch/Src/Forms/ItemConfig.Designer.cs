@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemConfig));
-			this.ListBoxInterfaces = new System.Windows.Forms.CheckedListBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.TextBoxName = new System.Windows.Forms.TextBox();
 			this.Picture = new System.Windows.Forms.PictureBox();
@@ -38,6 +37,7 @@
 			this.OkButton = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.ListBoxInterfaces = new ZetSwitch.InterfaceListBox();
 			this.TabControl = new System.Windows.Forms.TabControl();
 			this.tabPageIP = new ZetSwitch.IPPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -63,15 +63,6 @@
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// ListBoxInterfaces
-			// 
-			this.ListBoxInterfaces.FormattingEnabled = true;
-			this.ListBoxInterfaces.Location = new System.Drawing.Point(12, 66);
-			this.ListBoxInterfaces.Name = "ListBoxInterfaces";
-			this.ListBoxInterfaces.Size = new System.Drawing.Size(183, 184);
-			this.ListBoxInterfaces.TabIndex = 28;
-			this.ListBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.ListBoxInterfaces_SelectedIndexChanged);
 			// 
 			// label6
 			// 
@@ -150,6 +141,15 @@
 			this.groupBox3.TabIndex = 43;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Profile";
+			// 
+			// ListBoxInterfaces
+			// 
+			this.ListBoxInterfaces.FormattingEnabled = true;
+			this.ListBoxInterfaces.Location = new System.Drawing.Point(12, 66);
+			this.ListBoxInterfaces.Name = "ListBoxInterfaces";
+			this.ListBoxInterfaces.Size = new System.Drawing.Size(183, 184);
+			this.ListBoxInterfaces.TabIndex = 28;
+			this.ListBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.ListBoxInterfaces_SelectedIndexChanged);
 			// 
 			// TabControl
 			// 
@@ -401,7 +401,7 @@
         
         #endregion
 
-        private System.Windows.Forms.CheckedListBox ListBoxInterfaces;
+		private InterfaceListBox ListBoxInterfaces;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox TextBoxName;
         private System.Windows.Forms.PictureBox Picture;

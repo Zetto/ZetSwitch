@@ -96,6 +96,9 @@
     <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Src\Forms\InterfaceListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Src\Network\AdapterDataHelper.cs" />
     <Compile Include="Src\Arguments.cs" />
     <Compile Include="Src\Network\IPAddress.cs" />

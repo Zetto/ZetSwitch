@@ -193,6 +193,7 @@ namespace ZetSwitch
         public MainForm()
         {
 			DataModel model = new DataModel();
+			model.LoadData();
 			ProfileManager.GetInstance().Model = model;
 
             InitializeComponent();
