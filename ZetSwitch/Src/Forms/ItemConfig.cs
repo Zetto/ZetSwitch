@@ -46,14 +46,9 @@ namespace ZetSwitch
 
 		#region private
 
-		private void LoadData()
-		{
-			ProfileManager.GetInstance().Model.LoadData(); 
-			
-			TextBoxName.Text = profile.Name;
+		private void PopulateListBox() {
 			List<string> names = profile.GetNetworkInterfaceNames();
 			List<NetworkInterfaceSettings> ifs = ProfileManager.GetInstance().Model.GetNetworkInterfaceSettings();
-
 			foreach (NetworkInterfaceSettings setting in ifs) {
 				if (!names.Contains(setting.Name)) {
 					names.Add(setting.Name);
@@ -61,14 +56,17 @@ namespace ZetSwitch
 				}
 			}
 
-			foreach (string name in names)
-			{
+			foreach (string name in names) {
 				ListBoxInterfaces.Items.Add(name);
 				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, profile.IsNetworkInterfaceInProfile(name));
 			}
-			LoadItemIcon(profile.IconFile);
 			if (ListBoxInterfaces.Items.Count > 0)
 				ListBoxInterfaces.SetSelected(0, true);
+		}
+
+		private void LoadData() {
+			TextBoxName.Text = profile.Name;
+			LoadItemIcon(profile.IconFile);
 		}
 
 		private void LoadItemIcon(string file)
@@ -262,8 +260,19 @@ namespace ZetSwitch
 				panel.ActualProfile = profile;
 			}
 
-			LoadData();	
+			LoadData();
+
+			ProfileManager.GetInstance().Model.LoadData();
+			if (ProfileManager.GetInstance().Model.IsIFLoaded())
+				PopulateListBox();	
+			else
+				ProfileManager.GetInstance().Model.DataLoaded += new EventHandler(model_DataLoaded);
 			ResetLanguage();
+		}
+
+		private void model_DataLoaded(object o, EventArgs e) {
+			ProfileManager.GetInstance().Model.DataLoaded -= new EventHandler(model_DataLoaded);
+			PopulateListBox();
 		}
 
 		private void OnDataChange(object o, EventArgs e) {

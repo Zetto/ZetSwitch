@@ -190,13 +190,11 @@ namespace ZetSwitch
 
 		#region public 
 		
-		public DataModel Model
-		{
-			set { model = value; }
-		}
-
         public MainForm()
         {
+			DataModel model = new DataModel();
+			ProfileManager.GetInstance().Model = model;
+
             InitializeComponent();
             ResetLanguage();
 
@@ -252,6 +250,7 @@ namespace ZetSwitch
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			ProfileManager.GetInstance().SaveSettings();
+			ProfileManager.GetInstance().Dispose();
 			Application.Exit();
 		}
 

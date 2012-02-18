@@ -45,9 +45,6 @@ namespace ZetSwitch
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-			DataModel model = new DataModel();
-			ProfileManager.GetInstance().Model = model;
-
             SetDebugSettings();
             LoadLanguage();
 
@@ -65,6 +62,8 @@ namespace ZetSwitch
 				NativeMethods.AllocConsole();
                 try
                 {
+					DataModel model = new DataModel();
+					ProfileManager.GetInstance().Model = model;
 					ProfileManager.GetInstance().Model = model;
                     ProfileManager.GetInstance().LoadSettings();
                 }
@@ -116,7 +115,6 @@ namespace ZetSwitch
 				MainForm Frm = new MainForm();
                 try
                 {
-					Frm.Model = model;
                     if (Arg.Minimalize)
                     {
                         Frm.GoToTray();

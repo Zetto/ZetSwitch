@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01CD15FB-9025-4D44-BA3B-85FA945A8712}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
+		Performance1.psess = Performance1.psess
 		ZetSwitch.vsmdi = ZetSwitch.vsmdi
 	EndProjectSection
 EndProject

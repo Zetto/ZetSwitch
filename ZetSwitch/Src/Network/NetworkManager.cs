@@ -26,16 +26,70 @@ using System.Management;
 using System.Collections;
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.ComponentModel;
+using System.Threading;
 
 namespace ZetSwitch.Network
 {
-    public class NetworkManager
+    public class NetworkManager : IDisposable 
 	{
 		#region variables
 
+		bool disposed = false;
+
 		List<NetworkInterfaceSettings> connections;
+		BackgroundWorker loader = new BackgroundWorker();
+		bool loaded = false;
+		private AutoResetEvent waitingEvent = new AutoResetEvent(false);
+
+
+		public event EventHandler DataLoaded;
 		
 		#endregion
+
+		~NetworkManager() {
+			Dispose(false);
+		}
+
+		private void loader_DoWork(object o, DoWorkEventArgs e) {
+			BackgroundWorker worker = (BackgroundWorker)o;
+			connections.Clear();
+			try {
+				ManagementObjectCollection AdaptersCollection = LoadAdapters();
+				if (AdaptersCollection == null)
+					return;
+
+				foreach (ManagementObject ObjMo in AdaptersCollection) {
+					if (worker.CancellationPending == true) {
+						e.Cancel = true;
+						connections.Clear();
+						waitingEvent.Set();
+						return;
+					}
+					try {
+						NetworkInterfaceSettings If = new NetworkInterfaceSettings(new AdapterDataHelper(ObjMo));
+						connections.Add(If);
+					} catch (Exception ex) {
+						Program.UseTrace(ex);
+					}
+				}
+			} catch (NullReferenceException ex) {
+				Program.UseTrace(ex);
+				Trace.WriteLine(ex.Source);
+				Trace.WriteLine(ex.Data);
+				throw new NullReferenceException("error", ex);
+			} catch (Exception ex) {
+				Program.UseTrace(ex);
+			}
+		}
+
+		private void loader_RunWorkerCompleted(object o, RunWorkerCompletedEventArgs e) {
+			if (e.Cancelled)
+				return;
+			loaded = true;
+			if (DataLoaded != null)
+				DataLoaded(this, null);
+		}
 
 		#region private
 
@@ -96,6 +150,9 @@ namespace ZetSwitch.Network
 		public NetworkManager()
 		{
 			connections = new List<NetworkInterfaceSettings>();
+			loader.WorkerSupportsCancellation = true;
+			loader.DoWork += new DoWorkEventHandler(loader_DoWork);
+			loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loader_RunWorkerCompleted);
 		}
 
 		public List<NetworkInterfaceSettings> Connections
@@ -108,40 +165,13 @@ namespace ZetSwitch.Network
 			get { return connections.Count; }
 		}
 
-		public bool LoadData()
-		{
-			connections.Clear();
-			try
-			{
-				ManagementObjectCollection AdaptersCollection = LoadAdapters();
-				if (AdaptersCollection == null)
-					return false;
+		public bool IsLoaded() {
+			return loaded;
+		}
 
-				foreach (ManagementObject ObjMo in AdaptersCollection)
-				{
-					try
-					{
-						NetworkInterfaceSettings If = new NetworkInterfaceSettings(new AdapterDataHelper(ObjMo));
-						connections.Add(If);
-					}
-					catch (Exception e)
-					{
-						Program.UseTrace(e);
-					}
-				}
-			}
-			catch (NullReferenceException e)
-			{
-				Program.UseTrace(e);
-				Trace.WriteLine(e.Source);
-				Trace.WriteLine(e.Data);
-				throw new NullReferenceException("error", e);
-			}
-			catch (Exception e)
-			{
-				Program.UseTrace(e);
-			}
-			return true;
+		public void StartLoad() {
+			if (!loaded && !loader.IsBusy)
+				loader.RunWorkerAsync();
 		}
 
 		public bool Save(NetworkInterfaceSettings settings)
@@ -230,5 +260,23 @@ namespace ZetSwitch.Network
 			return connections;
 		}
 		#endregion
-    }
+
+		private void Dispose(bool disposing) {
+			if (!disposed) {
+				if (disposing) {
+					if (loader.IsBusy) {
+						loader.CancelAsync();
+						waitingEvent.WaitOne();
+					}
+					loader.Dispose();
+				}
+			}
+			disposed = true;
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+	}
 }

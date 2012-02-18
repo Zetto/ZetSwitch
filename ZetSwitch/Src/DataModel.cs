@@ -28,20 +28,38 @@ using ZetSwitch.Network;
 
 namespace ZetSwitch
 {
-	public class DataModel
+	public class DataModel : IDisposable
 	{
 		NetworkManager interfaceManager = new NetworkManager();
 		Dictionary<BROWSERS, Browser> browsers = new Dictionary<BROWSERS, Browser>();
+
+		bool disposed = false;
 		
 		public DataModel()
 		{
 			browsers[BROWSERS.IE] = BrowserFactory.createBrowser(BROWSERS.IE);
 			browsers[BROWSERS.FIREFOX] = BrowserFactory.createBrowser(BROWSERS.FIREFOX);
+			interfaceManager.DataLoaded += new EventHandler(interfaceManager_DataLoaded);
 		}
+
+		~DataModel() {
+			Dispose(false);
+		}
+
+		public bool IsIFLoaded() {
+			return interfaceManager.IsLoaded();
+		}
+
+		private void interfaceManager_DataLoaded(object o, EventArgs e) {
+			if (DataLoaded != null)
+				DataLoaded(this, null);
+		}
+
+		public event EventHandler DataLoaded;
 
 		public bool LoadData()
 		{
-			interfaceManager.LoadData();
+			interfaceManager.StartLoad();
 			foreach (KeyValuePair<BROWSERS, Browser> pair in browsers)
 				pair.Value.LoadData();
 			return true;
@@ -67,6 +85,20 @@ namespace ZetSwitch
 					interfaceManager.Save(settings.Settings);
 			}
 			return true;
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool disposing) {
+			if (!disposed) {
+				if (disposing) {
+					interfaceManager.Dispose();
+				}
+			}
+			disposed = true;
 		}
 	}
 }

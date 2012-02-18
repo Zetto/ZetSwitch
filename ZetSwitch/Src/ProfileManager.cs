@@ -31,18 +31,25 @@ using System.Security;
 
 namespace ZetSwitch
 {
-	public class ProfileManager
+	public class ProfileManager : IDisposable 
 	{
 		List<Profile> profiles = new List<Profile>();
 		DataModel model;
 		static ProfileManager instance = new ProfileManager();
 
+		bool disposed = false;
 
 		#region private
 
 		private ProfileManager()
 		{
+
 		}
+
+		~ProfileManager() {
+			Dispose(false);
+		}
+
 
 		#endregion
 
@@ -165,5 +172,21 @@ namespace ZetSwitch
 		}
 
 		#endregion
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool disposing) {
+			if (!disposed) {
+				if (disposing) {
+					model.Dispose();
+					instance = null;
+				}
+			}
+			disposed = true;
+		}
+
 	}
 }
