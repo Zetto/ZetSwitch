@@ -58,10 +58,12 @@ namespace ZetSwitch
 			this.labelVersion = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.newProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.createProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteProfileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.desktopShortcut = new System.Windows.Forms.ToolStripMenuItem();
 			this.NotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.contextMenuTray = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.menuStrip1.SuspendLayout();
@@ -128,7 +130,7 @@ namespace ZetSwitch
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(181, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
 			// 
 			// exitToolStripMenuItem1
 			// 
@@ -167,7 +169,7 @@ namespace ZetSwitch
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(140, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
 			// 
 			// nastaveniToolStripMenuItem
 			// 
@@ -187,7 +189,7 @@ namespace ZetSwitch
 			// aaboutToolStripMenuItem
 			// 
 			this.aaboutToolStripMenuItem.Name = "aaboutToolStripMenuItem";
-			this.aaboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.aaboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.aaboutToolStripMenuItem.Text = "About";
 			this.aaboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
@@ -284,33 +286,30 @@ namespace ZetSwitch
 			// 
 			this.ItemContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProfileToolStripMenuItem,
-            this.toolStripSeparator5,
+            this.toolStripSeparator7,
             this.createProfileToolStripMenuItem,
             this.changeProfileToolStripMenuItem,
-            this.deleteProfileToolStripMenuItem1});
+            this.deleteProfileToolStripMenuItem1,
+            this.toolStripSeparator5,
+            this.desktopShortcut});
 			this.ItemContextMenu.Name = "ItemContextMenu";
 			this.ItemContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-			this.ItemContextMenu.Size = new System.Drawing.Size(144, 98);
+			this.ItemContextMenu.Size = new System.Drawing.Size(170, 148);
 			// 
 			// newProfileToolStripMenuItem
 			// 
 			this.newProfileToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.newProfileToolStripMenuItem.Image = global::ZetSwitch.Properties.Resources.accept;
 			this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-			this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.newProfileToolStripMenuItem.Text = "Použij Profil";
 			this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.Apply_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(140, 6);
 			// 
 			// createProfileToolStripMenuItem
 			// 
 			this.createProfileToolStripMenuItem.Image = global::ZetSwitch.Properties.Resources.add;
 			this.createProfileToolStripMenuItem.Name = "createProfileToolStripMenuItem";
-			this.createProfileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.createProfileToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.createProfileToolStripMenuItem.Text = "Přidat Profil";
 			this.createProfileToolStripMenuItem.Click += new System.EventHandler(this.New_Click);
 			// 
@@ -318,7 +317,7 @@ namespace ZetSwitch
 			// 
 			this.changeProfileToolStripMenuItem.Image = global::ZetSwitch.Properties.Resources.change;
 			this.changeProfileToolStripMenuItem.Name = "changeProfileToolStripMenuItem";
-			this.changeProfileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.changeProfileToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.changeProfileToolStripMenuItem.Text = "Změnit Profil";
 			this.changeProfileToolStripMenuItem.Click += new System.EventHandler(this.Change_Click);
 			// 
@@ -326,9 +325,26 @@ namespace ZetSwitch
 			// 
 			this.deleteProfileToolStripMenuItem1.Image = global::ZetSwitch.Properties.Resources.trash;
 			this.deleteProfileToolStripMenuItem1.Name = "deleteProfileToolStripMenuItem1";
-			this.deleteProfileToolStripMenuItem1.Size = new System.Drawing.Size(143, 22);
+			this.deleteProfileToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
 			this.deleteProfileToolStripMenuItem1.Text = "Smazat Profil";
 			this.deleteProfileToolStripMenuItem1.Click += new System.EventHandler(this.Delete_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(166, 6);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(166, 6);
+			// 
+			// desktopShortcut
+			// 
+			this.desktopShortcut.Name = "desktopShortcut";
+			this.desktopShortcut.Size = new System.Drawing.Size(169, 22);
+			this.desktopShortcut.Text = "Zástupce na ploše";
+			this.desktopShortcut.Click += new System.EventHandler(this.desktopShortcut_Click);
 			// 
 			// NotifyIcon
 			// 
@@ -409,6 +425,8 @@ namespace ZetSwitch
         private System.Windows.Forms.ContextMenuStrip contextMenuTray;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripMenuItem nastaveniToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem desktopShortcut;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }
 

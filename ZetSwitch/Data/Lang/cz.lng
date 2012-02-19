@@ -56,4 +56,5 @@ RequiredIP;- IP adresa je vyžadována.
 ExecptionError;Něco je opravdu moc špatně. Nepropadejte panice a napište mi:
 ExceptionAttach;Prosím přiložte i následující informace:
 loading;nahrávám
+DesktopShortcut;Zástupce na ploše
 

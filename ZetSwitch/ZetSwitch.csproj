@@ -46,6 +46,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -120,6 +121,7 @@
     <Compile Include="Src\Network\NetworkManager.cs" />
     <Compile Include="Src\ProfileManager.cs" />
     <Compile Include="Src\ProfileNetworkSettings.cs" />
+    <Compile Include="Src\ShorcutCreator.cs" />
     <Compile Include="Src\Tools\Path.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -216,7 +218,6 @@
     <Content Include="IPAddressControlLib.dll" />
     <Content Include="IPAddressControlLib.txt" />
     <Content Include="icon.ico" />
-    <None Include="Resources\Copy of Icon.ico" />
     <Content Include="LICENSE.txt" />
     <Content Include="Setup\innoSetup.iss" />
     <Content Include="TODO.txt" />
@@ -262,6 +263,17 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

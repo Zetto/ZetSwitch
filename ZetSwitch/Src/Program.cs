@@ -36,9 +36,13 @@ namespace ZetSwitch
 
     static class Program
     {
+
+		private const int ATTACH_PARENT_PROCESS = -1;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+		/// 
         [STAThread]
         static void Main(string[] Args)
         {
@@ -52,18 +56,17 @@ namespace ZetSwitch
 
             if (!Arg.Parse(Args))    //bad arguments
             {
-				NativeMethods.AllocConsole();
+				NativeMethods.AttachConsole(ATTACH_PARENT_PROCESS);
                 Console.Write(Arg.Errors);
 				NativeMethods.FreeConsole();
                 return;
             }
             else if (Arg.Count != 0)  //console
             {
-				NativeMethods.AllocConsole();
+				NativeMethods.AttachConsole(ATTACH_PARENT_PROCESS);
                 try
                 {
 					DataModel model = new DataModel();
-					ProfileManager.GetInstance().Model = model;
 					ProfileManager.GetInstance().Model = model;
                     ProfileManager.GetInstance().LoadSettings();
                 }
@@ -189,10 +192,10 @@ namespace ZetSwitch
 
 	internal static class NativeMethods
     {
-        [DllImport("kernel32.dll")]
-        internal static extern Boolean AllocConsole();
-        [DllImport("kernel32.dll")]
-        internal static extern Boolean FreeConsole();
+		[DllImport("kernel32.dll")]
+		internal static extern bool AttachConsole(int dwProcessId);
+		[DllImport("kernel32.dll")]
+		internal static extern Boolean FreeConsole();
     }
 
 }

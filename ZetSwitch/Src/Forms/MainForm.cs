@@ -171,6 +171,7 @@ namespace ZetSwitch
 			this.changeProfileToolStripMenuItem1.Text = Language.GetText("ProfileChange");
 			this.helpToolStripMenuItem1.Text = Language.GetText("MenuHelp");
 			this.aaboutToolStripMenuItem.Text = Language.GetText("MenuAbout");
+			this.desktopShortcut.Text = Language.GetText("DesktopShortcut");
 			this.toolStripButton1.Text = Language.GetText("Apply");
 			this.toolStripButton2.Text = Language.GetText("New");
 			this.toolStripButton3.Text = Language.GetText("Change");
@@ -246,6 +247,14 @@ namespace ZetSwitch
 		private void Change_Click(object sender, EventArgs e)
 		{
 			ChangeProfile();
+		}
+
+		private void desktopShortcut_Click(object sender, EventArgs e) {
+			if (ListBoxItems.SelectedIndex < 0)
+				return;
+			Profile p = ProfileManager.GetInstance().GetProfile(ListBoxItems.SelectedItem.ToString());
+			ShorcutCreator shortcut = new ShorcutCreator();
+			shortcut.CreateProfileLnk(p);
 		}
 
 		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -464,5 +473,5 @@ namespace ZetSwitch
 
 		#endregion
 
-    }
+	}
 }

@@ -100,6 +100,7 @@
 			// 
 			// CButton
 			// 
+			this.CButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CButton.Location = new System.Drawing.Point(248, 341);
 			this.CButton.Name = "CButton";
 			this.CButton.Size = new System.Drawing.Size(75, 23);
@@ -374,6 +375,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.CButton;
 			this.ClientSize = new System.Drawing.Size(471, 369);
 			this.Controls.Add(this.OkButton);
 			this.Controls.Add(this.groupBox3);
