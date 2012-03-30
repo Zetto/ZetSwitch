@@ -29,47 +29,25 @@ using System.Windows.Forms;
 
 namespace ZetSwitch
 {
-    public partial class WelcomeScreen : Form
-    {
-        public WelcomeScreen()
-        {
+	public partial class WelcomeScreen : Form, IWelcomeView {
+		ConfigurationState state;
+		public WelcomeScreen() {
             InitializeComponent();
 			ResetLanguage();
         }
 
-		private void GetActLanguage()
-		{
-			switch (comboBoxLang.Text)
-			{
-				case "Česky":
-					Properties.Settings.Default.ActLanguage = "cz";
-					break;
-				case "English":
-				default:
-					Properties.Settings.Default.ActLanguage = "en";
-					break;
-			}
+		public bool ShowView() {
+			return ShowDialog() == DialogResult.OK;
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.ShowWelcomeDialog = !checkBoxShowAgain.Checked;
-            if (checkBoxShowAgain.Checked)
-                Properties.Settings.Default.Save();
-			GetActLanguage();
-        }
+		private void btnOk_Click(object sender, EventArgs e) {
+			state.Language = comboBoxLang.Text;
+			state.ShowWelcome = !checkBoxShowAgain.Checked;
+			DialogResult = DialogResult.OK;
+			Close();
+		}
 
-        private void comboBoxLang_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-			GetActLanguage();
-            ResetLanguage();
-        }
-
-        private void ResetLanguage()
-        {
-            Language.SetLang(Properties.Settings.Default.ActLanguage);
-            Language.LoadWords();
-
+        public void ResetLanguage() {
 			this.lblName.Text = Language.GetText("ZetSwitch") + " " + Properties.Resources.Version;
 			this.btnOk.Text = Language.GetText("Ok");
             this.checkBoxShowAgain.Text = Language.GetText("DontShowAgain");
@@ -78,5 +56,24 @@ namespace ZetSwitch
 			this.lblAuthor.Text = Language.GetText("Author");
 			this.Text = Language.GetText("Welcome");
         }
-    }
+
+
+		public void SetState(ConfigurationState state) {
+			this.state = state;
+			checkBoxShowAgain.Checked = !state.ShowWelcome;
+			comboBoxLang.Items.Clear();
+			foreach (string name in state.GetLanguages())
+				comboBoxLang.Items.Add(name);
+			comboBoxLang.Text = state.Language;
+		}
+
+		private void comboBoxLang_SelectedIndexChanged(object sender, EventArgs e) {
+			state.Language = comboBoxLang.Text;
+			if (LanguageChanged != null)
+				LanguageChanged(this, null);
+
+		}
+
+		public event EventHandler LanguageChanged;
+	}
 }

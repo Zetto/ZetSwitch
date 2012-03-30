@@ -35,133 +35,49 @@ using ZetSwitch.Network;
 namespace ZetSwitch
 {
 
-    public partial class MainForm : Form
-    {
-        private DataModel model;
+    public partial class MainForm : Form, IMainView {
+        
+        ProfileManager profiles;
 
-		#region private
+        public MainForm(ProfileManager profiles) {
+            this.profiles = profiles;
 
-		private void ReloadList()
-		{
-			ListBoxItems.Items.Clear();
-			foreach (Profile profile in ProfileManager.GetInstance().Profiles)
-			{
-				ListBoxItems.Items.Add(profile.Name);
-			}
-		}
+            InitializeComponent();
+            ResetLanguage();
 
-		private void DeleteActualProfile()
-		{
-			if (ListBoxItems.SelectedIndex < 0)
+            ReloadList();
+         
+            if (ListBoxItems.Items.Count > 0)
+                ListBoxItems.SetSelected(0, true);
+			ImgCollection.Instance.PathToImages = Application.StartupPath + Properties.Settings.Default.ImagesPath;
+        }
+
+		void onNotifyApplyClick(object sender, EventArgs e) {
+			ToolStripItem item = sender as ToolStripItem;
+			if (item == null || ApplyProfile == null)
 				return;
-			if (MessageBox.Show(Language.GetText("DeleteQuestion") + "'" + ListBoxItems.Items[ListBoxItems.SelectedIndex].ToString() + "'?", Language.GetText("DeleteProfile"), MessageBoxButtons.YesNo) == DialogResult.No)
-				return;
-			ProfileManager.GetInstance().Delete(ListBoxItems.Items[ListBoxItems.SelectedIndex].ToString());
-			ReloadList();
+			ApplyProfile(this, new ProfileEventArgs(item.Text));
 		}
-
-		private void NewProfile()
-		{
-			Profile profile = ProfileManager.GetInstance().GetNewProfile();
-			using (ItemConfig dlg = new ItemConfig(true, profile)) {
-				AddOwnedForm(dlg);
-				if (dlg.ShowDialog() == DialogResult.OK) {
-					ProfileManager.GetInstance().Add(profile);
-					ReloadList();
-					SetSelectByName(profile.Name);
-				}
-			}
-			return;
-		}
-
-		private void ChangeProfile()
-		{
-			if (ListBoxItems.SelectedIndex < 0)
-				return;
-			string Name = ListBoxItems.Items[ListBoxItems.SelectedIndex].ToString();
-			Profile profile = ProfileManager.GetInstance().GetCloneProfile(Name);
-			using (ItemConfig dlg = new ItemConfig(false, profile)) {
-				AddOwnedForm(dlg);
-				if (dlg.ShowDialog() == DialogResult.OK) {
-					ProfileManager.GetInstance().Change(Name, profile);
-					ReloadList();
-					SetSelectByName(profile.Name);
-				}
-			}
-		}
-
-		private void ApplyActualProfile()
-		{
-			if (ListBoxItems.SelectedIndex < 0)
-				return;
-
-			Apply(ListBoxItems.SelectedItem.ToString());
-		}
-
-		private void Apply(string Name)
-		{
-			if (Name.Length != 0)
-			{
-				try
-				{
-					ProfileManager.GetInstance().ApplyProfile(Name);
-					// TODO: aplikace profilu Item.Apply();
-				}
-				catch (Exception E)
-				{
-					MessageBox.Show(E.Message, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-			}
-			MessageBox.Show(Language.GetText("ProfileApplied"), Language.GetText("Succes"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-		}
-
-		private bool ApplyQuestion(string ProfileName)
-		{
-			return MessageBox.Show(Language.GetText("UseProfile") + "'" + ProfileName + "'?", Language.GetText("UseProfile"), MessageBoxButtons.YesNo, 
-									MessageBoxIcon.Question) == DialogResult.Yes ? true : false;
-		}
-
-		private void SetSelectByName(string Name)
-		{
-			int i = ListBoxItems.FindStringExact(Name);
-			if (i < 0)
-			{
-				if (ListBoxItems.SelectedIndex < 0 && ListBoxItems.Items.Count > 0)
-					ListBoxItems.SetSelected(0, true);
-				return;
-			}
-			else
-			{
-				if (!(ListBoxItems.SelectedIndex < 0))
-					ListBoxItems.SetSelected(ListBoxItems.SelectedIndex, false);
-				ListBoxItems.SetSelected(i, true);
-			}
-		}
-
-		private bool CreateMenuList()
-		{
+       
+		private bool CreateMenuList() {
 			contextMenuTray.Items.Clear();
-			contextMenuTray.Items.Add(Language.GetText("ProfileNew"));
+			contextMenuTray.Items.Add(Language.GetText("ProfileNew"),null,New_Click);
 
 			if (ListBoxItems.Items.Count != 0)
 				contextMenuTray.Items.Add("-");
 
-			foreach (string Text in ListBoxItems.Items)
-			{
-				contextMenuTray.Items.Add(Text);
+			foreach (string Text in ListBoxItems.Items) {
+				contextMenuTray.Items.Add(Text,null,onNotifyApplyClick);
 			}
 
 			if (ListBoxItems.Items.Count != 0)
 				contextMenuTray.Items.Add("-");
-			contextMenuTray.Items.Add(Language.GetText("Exit"));
+			contextMenuTray.Items.Add(Language.GetText("Exit"), null, exitToolStripMenuItem1_Click);
 
 			return true;
 		}
 
-		private void ResetLanguage()
-		{
-
+		public void ResetLanguage() {
 			this.fileToolStripMenuItem1.Text = Language.GetText("MenuFile");
 			this.newProfileToolStripMenuItem1.Text = Language.GetText("ProfileNew");
 			this.deleteProfileToolStripMenuItem.Text = Language.GetText("ProfileDelete");
@@ -187,34 +103,58 @@ namespace ZetSwitch
 			return;
 		}
 
-		#endregion
-
-		#region public 
-		
-        public MainForm()
-        {
-			DataModel model = new DataModel();
-			model.LoadData();
-			ProfileManager.GetInstance().Model = model;
-
-            InitializeComponent();
-            ResetLanguage();
-
-            ReloadList();
-         
-            if (ListBoxItems.Items.Count > 0)
-                ListBoxItems.SetSelected(0, true);
-
-			ImgCollection.Instance.PathToImages = Application.StartupPath + Properties.Settings.Default.ImagesPath;
+        public void ReloadList() {
+            ListBoxItems.Items.Clear();
+            foreach (Profile profile in profiles.Profiles) {
+                ListBoxItems.Items.Add(profile.Name);
+            }
         }
 
-		public void GoToTray()
-		{
+        public void SetSelectByName(string Name) {
+            int i = ListBoxItems.FindStringExact(Name);
+            if (i < 0) {
+                if (ListBoxItems.SelectedIndex < 0 && ListBoxItems.Items.Count > 0)
+                    ListBoxItems.SetSelected(0, true);
+                return;
+            }
+            else {
+                if (!(ListBoxItems.SelectedIndex < 0))
+                    ListBoxItems.SetSelected(ListBoxItems.SelectedIndex, false);
+                ListBoxItems.SetSelected(i, true);
+            }
+        }
+
+		public void GoToTray() {
 			this.NotifyIcon.Visible = true;
 			Hide();
 		}
 
-		#endregion
+		public void ShowErrorMessage(string message) {
+			MessageBox.Show(message, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		public void ShowInfoMessage(string message, string caption) {
+			MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		public bool AskQuestion(string message, string caption) {
+			return (MessageBox.Show(message, caption, MessageBoxButtons.YesNo) == DialogResult.Yes);
+		}
+
+		public string GetSelectedProfile() {
+			if (ListBoxItems.SelectedIndex < 0)
+				return null;
+			return ListBoxItems.SelectedItem.ToString();
+		}
+
+		public void closeView() {
+			this.Close();
+		}
+
+		public bool AskToApplyProfile(string profile) {
+			return MessageBox.Show(Language.GetText("UseProfile") + "'" + profile + "'?", Language.GetText("UseProfile"), MessageBoxButtons.YesNo,
+									MessageBoxIcon.Question) == DialogResult.Yes;
+		}
 
 		#region handlers
 
@@ -223,77 +163,81 @@ namespace ZetSwitch
 			ReloadList();
 		}
 
-		private void New_Click(object sender, EventArgs e)
-		{
-			NewProfile();
+		private void New_Click(object sender, EventArgs e) {
+			NewProfileFunc();
 		}
 
-		private void Delete_Click(object sender, EventArgs e)
-		{
+		private void Delete_Click(object sender, EventArgs e) {
 			DeleteActualProfile();
 		}
 
 		//apply
-		private void Apply_Click(object sender, EventArgs e)
-		{
-			if (ListBoxItems.SelectedIndex < 0)
-				return;
-			if (ApplyQuestion(ListBoxItems.SelectedItem.ToString()))
-			{
-				ApplyActualProfile();
+		private void Apply_Click(object sender, EventArgs e) {
+			ApplyProfileFunc();
+		}
+
+		private void Change_Click(object sender, EventArgs e) {
+			ChangeProfileFunc();
+		}
+
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (OpenAbout != null) {
+				OpenAbout(this, null);
 			}
 		}
 
-		private void Change_Click(object sender, EventArgs e)
-		{
-			ChangeProfile();
+		private void DeleteActualProfile() {
+			if (RemoveProfile != null)
+				RemoveProfile(this, null);
+		}
+
+		private void NewProfileFunc() {
+			if (NewProfile != null)
+				NewProfile(this, null);
+			return;
+		}
+
+		private void ChangeProfileFunc() {
+			if (ChangeProfile != null)
+				ChangeProfile(this, null);
+		}
+
+		private void ApplyProfileFunc() {
+			if (ApplyProfile != null)
+				ApplyProfile(this, null);
 		}
 
 		private void desktopShortcut_Click(object sender, EventArgs e) {
-			if (ListBoxItems.SelectedIndex < 0)
-				return;
-			Profile p = ProfileManager.GetInstance().GetProfile(ListBoxItems.SelectedItem.ToString());
-			ShorcutCreator shortcut = new ShorcutCreator();
-			shortcut.CreateProfileLnk(p);
+			if (CreateShortcut != null)
+				CreateShortcut(this, null);
 		}
 
-		private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			ProfileManager.GetInstance().SaveSettings();
-			ProfileManager.GetInstance().Dispose();
-			Application.Exit();
+		private void ExitFunc() {
+			if (Exit != null)
+				Exit(this, null);
+			
 		}
 
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			this.NotifyIcon.Dispose();
-			Properties.Settings.Default.Save();
+		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+			this.NotifyIcon.Dispose(); //todo: dat nekam do dza
+			ExitFunc();
 		}
 
-		private void ListBoxItems_DoubleClick(object sender, EventArgs e)
-		{
-			if (ApplyQuestion(ListBoxItems.SelectedItem.ToString()))
-			{
-				ApplyActualProfile();
-			}
+		private void ListBoxItems_DoubleClick(object sender, EventArgs e) {
+			ApplyProfileFunc();
 		}
 
-		private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
-		{
+		private void exitToolStripMenuItem1_Click(object sender, EventArgs e) {
 			Close();
 		}
 
 
-		private void ListBoxItems_MouseClick(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Right)
-			{
+		private void ListBoxItems_MouseClick(object sender, MouseEventArgs e) {
+			if (e.Button == MouseButtons.Right) {
 				Point Loc = ListBoxItems.PointToScreen(new Point(e.X, e.Y));
-				for (int i = 0; i < ListBoxItems.Items.Count; i++)
-				{
+				for (int i = 0; i < ListBoxItems.Items.Count; i++) {
 					Rectangle Rec = ListBoxItems.GetItemRectangle(i);
-					if (Rec.X <= e.X && (Rec.X + Rec.Width) >= e.X && Rec.Y <= e.Y && (Rec.Y + Rec.Height) >= e.Y)
-					{
+					if (Rec.X <= e.X && (Rec.X + Rec.Width) >= e.X && Rec.Y <= e.Y && (Rec.Y + Rec.Height) >= e.Y) {
 						ItemContextMenu.Items[0].Enabled = true;
 						ItemContextMenu.Items[2].Enabled = true;
 						ItemContextMenu.Items[3].Enabled = true;
@@ -309,41 +253,22 @@ namespace ZetSwitch
 				ItemContextMenu.Items[4].Enabled = false;
 				ItemContextMenu.Show(Loc);
 			}
-
 			return;
 		}
 
-		private void renameProfileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
 
+		private void settingsToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (OpenSettings != null)
+				OpenSettings(this, null);
 		}
-
-		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (AboutBox About = new AboutBox()) {
-				About.ShowDialog();
-			}
-
-		}
-
-		private void nastaveniToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			using (Setting Dlg = new Setting()) {
-				if (Dlg.ShowDialog() == DialogResult.OK) {
-					ResetLanguage();
-				}
-			}
-		}
-
-		void NotifyIcon_DoubleClick(object sender, System.EventArgs e)
-		{
+		
+		void NotifyIcon_DoubleClick(object sender, System.EventArgs e) {
 			Show();
 			WindowState = FormWindowState.Normal;
 			this.NotifyIcon.Visible = false;
 		}
 
-		void NotifyIcon_Click(object sender, MouseEventArgs e)
-		{
+		void NotifyIcon_Click(object sender, MouseEventArgs e) {
 			if (e.Button == MouseButtons.Right)
 			{
 				if (CreateMenuList())
@@ -353,40 +278,18 @@ namespace ZetSwitch
 			}
 		}
 
-		void MainForm_Resize(object sender, System.EventArgs e)
-		{
+		void MainForm_Resize(object sender, System.EventArgs e) {
 			if (FormWindowState.Minimized == WindowState)
 			{
 				GoToTray();
 			}
 		}
-
-		void contextMenuTray_ItemClicked(object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
-		{
-			contextMenuTray.Hide();
-
-			if (e.ClickedItem.Text == "Nový Profil" || e.ClickedItem.Text == "New Profile")
-			{
-				New_Click(null, null);
-			}
-			else if (e.ClickedItem.Text == "Konec" || e.ClickedItem.Text == "Exit")
-			{
-				Close();
-			}
-			else
-				Apply(e.ClickedItem.Text);
-
-
-		}
-
-		void contextMenuTray_LostFocus(object sender, System.EventArgs e)
-		{
+		
+		void contextMenuTray_LostFocus(object sender, System.EventArgs e) {
 			contextMenuTray.Hide();
 		}
 
-		private void ListBoxItems_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
-		{
-
+		private void ListBoxItems_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e) {
 			Rectangle rc = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height - 5);
 
 			if (e.Index < 0)
@@ -394,7 +297,7 @@ namespace ZetSwitch
 
 			ListBox List = (ListBox)sender;
 			string str = (string)List.Items[e.Index];
-			Profile profile = ProfileManager.GetInstance().GetProfile(str);
+			Profile profile = profiles.GetProfile(str);
 			NetworkInterfaceSettings settings;
 
 			StringFormat sf = null;
@@ -473,5 +376,14 @@ namespace ZetSwitch
 
 		#endregion
 
+
+		public event EventHandler<ProfileEventArgs> ApplyProfile;
+		public event EventHandler RemoveProfile;
+		public event EventHandler ChangeProfile;
+		public event EventHandler NewProfile;
+		public event EventHandler Exit;
+		public event EventHandler OpenSettings;
+		public event EventHandler OpenAbout;
+		public event EventHandler CreateShortcut;
 	}
 }

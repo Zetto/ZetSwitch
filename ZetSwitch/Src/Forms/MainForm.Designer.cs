@@ -176,7 +176,7 @@ namespace ZetSwitch
 			this.nastaveniToolStripMenuItem.Name = "nastaveniToolStripMenuItem";
 			this.nastaveniToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.nastaveniToolStripMenuItem.Text = "Settings";
-			this.nastaveniToolStripMenuItem.Click += new System.EventHandler(this.nastaveniToolStripMenuItem_Click);
+			this.nastaveniToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem1
 			// 
@@ -358,7 +358,6 @@ namespace ZetSwitch
 			// 
 			this.contextMenuTray.Name = "contextMenuTray";
 			this.contextMenuTray.Size = new System.Drawing.Size(61, 4);
-			this.contextMenuTray.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuTray_ItemClicked);
 			// 
 			// MainForm
 			// 
@@ -375,7 +374,6 @@ namespace ZetSwitch
 			this.MinimumSize = new System.Drawing.Size(345, 195);
 			this.Name = "MainForm";
 			this.Text = "Zet Switch";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
 			this.SizeChanged += new System.EventHandler(this.MainForm_SizeChange);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);

@@ -62,9 +62,6 @@ namespace ZetSwitch.Forms
 
 		private void ResetLanguage()
 		{
-			Language.SetLang(Properties.Settings.Default.ActLanguage);
-			Language.LoadWords();
-
 			this.lblMessage.Text = Language.GetText("ExecptionError");
 			this.lblAttach.Text = Language.GetText("ExceptionAttach");
 			this.Text = Language.GetText("Welcome");

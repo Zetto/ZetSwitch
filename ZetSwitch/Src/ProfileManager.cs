@@ -31,29 +31,17 @@ using System.Security;
 
 namespace ZetSwitch
 {
-	public class ProfileManager : IDisposable 
+	public class ProfileManager : IProfileManager 
 	{
 		List<Profile> profiles = new List<Profile>();
 		DataModel model;
-		static ProfileManager instance = new ProfileManager();
 
-		bool disposed = false;
-
-		#region private
-
-		private ProfileManager()
+		public ProfileManager()
 		{
 
 		}
 
-		~ProfileManager() {
-			Dispose(false);
-		}
-
-
-		#endregion
-
-		#region public
+        #region public
 
 		public List<Profile> Profiles
 		{
@@ -67,11 +55,6 @@ namespace ZetSwitch
 		}
 
 		
-		static public ProfileManager GetInstance()
-		{
-			return instance;
-		}
-
 		public void LoadSettings()
 		{
 			DataStore data = new DataStore();
@@ -90,66 +73,47 @@ namespace ZetSwitch
 			factory.GetLoader().SaveProfiles(profiles);
 		}
 
-		public bool ApplyProfile(string name)
-		{
+		public bool Apply(string name) {
 			Profile profile = GetProfile(name);
 			if (profile == null)
-			{
-				// todo: EXCEPTION
 				return false;
-			}
 			model.ApplyProfile(profile);
 			return true;
 		}
 
-		public Profile GetProfile(string name)
-		{
+		public Profile GetProfile(string name) {
 			return profiles.Find(o => o.Name == name);
 		}
 
-		public Profile GetNewProfile()
-		{
+		public Profile New() {
 			Profile profile = new Profile();
 			profile.Name = GetNewProfileName();
 			profile.Browsers = model.GetBrowsers();
 			return profile;
 		}
 
-		public Profile GetCloneProfile(string name)
-		{
+		public Profile Clone(string name) {
 			Profile old = null;
 			if ((old= profiles.Find(o => o.Name == name)) == null)
-				return GetNewProfile();
+				return New();
 			return old.cloneProfile();
 		}
 
-		public void Add(Profile profile)
-		{
+		public void Add(Profile profile) {
 			if (profiles.Contains(profile))
-			{
-				// todo: create exception
-				throw new Exception("Profile already exists");
-			}
+				return;
 			profiles.Add(profile);
 		}
 
-		public void Delete(Profile profile)
-		{
-			profiles.Remove(profile);
-		}
-
-		public void Delete(string name)
-		{
+		public void Delete(string name) {
 			Profile profile = null;
 			if ((profile = profiles.Find(o => o.Name == name)) != null)
 				profiles.Remove(profile);
 		}
 
-		public void Change(string oldName, Profile profile)
-		{
+		public void Change(string oldName, Profile profile) {
 			Profile old = profiles.Find(item => item.Name == oldName);
-			if (old != null)
-			{
+			if (old != null) {
 				int index = profiles.IndexOf(old);
 				profiles.Remove(old);
 				profiles.Insert(index, profile);
@@ -158,35 +122,17 @@ namespace ZetSwitch
 				profiles.Add(profile);
 		}
 
-		public string GetNewProfileName()
-		{
+		public string GetNewProfileName() {
 			string newNameBase = Language.GetText("Profile");
 			string newName = newNameBase;
 			int offset = 1;
-			while (profiles.Find(o => o.Name == newName) != null)
-			{
+			while (profiles.Find(o => o.Name == newName) != null) {
 				newName = newNameBase + " " + offset.ToString();
 				offset++;
 			}
 			return newName;
 		}
-
 		#endregion
-
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		private void Dispose(bool disposing) {
-			if (!disposed) {
-				if (disposing) {
-					model.Dispose();
-					instance = null;
-				}
-			}
-			disposed = true;
-		}
 
 	}
 }

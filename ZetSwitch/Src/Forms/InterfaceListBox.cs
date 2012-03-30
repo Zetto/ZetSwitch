@@ -39,12 +39,12 @@ namespace ZetSwitch {
 		protected override void OnPaint(PaintEventArgs e) {
 			Font titleFont = new Font("Ariel", 10);
 			Brush solid = new SolidBrush(Color.Black);
-			string label = Language.GetText("loading");
-			Size textSize = TextRenderer.MeasureText(label, titleFont);
-			for (int i = 0; i < dotsCount; i++) {
-				label += ".";
-			}
 			try {
+				string label = Language.GetText("loading");
+				Size textSize = TextRenderer.MeasureText(label, titleFont);
+				for (int i = 0; i < dotsCount; i++) {
+					label += ".";
+				}
 				Point p = new Point((Width - textSize.Width) / 2, (Height - textSize.Height) / 2);
 				e.Graphics.DrawString(label, titleFont, solid, p);
 			} finally {

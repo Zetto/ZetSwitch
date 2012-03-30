@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Src\ClientServiceLocator.cs" />
     <Compile Include="Src\Configuration\DataStore.cs" />
     <Compile Include="Src\Configuration\ILoader.cs" />
     <Compile Include="Src\Configuration\ILoaderFactory.cs" />
@@ -80,6 +81,12 @@
     <Compile Include="Src\Configuration\LoaderFactoryXML.cs" />
     <Compile Include="Src\Configuration\LoaderSerializationV0_3.cs" />
     <Compile Include="Src\Configuration\LoaderXMLV_03.cs" />
+    <Compile Include="Src\Controller\AboutController.cs" />
+    <Compile Include="Src\Controller\IAboutController.cs" />
+    <Compile Include="Src\Controller\WelcomeController.cs" />
+    <Compile Include="Src\Controller\ISettingsController.cs" />
+    <Compile Include="Src\Controller\MainController.cs" />
+    <Compile Include="Src\Controller\SettingsController.cs" />
     <Compile Include="Src\Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +104,12 @@
     <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Src\IProfileManager.cs" />
+    <Compile Include="Src\IUserConfiguration.cs" />
+    <Compile Include="Src\Model\ConfigurationState.cs" />
+    <Compile Include="Src\UserConfiguration.cs" />
+    <Compile Include="Src\View\IAboutView.cs" />
+    <Compile Include="Src\View\IMainView.cs" />
     <Compile Include="Src\Forms\InterfaceListBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -125,6 +138,10 @@
     <Compile Include="Src\Tools\Path.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Src\View\ISettingsView.cs" />
+    <Compile Include="Src\View\IViewFactory.cs" />
+    <Compile Include="Src\View\IWelcomeView.cs" />
+    <Compile Include="Src\View\ViewFactory.cs" />
     <EmbeddedResource Include="Src\Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -150,8 +167,8 @@
       <LastGenOutput>Resources.cs-cz1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\Setting.resx">
-      <DependentUpon>Setting.cs</DependentUpon>
+    <EmbeddedResource Include="Src\Forms\SettingForm.resx">
+      <DependentUpon>SettingForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Src\Forms\WelcomeScreen.resx">
@@ -183,11 +200,11 @@
     <Compile Include="Src\Forms\SettingPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Src\Forms\Setting.cs">
+    <Compile Include="Src\Forms\SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\Setting.Designer.cs">
-      <DependentUpon>Setting.cs</DependentUpon>
+    <Compile Include="Src\Forms\SettingForm.Designer.cs">
+      <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Src\Profile.cs" />
     <Compile Include="Src\Settings.cs" />

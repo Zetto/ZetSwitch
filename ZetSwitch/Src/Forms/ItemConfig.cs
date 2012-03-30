@@ -36,6 +36,7 @@ namespace ZetSwitch
 
 		#region variables
 
+        ProfileManager profiles;
 		Profile profile;
 		bool isNew;
 		int oldSelIndex = -1;
@@ -44,12 +45,39 @@ namespace ZetSwitch
 
 		#endregion
 
+        public ItemConfig(bool newProfile, Profile profile, ProfileManager profiles) {
+            this.profile = profile;
+            this.profiles = profiles;
+            isNew = newProfile;
+            InitializeComponent();
+            oldName = profile.Name;
+            tabPageIP.DataChanged += new EventHandler(OnDataChange);
+
+            panels.Add(tabPageIP);
+            /*	panels.Add(tabPageProxy);
+                panels.Add(tabPageMAC);*/
+
+            foreach (SettingPanel panel in panels)
+            {
+                panel.SetControls();
+                panel.ActualProfile = profile;
+            }
+
+            LoadData();
+
+            if (profiles.Model.IsIFLoaded())
+                PopulateListBox();
+            else
+                profiles.Model.DataLoaded += new EventHandler(model_DataLoaded);
+            ResetLanguage();
+        }
+
 		#region private
 
 		private void PopulateListBox() {
 			ListBoxInterfaces.IsLoaded = true;
 			List<string> names = profile.GetNetworkInterfaceNames();
-			List<NetworkInterfaceSettings> ifs = ProfileManager.GetInstance().Model.GetNetworkInterfaceSettings();
+            List<NetworkInterfaceSettings> ifs = profiles.Model.GetNetworkInterfaceSettings();
 			foreach (NetworkInterfaceSettings setting in ifs) {
 				if (!names.Contains(setting.Name)) {
 					names.Add(setting.Name);
@@ -117,7 +145,7 @@ namespace ZetSwitch
 			StringBuilder StrMessage = new StringBuilder();
 			if (isNew || oldName != profile.Name)
 			{
-				if (ProfileManager.GetInstance().GetProfile(TextBoxName.Text) != null)
+                if (profiles.GetProfile(TextBoxName.Text) != null)
 				{
 					StrMessage.Append("Profil '" + TextBoxName.Text + "' již existuje.\n");
 				}
@@ -243,35 +271,8 @@ namespace ZetSwitch
 
 		#region public
 
-		public ItemConfig(bool newProfile, Profile profile)
-        {
-			this.profile = profile;
-			isNew = newProfile;
-			InitializeComponent();
-			oldName = profile.Name;
-			tabPageIP.DataChanged += new EventHandler(OnDataChange);
-			
-			panels.Add(tabPageIP);
-		/*	panels.Add(tabPageProxy);
-			panels.Add(tabPageMAC);*/
-
-			foreach (SettingPanel panel in panels)
-			{
-				panel.SetControls();
-				panel.ActualProfile = profile;
-			}
-
-			LoadData();
-
-			if (ProfileManager.GetInstance().Model.IsIFLoaded()) 
-				PopulateListBox();
-			else
-				ProfileManager.GetInstance().Model.DataLoaded += new EventHandler(model_DataLoaded);
-			ResetLanguage();
-		}
-
 		private void model_DataLoaded(object o, EventArgs e) {
-			ProfileManager.GetInstance().Model.DataLoaded -= new EventHandler(model_DataLoaded);
+			profiles.Model.DataLoaded -= new EventHandler(model_DataLoaded);
 			PopulateListBox();
 		}
 

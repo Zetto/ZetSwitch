@@ -28,93 +28,132 @@ using System.Windows.Forms;
 
 namespace ZetSwitch
 {
+	public class LanguageDescription {
+		string name = "";
+		string shortName = "";
+
+		public string Name {
+			get { return name; }
+		}
+
+		public string ShortName {
+			get { return shortName; }
+		}
+		
+		public LanguageDescription() { }
+		public LanguageDescription(string name, string shortName) {
+			this.name = name;
+			this.shortName = shortName;
+		}
+	}
+	
     class LanguagesStore
     {
+		List<LanguageDescription> languages;
+		static LanguageDescription defaultLanguage = new LanguageDescription(@"English", @"en");
+		bool listLoaded = false;
 
-        public bool LoadLanguage(string LangName, Hashtable words)
-        {
-			using (StreamReader Read = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + LangName + ".lng")) {
-				words.Clear();
+		public LanguagesStore() {
+			languages = new List<LanguageDescription>();
+			languages.Add(defaultLanguage);
+		}
+
+		public Dictionary<string, string> LoadDefaultLanguage() {
+			Dictionary<string, string> words;
+			using (StringReader reader = new StringReader(Properties.Resources.DefaultLang)) {
+				words = LoadData(reader);
+			}
+			return words;
+		}
+
+		public Dictionary<string, string> LoadLanguage(string name) {
+			Dictionary<string, string> words;
+			using (StreamReader reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + name + ".lng")) {
+				words = LoadData(reader);
+			}
+			return words;
+		}
+
+		private Dictionary<string, string> LoadData(TextReader read) {
+			Dictionary<string, string> words = new Dictionary<string, string>();
+            string line;
+			string[] buf = new string[2];
+			while ((line = read.ReadLine()) != null) {
+				buf = line.Split(';');
+				if (buf == null || buf.Length != 2 || buf[0] == null || buf[1] == null)
+					continue;
+				words.Add(buf[0], buf[1]);
+			}
+            return words;
+        }
+
+		public List<LanguageDescription> GetAvailableLanguages() {
+			if (!listLoaded)
+				ReloadLanguageList();
+			return languages;
+		}
+
+		private void ReloadLanguageList() {
+			StreamReader reader = null;
+			try {
+				reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\languages.info");
 				string line;
 				string[] buf = new string[2];
-				while ((line = Read.ReadLine()) != null) {
+				while ((line = reader.ReadLine()) != null) {
 					buf = line.Split(';');
-					if (buf == null || buf[0] == null || buf[1] == null)
+					if (buf == null || buf.Length != 2 || buf[0] == null || buf[1] == null)
 						continue;
-					words.Add(buf[0], buf[1]);
+					if (languages.Find(i=>i.Name==buf[0]) != null)
+						continue;
+					languages.Add(new LanguageDescription(buf[0], buf[1]));
 				}
 			}
+			catch(Exception e) {
+				Program.UseTrace(e);
+			}
+			finally {
+				if (reader != null)
+					reader.Dispose();
+			}
+			listLoaded = true;
+		}
 
-            return true;
-        }
-
-        public bool LoadLanguage(StringReader read, Hashtable words)
-        {
-            string line;
-            words.Clear();
-            string[] buf = new string[2];
-            while ((line = read.ReadLine()) != null)
-            {
-                buf = line.Split(';');
-                if (buf == null || buf.Length!=2 || buf[0] == null || buf[1] == null)
-                    continue;
-                words.Add(buf[0], buf[1]);
-            }
-
-            return true;
-        }
+		
     }
 
     static class Language
     {
-        static string _LanguageName;
-        static Hashtable _Words;
-        static Hashtable _Default;
+		static Dictionary<string, string> actualLang;
+		static Dictionary<string, string> defaultLang;
        
-        static Language()
-        {
-            _Words = new Hashtable();
-            _Default = new Hashtable();
+        static Language() {
+			actualLang = new Dictionary<string, string>();
+			defaultLang = new Dictionary<string, string>();
         }
 
-        static public string GetText(string ID)
-        {
-            string Text = (string)_Words[ID];
-            if (Text == null || Text.Length == 0)
-            {
-                Text = (string) _Default[ID];
-                if (Text == null)
-                    return "";
-                return Text;
-            }
-
+        static public string GetText(string ID) {
+			string Text = actualLang.ContainsKey(ID) ? actualLang[ID] : null ;
+            if (Text == null || Text.Length == 0) 
+                return defaultLang.ContainsKey(ID) ? defaultLang[ID] : "";
             return Text;
         }
 
-        static public void SetLang(string Name)
-        {
-            _LanguageName = Name;
-        }
-
-        static public bool LoadWords()
-        {
-            LanguagesStore store = new LanguagesStore();
-			using (StringReader reader = new StringReader(Properties.Resources.DefaultLang)) {
-				store.LoadLanguage(reader, _Default);
+		static public void LoadDefault(LanguagesStore store) {
+			try {
+				defaultLang = store.LoadDefaultLanguage();
+			} catch (Exception e) {
+				Program.UseTrace(e);
 			}
+		}
 
-            if (_LanguageName.Length != 0)
-            {
-				try
-				{
-					store.LoadLanguage(_LanguageName, _Words);
-				}
-				catch (Exception e)
-				{
-					Program.UseTrace(e);
-				}
-            }
-            return false;
+        static public bool LoadWords(string name, LanguagesStore store) {
+			try {
+				actualLang = store.LoadLanguage(name);
+			}
+			catch (Exception e) {
+				Program.UseTrace(e);
+			}
+            return true;
         }
     }
 }
