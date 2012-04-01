@@ -21,7 +21,7 @@
 
 using System;
 namespace ZetSwitch {
-	interface IUserConfiguration {
+	public interface IUserConfiguration {
 		ConfigurationState LoadConfiguration();
 		void SaveConfigurate(ConfigurationState state);
 	}

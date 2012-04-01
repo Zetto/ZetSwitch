@@ -26,7 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace ZetSwitch {
-	class ViewFactory : IViewFactory {
+	public class ViewFactory : IViewFactory {
 		public ISettingsView CreateSettingsView() {
 			return new SettingForm();
 		}

@@ -23,37 +23,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using NUnit.Framework;
+using Rhino.Mocks;
+using Is = Rhino.Mocks.Constraints.Is;
 using ZetSwitch;
+using Rhino.Mocks.Interfaces;
 
-namespace ZetSwitch {
-	public class ClientServiceLocator {
-		private static Dictionary<Type, object> services = new Dictionary<Type,object>();
+namespace Tests {
+	[TestFixture]
+	class AboutControllerTests {
+		MockRepository mocks;
+		IViewFactory factory;
+		IAboutView view;
 
-		static private object GetService(Type type) {
-			if (!services.ContainsKey(type))
-				throw new System.ApplicationException(string.Format("{0} is not set",type.ToString()));
-			return services[type];
+		[SetUp]
+		public void Init() {
+			mocks = new MockRepository();
+			factory = mocks.Stub<IViewFactory>();
+			view = mocks.DynamicMock<IAboutView>();
 		}
 
-		static public bool Register<T>(T service) {
-			if (service == null)
-				throw new ArgumentNullException("ClientServiceLocator::Register");
-
-			if (services.ContainsKey(typeof(T))) {
-				services.Remove(typeof(T));
-//				return false;
-			}
-			services.Add(typeof(T),service);
-			return true;
+		[TearDown]
+		public void TearDown() {
+			mocks.VerifyAll();
 		}
 
-		static public T GetService<T>() {
-			return (T)GetService(typeof(T));
-		}
+		[Test]
+		public void ShouldShowViewAndAttachEmailClickedEvent() {
+			ConfigurationState state = new ConfigurationState();
+			state.ShowWelcome = false;
+			factory.Stub(x => x.CreateAboutView()).Return(view);
+			view.Stub(x => x.ShowView()).Repeat.Once();
+			view.EmailClicked += null;
+			LastCall.Constraints(Is.NotNull());
+			mocks.ReplayAll();
 
-		static public DialogResult ShowMessageBox(string message, string caption, MessageBoxButtons buttons) {
-			return MessageBox.Show(message, caption, buttons);
+			AboutController controller = new AboutController(factory);
+			controller.Show();
 		}
 	}
 }

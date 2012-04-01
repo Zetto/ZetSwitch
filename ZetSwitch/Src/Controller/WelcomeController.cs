@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 namespace ZetSwitch {
-	class WelcomeController {
+	public class WelcomeController {
 		IViewFactory factory;
 		public WelcomeController(IViewFactory factory) {
 			this.factory = factory;
@@ -37,7 +37,6 @@ namespace ZetSwitch {
 			if (!state.ShowWelcome)
 				return;
 			using (IWelcomeView view = factory.CreateWelcomeView()) {
-				
 				view.LanguageChanged += new EventHandler( (o,e) => {
 					config.SaveConfigurate(state); 
 					view.ResetLanguage();

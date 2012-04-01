@@ -54,17 +54,14 @@ namespace ZetSwitch
 			get { return model; }
 		}
 
-		
-		public void LoadSettings()
-		{
+		public void LoadSettings() {
 			DataStore data = new DataStore();
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
 			factory.InitString(".\\Data\\profiles.xml");
 			profiles = factory.GetLoader().LoadProfiles();
 		}
 
-		public void SaveSettings()
-		{
+		public void SaveSettings() {
 			foreach (Profile profile in profiles)
 				profile.PrepareSave();
 			DataStore data = new DataStore();

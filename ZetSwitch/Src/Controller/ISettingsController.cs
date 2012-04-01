@@ -21,7 +21,7 @@
 
 using System;
 namespace ZetSwitch {
-	interface ISettingsController {
+	public interface ISettingsController {
 		bool Show();
 	}
 }

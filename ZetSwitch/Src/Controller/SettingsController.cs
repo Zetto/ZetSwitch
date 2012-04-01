@@ -26,7 +26,7 @@ using System.Text;
 
 namespace ZetSwitch {
 	
-class SettingsController : ISettingsController {
+public class SettingsController : ISettingsController {
 		IViewFactory factory;
 		public SettingsController(IViewFactory factory) {
 			this.factory = factory;

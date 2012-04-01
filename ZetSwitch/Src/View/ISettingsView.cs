@@ -26,7 +26,7 @@ using System.Text;
 using ZetSwitch;
 
 namespace ZetSwitch {
-	interface ISettingsView : IDisposable {
+	public interface ISettingsView : IDisposable {
 		void ResetLanguage();
 		void SetState(ConfigurationState state);
 		bool ShowView();

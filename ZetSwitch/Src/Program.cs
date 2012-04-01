@@ -95,30 +95,30 @@ namespace ZetSwitch
             welcome.TryShow();
 
             MainForm frm = new MainForm(manager);
-            try
-            {
-                MainController controller = new MainController(frm, manager);
-                if (arg.Minimalize) {
-                    frm.GoToTray();
-                    Application.Run();
-                }
-                else
-                    Application.Run(frm);
-                manager.SaveSettings();
-            }
-            catch (Exception e) {
-                using (ExceptionForm form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
-                    form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                    form.StartPosition = FormStartPosition.CenterScreen;
-                    form.ShowDialog();
-                }
-                UseTrace(e);
-            }
-            finally {
-                frm.Dispose();
-                model.Dispose();
-            }
-			Properties.Settings.Default.Save();
+			try {
+				MainController controller = new MainController(frm, manager);
+				if (arg.Minimalize) {
+					frm.GoToTray();
+					Application.Run();
+				}
+				else
+					Application.Run(frm);
+				manager.SaveSettings();
+			}
+			catch (Exception e) {
+				using (ExceptionForm form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
+					form.FormBorderStyle = FormBorderStyle.FixedDialog;
+					form.StartPosition = FormStartPosition.CenterScreen;
+					form.ShowDialog();
+				}
+				UseTrace(e);
+			}
+			finally {
+				model.Dispose();
+				frm.Dispose();
+				Properties.Settings.Default.Save();
+			}
+            
         }
 
         /// <summary>

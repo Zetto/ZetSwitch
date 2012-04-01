@@ -84,7 +84,7 @@ namespace ZetSwitch {
 			if (name == null)
 				return;
 			Profile profile = manager.Clone(name);
-            using (ItemConfig dlg = new ItemConfig(false, profile, (ProfileManager)manager))
+            using (ProfileForm dlg = new ProfileForm(false, profile, (ProfileManager)manager))
             {
 				if (dlg.ShowDialog() == DialogResult.OK) {
 					manager.Change(name, profile);
@@ -96,7 +96,7 @@ namespace ZetSwitch {
 
 		private void OnNewProfile(object sender, EventArgs e) {
 			Profile profile = manager.New();
-            using (ItemConfig dlg = new ItemConfig(true, profile, (ProfileManager)manager)) {
+            using (ProfileForm dlg = new ProfileForm(true, profile, (ProfileManager)manager)) {
 				if (dlg.ShowDialog() == DialogResult.OK) {
 					manager.Add(profile);
 					view.ReloadList();

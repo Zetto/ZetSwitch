@@ -69,21 +69,28 @@ namespace ZetSwitch.Network
 					try {
 						NetworkInterfaceSettings If = new NetworkInterfaceSettings(new AdapterDataHelper(ObjMo));
 						connections.Add(If);
-					} catch (Exception ex) {
+					}
+					catch (Exception ex) {
 						Program.UseTrace(ex);
 					}
 				}
-			} catch (NullReferenceException ex) {
+			}
+			catch (NullReferenceException ex) {
 				Program.UseTrace(ex);
 				Trace.WriteLine(ex.Source);
 				Trace.WriteLine(ex.Data);
 				throw new NullReferenceException("error", ex);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				Program.UseTrace(ex);
+			}
+			finally {
+				waitingEvent.Set();
 			}
 		}
 
 		private void loader_RunWorkerCompleted(object o, RunWorkerCompletedEventArgs e) {
+			waitingEvent.Set();
 			if (e.Cancelled)
 				return;
 			loaded = true;

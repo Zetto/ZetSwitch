@@ -57,8 +57,7 @@ namespace ZetSwitch
 
 		public event EventHandler DataLoaded;
 
-		public bool LoadData()
-		{
+		public bool LoadData() {
 			interfaceManager.StartLoad();
 			foreach (KeyValuePair<BROWSERS, Browser> pair in browsers)
 				pair.Value.LoadData();

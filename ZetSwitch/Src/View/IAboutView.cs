@@ -26,7 +26,7 @@ using System.Text;
 using ZetSwitch;
 
 namespace ZetSwitch {
-	interface IAboutView : IDisposable {
+	public interface IAboutView : IDisposable {
 		void ShowView();
 
 		event EventHandler EmailClicked;
