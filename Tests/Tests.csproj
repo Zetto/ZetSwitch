@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutControllerTests.cs" />
+    <Compile Include="EventHelper.cs" />
+    <Compile Include="MainControllerTests.cs" />
     <Compile Include="SettingsControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WelcomeControllerTests.cs" />
@@ -55,6 +57,10 @@
       <Project>{335C21C4-AE82-41D9-B258-6E1D3FC017A1}</Project>
       <Name>ZetSwitch</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\Rhino.Mocks.dll" />
+    <Content Include="lib\Rhino.Mocks.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

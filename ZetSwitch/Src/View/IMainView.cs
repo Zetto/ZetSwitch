@@ -30,7 +30,7 @@ namespace ZetSwitch {
 		}
 	}
 
-	interface IMainView {
+	public interface IMainView {
 		event EventHandler<ProfileEventArgs> ApplyProfile;
 		event EventHandler RemoveProfile;
 		event EventHandler ChangeProfile;

@@ -21,7 +21,7 @@
 
 using System;
 namespace ZetSwitch {
-	interface IAboutController {
+	public interface IAboutController {
 		void Show();
 	}
 }

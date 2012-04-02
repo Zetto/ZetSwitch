@@ -1,6 +1,6 @@
 ﻿using System;
 namespace ZetSwitch {
-	interface IProfileManager {
+	public interface IProfileManager {
 		Profile New();
 		Profile Clone(string name);
 		Profile GetProfile(string name);

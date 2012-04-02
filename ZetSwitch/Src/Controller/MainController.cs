@@ -26,7 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace ZetSwitch {
-	class MainController {
+	public class MainController {
 		IMainView view;
 		IProfileManager manager;
 
@@ -49,7 +49,7 @@ namespace ZetSwitch {
 			if (profile == null)
 				return;
 			Profile p = manager.GetProfile(profile);
-			ShorcutCreator shortcut = new ShorcutCreator();
+			IShortcutCreator shortcut = ClientServiceLocator.GetService<IShortcutCreator>();
 			shortcut.CreateProfileLnk(p);
 		}
 

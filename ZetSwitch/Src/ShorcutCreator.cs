@@ -6,7 +6,11 @@ using IWshRuntimeLibrary;
 using System.IO;
 
 namespace ZetSwitch {
-	class ShorcutCreator {
+	public interface IShortcutCreator {
+		void CreateProfileLnk(Profile profile);
+	}
+
+	class ShorcutCreator : IShortcutCreator {
 		public void CreateProfileLnk(Profile profile) {
 			WshShellClass wshShell = new WshShellClass();
 			IWshRuntimeLibrary.IWshShortcut shortcut;

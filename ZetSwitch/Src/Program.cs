@@ -153,6 +153,7 @@ namespace ZetSwitch
 			ClientServiceLocator.Register<IUserConfiguration>(new UserConfiguration());
 			ClientServiceLocator.Register<ISettingsController>(new SettingsController(viewFactory));
 			ClientServiceLocator.Register<IAboutController>(new AboutController(viewFactory));
+			ClientServiceLocator.Register<IShortcutCreator>(new ShorcutCreator());
 		}
 
 		#region TOOLS
