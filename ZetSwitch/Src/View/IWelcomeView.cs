@@ -20,14 +20,11 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ZetSwitch {
 	public interface IWelcomeView : IDisposable {
 		void ResetLanguage();
-		void SetState(ConfigurationState state);
+		void SetState(ConfigurationState configurationState);
 		bool ShowView();
 
 		event EventHandler LanguageChanged;

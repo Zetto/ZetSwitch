@@ -51,7 +51,7 @@
 			this.btnOk.TabIndex = 12;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.OkClick);
 			// 
 			// checkBoxShowAgain
 			// 
@@ -74,7 +74,7 @@
 			this.comboBoxLang.Size = new System.Drawing.Size(98, 21);
 			this.comboBoxLang.TabIndex = 33;
 			this.comboBoxLang.Text = "English";
-			this.comboBoxLang.SelectedIndexChanged += new System.EventHandler(this.comboBoxLang_SelectedIndexChanged);
+			this.comboBoxLang.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLangSelectedIndexChanged);
 			// 
 			// lblLanguage
 			// 

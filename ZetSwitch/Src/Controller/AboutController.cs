@@ -20,20 +20,16 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ZetSwitch {
 
 	public class AboutController : IAboutController {
-		IViewFactory factory;
+		readonly IViewFactory factory;
 		public AboutController(IViewFactory factory) {
 			this.factory = factory;
 		}
 
 		public void Show() {
-			using (IAboutView view = factory.CreateAboutView()) {
+			using (var view = factory.CreateAboutView()) {
 				view.EmailClicked += view_EmailClicked;
 				view.ShowView();
 			}
@@ -43,7 +39,7 @@ namespace ZetSwitch {
 		void view_EmailClicked(object sender, EventArgs e) {
 			try {
 				System.Diagnostics.Process.Start("mailto:tomas.skarecky@gmail.com");
-			}  catch (System.Exception) {
+			}  catch (Exception) {
 			}
 		}
 	}

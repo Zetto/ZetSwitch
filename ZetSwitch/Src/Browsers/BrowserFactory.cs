@@ -19,22 +19,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ZetSwitch.Browsers
-{
-	class BrowserFactory
-	{
-
-		public static Browser createBrowser(BROWSERS browser) 
-		{
-			switch (browser)
-			{
-				case BROWSERS.IE:
+namespace ZetSwitch.Browsers {
+	class BrowserFactory {
+		public static Browser CreateBrowser(BROWSERS browser)  {
+			switch (browser) {
+				case BROWSERS.Ie:
 					return new IE();
-				case BROWSERS.FIREFOX:
+				case BROWSERS.Firefox:
 					return new Firefox();
 				default:
 					return null;

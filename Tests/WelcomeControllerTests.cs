@@ -19,10 +19,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Is = Rhino.Mocks.Constraints.Is;
@@ -43,7 +39,7 @@ namespace Tests {
 			config = mocks.StrictMock<IUserConfiguration>();
 			factory = mocks.Stub<IViewFactory>();
 			view = mocks.DynamicMock<IWelcomeView>();
-			ClientServiceLocator.Register<IUserConfiguration>(config);
+			ClientServiceLocator.Register(config);
 		}
 
 		[TearDown]
@@ -53,14 +49,13 @@ namespace Tests {
 
 		[Test]
 		public void ShouldNotShowViewIfShowWelcomeIsDisabled() {
-			ConfigurationState state = new ConfigurationState();
-			state.ShowWelcome = false;
+			var state = new ConfigurationState {ShowWelcome = false};
 			factory.Stub(x => x.CreateWelcomeView()).Return(view);
 			config.Stub(x => x.LoadConfiguration()).Repeat.Once().Return(state);
 			view.Stub(x => x.ShowView()).Repeat.Never();
 			mocks.ReplayAll();
 
-			WelcomeController controller = new WelcomeController(factory);
+			var controller = new WelcomeController(factory);
 			controller.TryShow();
 		}
 
@@ -73,18 +68,18 @@ namespace Tests {
 
 		[Test]
 		public void ShouldSaveUserSettings() {
-			ConfigurationState state = new ConfigurationState();
+			var state = new ConfigurationState();
 			InitForSucces(state);
 			config.Stub(x => x.SaveConfigurate(state)).Repeat.Once();
 			mocks.ReplayAll();
 
-			WelcomeController controller = new WelcomeController(factory);
+			var controller = new WelcomeController(factory);
 			controller.TryShow();
 		}
 
 		[Test]
 		public void ShouldReactToChangeLanguageEvent() {
-			ConfigurationState state = new ConfigurationState();
+			var state = new ConfigurationState();
 			InitForSucces(state);
 
 			config.Stub(x => x.SaveConfigurate(state)).Repeat.Twice();
@@ -94,7 +89,7 @@ namespace Tests {
 			view.Stub(x => x.ResetLanguage()).Repeat.Once();
 			mocks.ReplayAll();
 
-			WelcomeController controller = new WelcomeController(factory);
+			var controller = new WelcomeController(factory);
 			controller.TryShow();
 			changeLangRaiser.Raise(null,null);
 		}

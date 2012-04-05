@@ -20,125 +20,83 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Management;
-using System.Windows;
-using System.Windows.Forms;
-using System.Diagnostics;
 
-namespace ZetSwitch
-{
-    public class AdapterDataHelper
-    {
-        ManagementObject obj;
-	
-
-        public AdapterDataHelper(ManagementObject Ob)
-        {
-            obj = Ob;
-        }
-
-        public AdapterDataHelper()
-        {
-        }
+namespace ZetSwitch {
+	public class AdapterDataHelper {
+		private readonly ManagementObject obj;
 
 
-        public string ID
-        {
-            get 
-            {
-                return (string)obj["SettingID"];
-            }
-        }
-        
-        public IPAddress IP
-        {
-            get 
-            {
-                string[] Buff;
-                Buff = (string[])obj["IPAddress"];
-                if (Buff != null)
-                    return new IPAddress(Buff[0]);
-                else
-                    return new IPAddress();
-            }
-        }
+		public AdapterDataHelper(ManagementObject ob) {
+			obj = ob;
+		}
 
-        public IPAddress Mask
-        {
-            get 
-            {
-                string[] Buff;
-                Buff = (string[])obj["IPSubnet"];
-                if (Buff != null)
-                    return new IPAddress(Buff[0]);
-                else
-                    return new IPAddress();
-            }
-        }
+		public AdapterDataHelper() {
+		}
 
-        public IPAddress GW
-        {
-            get 
-            {
-                string[] Buff;
-                Buff = (string[])obj["DefaultIPGateway"];
-                if (Buff != null)
-                    return new IPAddress(Buff[0]);
-                else
-                    return new IPAddress();
-            }
-        }
 
-        public bool DHCP
-        {
-            get
-            {
-                return Convert.ToBoolean(obj["DHCPEnabled"].ToString());
-            }
-        }
+		public string ID {
+			get { return (string) obj["SettingID"]; }
+		}
 
-        public string Name
-        {
-            get
-            {
-				ManagementObjectCollection name = null;
-				using (ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher()) {
-					SearchAdapt.Query = new ObjectQuery("Select * from Win32_NetworkAdapter Where MACAddress ='" + obj["MACAddress"] + "'");
-					name = SearchAdapt.Get();
+		public IPAddress IP {
+			get {
+				var buff = (string[]) obj["IPAddress"];
+				return buff != null ? new IPAddress(buff[0]) : new IPAddress();
+			}
+		}
+
+		public IPAddress Mask {
+			get {
+				var buff = obj["IPSubnet"] as string[];
+				return buff != null ? new IPAddress(buff[0]) : new IPAddress();
+			}
+		}
+
+		public IPAddress GW {
+			get {
+				var buff = obj["DefaultIPGateway"] as string[];
+				return buff != null ? new IPAddress(buff[0]) : new IPAddress();
+			}
+		}
+
+		public bool DHCP {
+			get { return Convert.ToBoolean(obj["DHCPEnabled"].ToString()); }
+		}
+
+		public string Name {
+			get {
+				ManagementObjectCollection name;
+				using (var searchAdapt = new ManagementObjectSearcher()) {
+					searchAdapt.Query =
+						new ObjectQuery("Select * from Win32_NetworkAdapter Where MACAddress ='" + obj["MACAddress"] + "'");
+					name = searchAdapt.Get();
 				}
-				
-                foreach (ManagementObject o in name)
-                {
-                    try
-                    {
-                           return o["NetConnectionID"].ToString();
-                    }
-                    catch (Exception e)
-                    {
-                        Program.UseTrace(e);
-                    }
-                }
-                return "";
-            }
-        }
 
-        public IPAddress[] DNS
-        {
-            get
-            {
-				IPAddress[] MIP = new IPAddress[2];
-				string[] IP =(string[]) obj["DNSServerSearchOrder"];
-                if (IP == null)
-                    return MIP;
-                for (int i = 0; i < IP.Length && i < MIP.Length; i++)
-                {
-                    MIP[i] = IP[i];
-                }
-                return MIP;
-            }
-        }
-                        
-    }
+				foreach (ManagementObject o in name) {
+					try {
+						return o["NetConnectionID"].ToString();
+					}
+					catch (Exception e) {
+						Program.UseTrace(e);
+					}
+				}
+				return "";
+			}
+		}
+
+		public IPAddress[] DNS {
+			get {
+				var mip = new IPAddress[2];
+				var ip = (string[]) obj["DNSServerSearchOrder"];
+				if (ip == null)
+					return mip;
+				for (int i = 0; i < ip.Length && i < mip.Length; i++) {
+					mip[i] = ip[i];
+				}
+				return mip;
+			}
+		}
+
+	}
 }

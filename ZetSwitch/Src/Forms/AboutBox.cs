@@ -20,41 +20,33 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Resources;
-using System.Globalization;
 
-namespace ZetSwitch
-{
-    partial class AboutBox : Form, IAboutView
-    {
-        public AboutBox() {
-            InitializeComponent();
-		    pictureBox1.Image = Properties.Resources.about;
-            ResetLanguage();
-        }
-
-        private void ResetLanguage() {
-            this.label1.Text = Language.GetText("ZetSwitch") +" "+ Properties.Resources.Version; 
-            this.button1.Text = Language.GetText("Ok");
-            this.lblEmail.Text = Language.GetText("Email");
-            this.lblAuthor.Text = Language.GetText("Author");
-            this.Text = Language.GetText("Welcome");
-        }
-
-		public void ShowView() {
-			ShowDialog(); ;
+namespace ZetSwitch {
+	internal partial class AboutBox : Form, IAboutView {
+		public AboutBox() {
+			InitializeComponent();
+			pictureBox1.Image = Properties.Resources.about;
+			ResetLanguage();
 		}
 
-		private void lbEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+		private void ResetLanguage() {
+			label1.Text = Language.GetText("ZetSwitch") + " " + Properties.Resources.Version;
+			button1.Text = Language.GetText("Ok");
+			lblEmail.Text = Language.GetText("Email");
+			lblAuthor.Text = Language.GetText("Author");
+			Text = Language.GetText("Welcome");
+		}
+
+		public void ShowView() {
+			ShowDialog();
+		}
+
+		private void EmailLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			if (EmailClicked != null)
 				EmailClicked(this, null);
 		}
 
 		public event EventHandler EmailClicked;
-    }
+	}
 }

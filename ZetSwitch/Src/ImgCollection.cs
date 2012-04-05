@@ -19,103 +19,78 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using ZTools;
-using System.Windows.Forms;
 
 
-namespace ZetSwitch
-{
-	class LoadedImage
-	{
+namespace ZetSwitch {
+	internal class LoadedImage {
 		public string Name;
 		public Bitmap Image;
 	}
 
-	class ImgCollection
-	{
-		private List<LoadedImage> images;
+	internal class ImgCollection {
+		private static ImgCollection _instance;
+		private readonly List<LoadedImage> images;
 		private DirectoryPath collectionPath;
-		static private ImgCollection instance;
 
-
-
-		#region private
-
-		private ImgCollection()
-		{
+		private ImgCollection() {
 			images = new List<LoadedImage>();
 		}
 
-		private int LoadNewName()
-		{
+		private int LoadNewName() {
 			return Properties.Settings.Default.NewItemName;
 		}
 
-		private bool SaveNewName(int name)
-		{
+		private void SaveNewName(int name) {
 			// todo: load data in patch change
 			Properties.Settings.Default.NewItemName = name;
-			return true;
 		}
 
-		private bool ValidateBitmap(Bitmap Bit)
-		{
-			if (Bit.Size.Height != 40 || Bit.Size.Width != 40)
-				return false;
-			return true;
+		private bool ValidateBitmap(Image bit) {
+			return bit.Size.Height == 40 && bit.Size.Width == 40;
 		}
 
-		private string SaveImage(string name)
-		{
+		private string SaveImage(string name) {
 			int iName = LoadNewName();
-			string DirName = collectionPath.DirectoryName;
-			string NewName = iName.ToString();
-			NewName += ".bmp";
+			string dirName = collectionPath.DirectoryName;
+			string newName = iName.ToString(CultureInfo.InvariantCulture);
+			newName += ".bmp";
 
-			while (File.Exists(DirName + NewName))
-			{
+			while (File.Exists(dirName + newName)) {
 				iName++;
-				NewName = iName.ToString() + ".bmp";
+				newName = iName.ToString(CultureInfo.InvariantCulture) + ".bmp";
 			}
 
-			using (Bitmap picture = new Bitmap(Image.FromFile(name), new Size(40, 40))) {
-				picture.Save(DirName + NewName);
+			using (var picture = new Bitmap(Image.FromFile(name), new Size(40, 40))) {
+				picture.Save(dirName + newName);
 				SaveNewName(++iName);
 			}
-			return NewName;
+			return newName;
 		}
 
-		private Bitmap LoadImage(string Name)
-		{
-			Bitmap picture = new Bitmap(Name);
+		private Bitmap LoadImage(string name) {
+			var picture = new Bitmap(name);
 			if (picture == null)
 				throw new FileNotFoundException();
 
-			if (!ValidateBitmap(picture))
-			{
+			if (!ValidateBitmap(picture)) {
 				picture.Dispose();
-				Name = SaveImage(Name);
-				picture = new Bitmap(collectionPath.DirectoryName + Name);
+				name = SaveImage(name);
+				picture = new Bitmap(collectionPath.DirectoryName + name);
 			}
 
-			LoadedImage item = new LoadedImage();
-			item.Image = picture;
-			item.Name = Name;
-
+			var item = new LoadedImage {Image = picture, Name = name};
 			images.Add(item);
 			return picture;
 		}
 
-		private bool IsManagedFile(string name)
-		{
-			DirectoryPath SelPath = new DirectoryPath(name);
-			if (collectionPath.IsSubDirectory(SelPath))
-			{
+		private bool IsManagedFile(string name) {
+			var selPath = new DirectoryPath(name);
+			if (collectionPath.IsSubDirectory(selPath)) {
 				if (images.Find(item => item.Name == name) != null)
 					return true;
 				if (!File.Exists(name))
@@ -125,54 +100,35 @@ namespace ZetSwitch
 			return false;
 		}
 
-		#endregion
-
-		#region public
-
-		static public ImgCollection Instance
-		{
-			get 
-			{
-				if (instance == null)
-					instance = new ImgCollection();
-				return instance; 
-			}
-			set { instance = value; }
+		public static ImgCollection Instance {
+			get { return _instance ?? (_instance = new ImgCollection()); }
+			set { _instance = value; }
 		}
 
-		public string PathToImages
-		{
-			set 
-			{
+		public string PathToImages {
+			set {
 				collectionPath = new DirectoryPath(value);
 				collectionPath.CreateDirectory();
 			}
 		}
 
-		public Bitmap GetImage(string name)
-		{
+		public Bitmap GetImage(string name) {
 			if (name == "default" || name.Length == 0)
 				return Properties.Resources._default;
 			if (!Path.IsPathRooted(name))
 				name = collectionPath.CompletePath + name;
-			DirectoryPath SelPath = new DirectoryPath(name);
-			if (collectionPath.IsSubDirectory(SelPath))      //image is in our directory
-			{
+			var selPath = new DirectoryPath(name);
+			if (collectionPath.IsSubDirectory(selPath)) { //image is in our directory
 				LoadedImage picture = images.Find(item => item.Name == name);
 				return (picture == null) ? LoadImage(name) : picture.Image;
 			}
-			return Properties.Resources._default;;
+			return Properties.Resources._default;
 		}
 
-		public string InitImage(string name)
-		{
+		public string InitImage(string name) {
 			if (name == "default" || name.Length == 0)
 				return "default";
-			if (IsManagedFile(name))
-				return name;
-			return SaveImage(name);
+			return IsManagedFile(name) ? name : SaveImage(name);
 		}
-
-		#endregion
 	}
 }

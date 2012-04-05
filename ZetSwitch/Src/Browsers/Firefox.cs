@@ -30,8 +30,8 @@ namespace ZetSwitch.Browsers
 	[Serializable]
 	public class Firefox : Browser
 	{
-		[NonSerialized]
-		Hashtable config;
+		[NonSerialized] 
+		readonly Hashtable config;
 		string pathToConfig;
 
 		public Firefox()
@@ -42,39 +42,34 @@ namespace ZetSwitch.Browsers
 
 		#region private
 
-		private string GetConfig(string Item)
+		private string GetConfig(string item)
 		{
-			if (config.ContainsKey(Item))
-				return config[Item].ToString();
-			else
-				return "";
+			return config.ContainsKey(item) ? config[item].ToString() : "";
 		}
 
-		private int GetConfigInt(string Item)
-		{
-			string I = config.ContainsKey(Item) ? (string)config[Item] : "";
-			return I.Length == 0 ? 0 : Convert.ToInt32(I);
+		private int GetConfigInt(string item) {
+			var i = config.ContainsKey(item) ? (string)config[item] : "";
+			return i.Length == 0 ? 0 : Convert.ToInt32(i);
 		}
 
-		private bool FindConfigFileAddres()
-		{
+		private bool FindConfigFileAddres() {
 
 			if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox"))
 				throw new FileNotFoundException(Language.GetText("FirefoxSettingsFileNotFound"));
-			using (StreamReader f = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\profiles.ini")) {
+			using (var f = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\profiles.ini")) {
 				pathToConfig = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Mozilla\\Firefox\\";
-				string Line;
-				while ((Line = f.ReadLine()) != null) {
-					string[] Conf = Line.Split('=');  //TODO: nalezeni spravneho profilu
-					if (Conf.Length != 2)
+				string line;
+				while ((line = f.ReadLine()) != null) {
+					var conf = line.Split('=');  //TODO: nalezeni spravneho profilu
+					if (conf.Length != 2)
 						continue;
-					if (Conf[0] == "Path") {
-						pathToConfig += Conf[1].Replace('/', '\\');
-						pathToConfig += "\\prefs.js";
-						if (!File.Exists(pathToConfig))
-							throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
-						return true;
-					}
+					if (conf[0] != "Path") continue;
+					
+					pathToConfig += conf[1].Replace('/', '\\');
+					pathToConfig += "\\prefs.js";
+					if (!File.Exists(pathToConfig))
+						throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
+					return true;
 				}
 			}
 			throw new Exception(Language.GetText("FirefoxSettingsFileNotFound"));
@@ -142,18 +137,19 @@ namespace ZetSwitch.Browsers
 				catch (Exception) { return false; }
 			}
 
-			using (StreamReader f = new StreamReader(pathToConfig)) {
+			using (var f = new StreamReader(pathToConfig)) {
 				string line;
 				while ((line = f.ReadLine()) != null) {
-					if (line.IndexOf("user_pref", 0) != 0)  //non config lines
+					if (line.IndexOf("user_pref", 0, StringComparison.Ordinal) != 0)  //non config lines
 						continue;
-					string data = line.Substring(10, line.Length - 12);
-					string[] Items = data.Split(',');
-					if (Items.Length != 2)
+					var data = line.Substring(10, line.Length - 12);
+					var items = data.Split(',');
+					if (items.Length != 2)
 						continue;
 					try {
-						config[Items[0]] = Items[1][1] == '\"' ? Items[1].Substring(2, Items[1].Length - 3) : Items[1];
-					} catch (Exception) { }
+						config[items[0]] = items[1][1] == '\"' ? items[1].Substring(2, items[1].Length - 3) : items[1];
+					} catch (Exception)
+					{ }
 				}
 			}
 

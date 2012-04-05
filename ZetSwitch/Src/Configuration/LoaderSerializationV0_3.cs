@@ -19,28 +19,24 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ZetSwitch
 {
-	class LoaderSerializationV0_3 : ILoader
-	{
+	class LoaderSerializationV03 : ILoader {
 		string fileName;
 
 		public List<Profile> LoadProfiles() {
-			List<Profile> profiles = new List<Profile>();
+			var profiles = new List<Profile>();
 			if (fileName == null)
 				return profiles;
 
 			using (Stream stream = new FileStream(fileName, FileMode.Open)) {
 				if (stream.Length == 0)
 					return profiles;
-				BinaryFormatter form = new BinaryFormatter();
+				var form = new BinaryFormatter();
 				profiles = (List<Profile>)form.Deserialize(stream);
 			}
 			return profiles;
@@ -54,7 +50,7 @@ namespace ZetSwitch
 			}
 
 			using (Stream stream = new FileStream(fileName, FileMode.Open)) {
-				BinaryFormatter form = new BinaryFormatter();
+				var form = new BinaryFormatter();
 				form.Serialize(stream, list);
 			}
 			return true;

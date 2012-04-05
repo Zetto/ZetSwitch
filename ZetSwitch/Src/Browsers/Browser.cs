@@ -27,48 +27,21 @@ namespace ZetSwitch.Browsers
 {
 	public enum BROWSERS
 	{
-		IE,
-		FIREFOX
+		Ie,
+		Firefox
 	}
 
 	[Serializable]
-	public abstract class Browser
-	{
-		#region variables
+	public abstract class Browser {
 
-		protected ProxySettings proxy = new ProxySettings();
-		protected string homePage = "";
-		protected bool detected = false;
+		public ProxySettings Proxy { set; get; }
+		public string HomePage { set; get; }
+		public bool IsDetected { get; set; }
 
-		#endregion
-
-		#region getset
-
-		public ProxySettings Proxy 
-		{
-			set { proxy = value; }
-			get { return proxy; }
+		protected Browser() {
+			Proxy = new ProxySettings();
+			IsDetected = false;
 		}
-
-		public string HomePage
-		{
-			set { homePage = value; }
-			get { return homePage; }
-		}
-
-		public bool isDetected
-		{
-			get { return detected; }
-		}
-
-		public Browser()
-		{
-			detected = false;
-		}
-
-		#endregion
-
-		#region IF
 
 		protected abstract bool LoadProxySettings();
 		protected abstract bool LoadHomePage();
@@ -76,16 +49,13 @@ namespace ZetSwitch.Browsers
 		protected abstract bool SaveHomePage();
 		protected abstract bool Find();
 
-		#endregion
-
-		#region public methods
-
+	
 		public virtual bool LoadData()
 		{
 			try
 			{
-				detected = Find();
-				if (!detected)
+				IsDetected = Find();
+				if (!IsDetected)
 					return false;
 				LoadProxySettings();
 				LoadHomePage();
@@ -99,7 +69,7 @@ namespace ZetSwitch.Browsers
 
 		public virtual bool SaveData()
 		{
-			if (!isDetected)
+			if (!IsDetected)
 				return false;
 			try
 			{
@@ -112,7 +82,5 @@ namespace ZetSwitch.Browsers
 			}
 			return true;
 		}
-
-		#endregion
 	}
 }

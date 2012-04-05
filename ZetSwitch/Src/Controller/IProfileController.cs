@@ -20,9 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 namespace ZetSwitch {
-	public interface IViewFactory {
-		ISettingsView CreateSettingsView();
-		IWelcomeView CreateWelcomeView();
-		IAboutView CreateAboutView();
+	public interface IProfileController {
+		bool Show();
 	}
 }

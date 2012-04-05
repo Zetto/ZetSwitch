@@ -19,44 +19,38 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Win32;
 using System.Windows.Forms;
 
 namespace ZetSwitch {
-	class UserConfiguration : ZetSwitch.IUserConfiguration {
-		LanguagesStore store = new LanguagesStore();
+	internal class UserConfiguration : IUserConfiguration {
+		private readonly LanguagesStore store = new LanguagesStore();
 
-		private void SaveAutoRun(bool Run) {
-			using (RegistryKey Key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) {
-				if (Key != null) {
-					if (Run) {
-						Key.SetValue("Zet Switch", "\"" + Application.ExecutablePath + "\" -autorun", RegistryValueKind.String);
-					}
-					else if (Key.GetValue("Zet Switch") != null) {
-						Key.DeleteValue("Zet Switch");
-					}
-
+		private void SaveAutoRun(bool run) {
+			using (var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) {
+				if (key == null) return;
+				if (run) {
+					key.SetValue("Zet Switch", "\"" + Application.ExecutablePath + "\" -autorun", RegistryValueKind.String);
+				}
+				else if (key.GetValue("Zet Switch") != null) {
+					key.DeleteValue("Zet Switch");
 				}
 			}
 		}
 
 		private bool LoadAutorun() {
-			using (RegistryKey Key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) {
-				return Key != null && Key.GetValue("Zet Switch") != null;
+			using (var key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run")) {
+				return key != null && key.GetValue("Zet Switch") != null;
 			}
 		}
 
 		public ConfigurationState LoadConfiguration() {
-			ConfigurationState state = new ConfigurationState();
-			state.AvailableLanguages = store.GetAvailableLanguages();
-			state.Autorun = LoadAutorun();
-			state.LanguageShort = Properties.Settings.Default.ActLanguage;
-			state.ShowWelcome = Properties.Settings.Default.ShowWelcomeDialog;
-			return state;
+			return new ConfigurationState {
+			        AvailableLanguages = store.GetAvailableLanguages(),
+			        Autorun = LoadAutorun(),
+			        LanguageShort = Properties.Settings.Default.ActLanguage,
+			        ShowWelcome = Properties.Settings.Default.ShowWelcomeDialog
+			        };
 		}
 
 		public void SaveConfigurate(ConfigurationState state) {

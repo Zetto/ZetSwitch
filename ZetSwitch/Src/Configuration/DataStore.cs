@@ -19,17 +19,12 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ZetSwitch
 {
 	public enum LOADERS
 	{
 		XML,
-		SERIALIZATION
+		Serialization
 	}
 
 	class DataStore
@@ -40,7 +35,7 @@ namespace ZetSwitch
 			{
 				case LOADERS.XML:
 					return new LoaderFactoryXML();
-				case LOADERS.SERIALIZATION:
+				case LOADERS.Serialization:
 					return new LoaderFactorySerialization();
 			}
 			return null;

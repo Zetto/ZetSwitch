@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ZetSwitch {
 	public class ConfigurationState {
@@ -11,11 +9,7 @@ namespace ZetSwitch {
 		public string Language { get; set; }
 		
 		public List<string> GetLanguages() {
-			List<string> lang = new List<string>();
-			foreach (LanguageDescription l in AvailableLanguages) {
-				lang.Add(l.Name);
-			}
-			return lang;
+			return AvailableLanguages.Select(l => l.Name).ToList();
 		}
 
 		public string LanguageShort {

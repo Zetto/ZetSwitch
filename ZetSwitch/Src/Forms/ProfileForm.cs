@@ -21,12 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ZetSwitch.Network;
+using ZetSwitch.Properties;
 
 
 namespace ZetSwitch
@@ -36,28 +35,28 @@ namespace ZetSwitch
 
 		#region variables
 
-        ProfileManager profiles;
-		Profile profile;
-		bool isNew;
-		int oldSelIndex = -1;
-		string oldName;
-		List<SettingPanel> panels = new List<SettingPanel>();
+    	readonly ProfileManager _profiles;
+    	readonly Profile _profile;
+    	readonly bool _isNew;
+    	readonly string _oldName;
+		int _oldSelIndex = -1;
+    	readonly List<SettingPanel> _panels = new List<SettingPanel>();
 
 		#endregion
 
         public ProfileForm(bool newProfile, Profile profile, ProfileManager profiles) {
-            this.profile = profile;
-            this.profiles = profiles;
-            isNew = newProfile;
-            InitializeComponent();
-            oldName = profile.Name;
-            tabPageIP.DataChanged += new EventHandler(OnDataChange);
-
-            panels.Add(tabPageIP);
+			InitializeComponent();
+            _profile = profile;
+            _profiles = profiles;
+            _isNew = newProfile;
+            _oldName = profile.Name;
+            
+			tabPageIP.DataChanged += OnDataChange;
+            _panels.Add(tabPageIP);
             /*	panels.Add(tabPageProxy);
                 panels.Add(tabPageMAC);*/
 
-            foreach (SettingPanel panel in panels)
+            foreach (SettingPanel panel in _panels)
             {
                 panel.SetControls();
                 panel.ActualProfile = profile;
@@ -68,7 +67,7 @@ namespace ZetSwitch
             if (profiles.Model.IsIFLoaded())
                 PopulateListBox();
             else
-                profiles.Model.DataLoaded += new EventHandler(model_DataLoaded);
+                profiles.Model.DataLoaded += ModelDataLoaded;
             ResetLanguage();
         }
 
@@ -76,92 +75,85 @@ namespace ZetSwitch
 
 		private void PopulateListBox() {
 			ListBoxInterfaces.IsLoaded = true;
-			List<string> names = profile.GetNetworkInterfaceNames();
-            List<NetworkInterfaceSettings> ifs = profiles.Model.GetNetworkInterfaceSettings();
-			foreach (NetworkInterfaceSettings setting in ifs) {
-				if (!names.Contains(setting.Name)) {
-					names.Add(setting.Name);
-					profile.AddNetworkInterface(setting);
-				}
+			var names = _profile.GetNetworkInterfaceNames();
+            var ifs = _profiles.Model.GetNetworkInterfaceSettings();
+			foreach (NetworkInterfaceSettings setting in ifs.Where(setting => !names.Contains(setting.Name))) {
+				names.Add(setting.Name);
+				_profile.AddNetworkInterface(setting);
 			}
 
 			foreach (string name in names) {
 				ListBoxInterfaces.Items.Add(name);
-				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, profile.IsNetworkInterfaceInProfile(name));
+				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, _profile.IsNetworkInterfaceInProfile(name));
 			}
 			if (ListBoxInterfaces.Items.Count > 0)
 				ListBoxInterfaces.SetSelected(0, true);
 		}
 
 		private void LoadData() {
-			TextBoxName.Text = profile.Name;
-			LoadItemIcon(profile.IconFile);
+			TextBoxName.Text = _profile.Name;
+			LoadItemIcon(_profile.IconFile);
 		}
 
 		private void LoadItemIcon(string file)
 		{
 			try
 			{
-				Picture.Image = (Image)ImgCollection.Instance.GetImage(file);
+				Picture.Image = ImgCollection.Instance.GetImage(file);
 			}
 			catch (Exception)
 			{
 				MessageBox.Show(Language.GetText("CanLoadIconFile") + file, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				profile.IconFile = "default";
-				Picture.Image = Properties.Resources._default;
+				_profile.IconFile = "default";
+				Picture.Image = Resources._default;
 			}
 		}
 
 		private bool CanChange(int index)
 		{
 			string error;
-			if (panels.Count <= index || index < 0)
+			if (_panels.Count <= index || index < 0)
 				return true;
-			if (panels[index].DataValidation(out error))
+			if (_panels[index].DataValidation(out error))
 				return true;
-			else
-			{
-				MessageBox.Show(error, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
+			MessageBox.Show(error, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return false;
 		}
 
 		private bool SaveTabPage(int index)
 		{
-			if (panels.Count <= index || index < 0)
+			if (_panels.Count <= index || index < 0)
 				return true;
-			return panels[index].SavePanel();
+			return _panels[index].SavePanel();
 		}
 
-		private bool LoadTabPage(int index)
+		private void LoadTabPage(int index)
 		{
-			if (panels.Count <= index || index < 0)
-				return true;
-			return panels[index].LoadPanel();
+			if (_panels.Count <= index || index < 0)
+				return;
+			_panels[index].LoadPanel();
 		}
 
 		private bool DataValidation()
 		{
-			StringBuilder StrMessage = new StringBuilder();
-			if (isNew || oldName != profile.Name)
-			{
-                if (profiles.GetProfile(TextBoxName.Text) != null)
+			var message = new StringBuilder();
+			if (_isNew || _oldName != _profile.Name) {
+                if (_profiles.GetProfile(TextBoxName.Text) != null)
 				{
-					StrMessage.Append("Profil '" + TextBoxName.Text + "' již existuje.\n");
+					message.Append("Profil '" + TextBoxName.Text + "' již existuje.\n");
 				}
 			}
-			if (TextBoxName.Text.Length == 0)
-			{
-				StrMessage.Append(Language.GetText("ProfileNameIsEmpty") + "\n");
+			if (TextBoxName.Text.Length == 0) {
+				message.Append(Language.GetText("ProfileNameIsEmpty") + "\n");
 			}
 			if (ListBoxInterfaces.SelectedIndex >= 0 && ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.SelectedIndex))
 			{
 				if (!CanChange(TabControl.SelectedIndex))
 					return false;
 			}
-			if (StrMessage.Length > 0)
+			if (message.Length > 0)
 			{
-				MessageBox.Show(StrMessage.ToString(), Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(message.ToString(), Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return false;
 			}
 			return true;
@@ -171,79 +163,78 @@ namespace ZetSwitch
 
 		private void SelectProfileIcon()
 		{
-			using (OpenFileDialog Dialog = new OpenFileDialog()) {
-				Dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
-				Dialog.Filter = "Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif";
+			using (var dialog = new OpenFileDialog()) {
+				dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
+				dialog.Filter = Resources.imagesDialogString;
 
-				if (Dialog.ShowDialog() == DialogResult.OK) {
-					string fileName = Dialog.FileName;
+				if (dialog.ShowDialog() == DialogResult.OK) {
+					string fileName = dialog.FileName;
 					fileName = ImgCollection.Instance.InitImage(fileName);
 					LoadItemIcon(fileName);
-					profile.IconFile = fileName;
+					_profile.IconFile = fileName;
 				}
 			}
 		}
 
 		private bool SaveData()
 		{
-			profile.Name = TextBoxName.Text;
+			_profile.Name = TextBoxName.Text;
 			if (!DataValidation())
 				return false;
 
 			SaveTabPage(TabControl.SelectedIndex);
 			
 			foreach (string name in ListBoxInterfaces.Items) {
-				profile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
+				_profile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
 			}
-			profile.RemoveUnusedItenrfaces();
+			_profile.RemoveUnusedItenrfaces();
 			return true;
 		}
 
 		private void ResetLanguage()
 		{
-			this.label6.Text = Language.GetText("Name");
-			this.ButtonPictureChange.Text = Language.GetText("Change");
-			this.IPDHCPManual.Text = Language.GetText("TextUseThisSetting");
-			this.DNSDHCPManual.Text = Language.GetText("TextUseThisSetting");
-			this.label3.Text = Language.GetText("TextDefGate");
-			this.IPDHCPAuto.Text = Language.GetText("TextOtainDNS");
-			this.label2.Text = Language.GetText("TextMask");
-			this.DNSDHCPAuto.Text = Language.GetText("TextOtainDNS");
-			this.CButton.Text = Language.GetText("Cancel");
-			this.OkButton.Text = Language.GetText("Ok");
-			this.label7.Text = Language.GetText("TextConSelect");
-			return;
+			label6.Text = Language.GetText("Name");
+			ButtonPictureChange.Text = Language.GetText("Change");
+			IPDHCPManual.Text = Language.GetText("TextUseThisSetting");
+			DNSDHCPManual.Text = Language.GetText("TextUseThisSetting");
+			label3.Text = Language.GetText("TextDefGate");
+			IPDHCPAuto.Text = Language.GetText("TextOtainDNS");
+			label2.Text = Language.GetText("TextMask");
+			DNSDHCPAuto.Text = Language.GetText("TextOtainDNS");
+			CButton.Text = Language.GetText("Cancel");
+			OkButton.Text = Language.GetText("Ok");
+			label7.Text = Language.GetText("TextConSelect");
 		}
 
 		#endregion
 
 		#region handlers
 
-		private void ListBoxInterfaces_SelectedIndexChanged(object sender, EventArgs e)
+		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e)
 		{
 			// todo: projit z jistit jestli to neni uplny nesmysl
 			int index = ListBoxInterfaces.SelectedIndex;
-			if (index < 0 || oldSelIndex == index)
+			if (index < 0 || _oldSelIndex == index)
 				return;
-			if (oldSelIndex >= 0 && ListBoxInterfaces.GetItemChecked(oldSelIndex) && !CanChange(TabControl.SelectedIndex))
+			if (_oldSelIndex >= 0 && ListBoxInterfaces.GetItemChecked(_oldSelIndex) && !CanChange(TabControl.SelectedIndex))
 			{
-				ListBoxInterfaces.SetSelected(oldSelIndex, true);
+				ListBoxInterfaces.SetSelected(_oldSelIndex, true);
 				return;
 			}
-			if (oldSelIndex >= 0 && !SaveTabPage(TabControl.SelectedIndex))
+			if (_oldSelIndex >= 0 && !SaveTabPage(TabControl.SelectedIndex))
 				return;
-			foreach (SettingPanel panel in panels)
+			foreach (SettingPanel panel in _panels)
 				panel.InterfaceName = (string)ListBoxInterfaces.Items[index];
 			LoadTabPage(TabControl.SelectedIndex);
-			oldSelIndex = index;
+			_oldSelIndex = index;
 		}
 
-		private void TabControl_SelectedIndexChanged(object sender, System.EventArgs e)
+		private void TabControlSelectedIndexChanged(object sender, EventArgs e)
 		{
 			LoadTabPage(TabControl.SelectedIndex);
 		}
 
-		private void OkButton_Click(object sender, EventArgs e)
+		private void OkButtonClick(object sender, EventArgs e)
 		{
 			if (!SaveData())
 				return;
@@ -251,19 +242,14 @@ namespace ZetSwitch
 			Close();
 		}
 
-		private void CButton_Click(object sender, EventArgs e)
+		private void CButtonClick(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void ButtonPictureChange_Click(object sender, EventArgs e)
+		private void ButtonPictureChangeClick(object sender, EventArgs e)
 		{
 			SelectProfileIcon();
-		}
-
-		private void radioButtonBrowser_CheckedChanged(object sender, EventArgs e)
-		{
-			//tabPageProxy.ChangeBrowser();
 		}
 
 		#endregion
@@ -271,8 +257,8 @@ namespace ZetSwitch
 
 		#region public
 
-		private void model_DataLoaded(object o, EventArgs e) {
-			profiles.Model.DataLoaded -= new EventHandler(model_DataLoaded);
+		private void ModelDataLoaded(object o, EventArgs e) {
+			_profiles.Model.DataLoaded -= ModelDataLoaded;
 			PopulateListBox();
 		}
 

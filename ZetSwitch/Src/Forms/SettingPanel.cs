@@ -242,7 +242,7 @@ namespace ZetSwitch
         private System.Windows.Forms.RadioButton radioButtonOP;
         #endregion
 
-		BROWSERS actualBrowser = BROWSERS.IE;
+		BROWSERS actualBrowser = BROWSERS.Ie;
 
 		#region private 
 
@@ -362,9 +362,9 @@ namespace ZetSwitch
 		public bool ChangeBrowser()
         {
 			if (radioButtonIE.Checked)
-				actualBrowser = BROWSERS.IE;
+				actualBrowser = BROWSERS.Ie;
 			else if (radioButtonFF.Checked)
-				actualBrowser = BROWSERS.FIREFOX;
+				actualBrowser = BROWSERS.Firefox;
 			ReloadData();
 			return true;
         }
@@ -372,13 +372,13 @@ namespace ZetSwitch
 		public override bool LoadPanel()
         {
 			cbUse.Checked = profile.UseBrowser;
-			if (!profile.GetBrowser(Browsers.BROWSERS.IE).isDetected) 
+			if (!profile.GetBrowser(Browsers.BROWSERS.Ie).IsDetected) 
 			{
 				radioButtonIE.Enabled = false;
 				checkBoxIE.Enabled = false;
 			}
 
-			if (!profile.GetBrowser(Browsers.BROWSERS.FIREFOX).isDetected) 
+			if (!profile.GetBrowser(Browsers.BROWSERS.Firefox).IsDetected) 
 			{
 				radioButtonFF.Enabled = false;
                 checkBoxFF.Enabled = false;

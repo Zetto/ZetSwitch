@@ -20,90 +20,75 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
-namespace ZetSwitch.Network
-{
+namespace ZetSwitch.Network {
 	[Serializable]
-	public class NetworkInterfaceSettings
-	{
+	public class NetworkInterfaceSettings {
 		#region variables
 
-		string name;
-		string id;
-		bool isDHCP;
-		bool isDNSDHCP;
-		IPAddress ip;
-		IPAddress mask;
-		IPAddress gateWay;
-		IPAddress dns1;
-		IPAddress dns2;
-		
+		private string name;
+		private string id;
+		private bool isDHCP;
+		private bool isDNSDHCP;
+		private IPAddress ip;
+		private IPAddress mask;
+		private IPAddress gateWay;
+		private IPAddress dns1;
+		private IPAddress dns2;
+
 		#endregion
 
-		#region access 
+		#region access
 
-		public string SettingId
-		{
+		public string SettingId {
 			get { return id; }
 			set { id = value; }
 		}
 
-		public string Name
-		{
+		public string Name {
 			get { return name; }
 			set { name = value; }
 		}
 
-		public bool IsDNSDHCP
-		{
+		public bool IsDNSDHCP {
 			get { return isDNSDHCP; }
 			set { isDNSDHCP = value; }
 		}
 
-		public bool IsDHCP
-		{
+		public bool IsDHCP {
 			get { return isDHCP; }
 			set { isDHCP = value; }
 		}
 
-		public IPAddress IP
-		{
+		public IPAddress IP {
 			get { return ip; }
 			set { ip = value; }
 		}
 
-		public IPAddress Mask
-		{
+		public IPAddress Mask {
 			get { return mask; }
 			set { mask = value; }
 		}
 
-		public IPAddress GateWay
-		{
+		public IPAddress GateWay {
 			get { return gateWay; }
 			set { gateWay = value; }
 		}
 
-		public IPAddress DNS1
-		{
+		public IPAddress DNS1 {
 			get { return dns1; }
 			set { dns1 = value; }
 		}
 
-		public IPAddress DNS2
-		{
+		public IPAddress DNS2 {
 			get { return dns2; }
 			set { dns2 = value; }
 		}
 
-		public IPAddress[] DNS
-		{
-			set
-			{
-				if (value[0] == null && value[1] == null)
-				{
+		public IPAddress[] DNS {
+			set {
+				if (value[0] == null && value[1] == null) {
 					isDNSDHCP = true;
 				}
 				else
@@ -119,8 +104,7 @@ namespace ZetSwitch.Network
 
 		#region public
 
-		public NetworkInterfaceSettings() 
-		{
+		public NetworkInterfaceSettings() {
 			IP = new IPAddress();
 			GateWay = new IPAddress();
 			Mask = new IPAddress();
@@ -128,39 +112,35 @@ namespace ZetSwitch.Network
 			DNS2 = new IPAddress();
 		}
 
-		public NetworkInterfaceSettings(AdapterDataHelper Adapter)
-        {
-            SettingId = Adapter.ID;
-            IsDHCP = Adapter.DHCP;
-            IP = Adapter.IP;
-            GateWay = Adapter.GW;
-            Mask = Adapter.Mask;
-            Name = Adapter.Name;
-            DNS = Adapter.DNS;
-        }
+		public NetworkInterfaceSettings(AdapterDataHelper adapter) {
+			SettingId = adapter.ID;
+			IsDHCP = adapter.DHCP;
+			IP = adapter.IP;
+			GateWay = adapter.GW;
+			Mask = adapter.Mask;
+			Name = adapter.Name;
+			DNS = adapter.DNS;
+		}
 
-		public bool Validate(out string error)
-		{
+		public bool Validate(out string error) {
 			error = "";
 			if (isDHCP)
 				return true;
-			StringBuilder Message = new StringBuilder();
+			var message = new StringBuilder();
 
 			if (!Mask.SubnetMaskValidation())
-				Message.Append(Language.GetText("NonValidSubNetMask") + "\n");
-			else
-			{
+				message.Append(Language.GetText("NonValidSubNetMask") + "\n");
+			else {
 				if (!IP.ValidateIPWithMask(Mask))
-					Message.Append(Language.GetText("NonValidIPAgainMask") + "\n");
+					message.Append(Language.GetText("NonValidIPAgainMask") + "\n");
 				if (!GateWay.IsZero() && !GateWay.ValidateIPWithMask(Mask))
-					Message.Append(Language.GetText("NonValidGWAgainMask") + "\n");
+					message.Append(Language.GetText("NonValidGWAgainMask") + "\n");
 			}
-			error = Message.ToString();
+			error = message.ToString();
 			return error.Length == 0;
 		}
 
-		public override int GetHashCode()
-		{
+		public override int GetHashCode() {
 			return Name.GetHashCode();
 		}
 

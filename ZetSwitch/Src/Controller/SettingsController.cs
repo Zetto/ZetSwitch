@@ -19,23 +19,19 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ZetSwitch {
-	
-public class SettingsController : ISettingsController {
-		IViewFactory factory;
+
+	public class SettingsController : ISettingsController {
+		private readonly IViewFactory factory;
+
 		public SettingsController(IViewFactory factory) {
 			this.factory = factory;
 		}
 
 		public bool Show() {
-			IUserConfiguration config = ClientServiceLocator.GetService<IUserConfiguration>();
-			ConfigurationState state = config.LoadConfiguration();
-			using (ISettingsView view = factory.CreateSettingsView()) {
+			var config = ClientServiceLocator.GetService<IUserConfiguration>();
+			var state = config.LoadConfiguration();
+			using (var view = factory.CreateSettingsView()) {
 				view.SetState(state);
 				if (view.ShowView()) {
 					config.SaveConfigurate(state);

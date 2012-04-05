@@ -20,54 +20,49 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
-namespace ZetSwitch
-{
+namespace ZetSwitch {
 	public partial class WelcomeScreen : Form, IWelcomeView {
-		ConfigurationState state;
+		private ConfigurationState state;
+
 		public WelcomeScreen() {
-            InitializeComponent();
+			InitializeComponent();
 			ResetLanguage();
-        }
+		}
 
 		public bool ShowView() {
 			return ShowDialog() == DialogResult.OK;
 		}
 
-		private void btnOk_Click(object sender, EventArgs e) {
+		private void OkClick(object sender, EventArgs e) {
 			state.Language = comboBoxLang.Text;
 			state.ShowWelcome = !checkBoxShowAgain.Checked;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
-        public void ResetLanguage() {
-			this.lblName.Text = Language.GetText("ZetSwitch") + " " + Properties.Resources.Version;
-			this.btnOk.Text = Language.GetText("Ok");
-            this.checkBoxShowAgain.Text = Language.GetText("DontShowAgain");
-            this.lblLanguage.Text = Language.GetText("Language");
-            this.lblEmail.Text = Language.GetText("Email");
-			this.lblAuthor.Text = Language.GetText("Author");
-			this.Text = Language.GetText("Welcome");
-        }
-
-
-		public void SetState(ConfigurationState state) {
-			this.state = state;
-			checkBoxShowAgain.Checked = !state.ShowWelcome;
-			comboBoxLang.Items.Clear();
-			foreach (string name in state.GetLanguages())
-				comboBoxLang.Items.Add(name);
-			comboBoxLang.Text = state.Language;
+		public void ResetLanguage() {
+			lblName.Text = Language.GetText("ZetSwitch") + " " + Properties.Resources.Version;
+			btnOk.Text = Language.GetText("Ok");
+			checkBoxShowAgain.Text = Language.GetText("DontShowAgain");
+			lblLanguage.Text = Language.GetText("Language");
+			lblEmail.Text = Language.GetText("Email");
+			lblAuthor.Text = Language.GetText("Author");
+			Text = Language.GetText("Welcome");
 		}
 
-		private void comboBoxLang_SelectedIndexChanged(object sender, EventArgs e) {
+
+		public void SetState(ConfigurationState configurationState) {
+			state = configurationState;
+			checkBoxShowAgain.Checked = !configurationState.ShowWelcome;
+			comboBoxLang.Items.Clear();
+			foreach (string name in configurationState.GetLanguages())
+				comboBoxLang.Items.Add(name);
+			comboBoxLang.Text = configurationState.Language;
+		}
+
+		private void ComboBoxLangSelectedIndexChanged(object sender, EventArgs e) {
 			state.Language = comboBoxLang.Text;
 			if (LanguageChanged != null)
 				LanguageChanged(this, null);

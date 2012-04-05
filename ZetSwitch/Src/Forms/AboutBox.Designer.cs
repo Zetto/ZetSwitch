@@ -94,7 +94,7 @@
             this.lbEmail.TabIndex = 33;
             this.lbEmail.TabStop = true;
             this.lbEmail.Text = "tomas.skarecky@gmail.com";
-            this.lbEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lbEmail_LinkClicked);
+            this.lbEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.EmailLinkClicked);
             // 
             // lblEmail
             // 

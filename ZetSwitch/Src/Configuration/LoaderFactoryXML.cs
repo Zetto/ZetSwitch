@@ -19,25 +19,20 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml;
 
 namespace ZetSwitch
 {
-	class LoaderFactoryXML : ILoaderFactory
-	{
-		static string idVersion = "version";
-		const string defActualVersion = "0.3.0";
+	class LoaderFactoryXML : ILoaderFactory {
+		private const string IdVersion = "version";
+		private const string DefActualVersion = "0.3.0";
 		string fileName;
 
-		private string GetVersion(XmlDocument document)
+		private static string GetVersion(XmlDocument document)
 		{
 			XmlElement elmnt = document.DocumentElement;
-			return elmnt.GetAttribute(idVersion);
+			return elmnt != null ? elmnt.GetAttribute(IdVersion) : "";
 		}
 
 		public void InitString(string init)
@@ -49,8 +44,8 @@ namespace ZetSwitch
 		{
 			if (fileName == null)
 				return new LoaderDefault();
-			string version = defActualVersion;
-			XmlDocument document = new XmlDocument();
+			var version = DefActualVersion;
+			var document = new XmlDocument();
 			if (File.Exists(fileName))
 			{
 				document.Load(fileName);
@@ -59,7 +54,7 @@ namespace ZetSwitch
 			switch (version)
 			{
 				case "0.3.0":
-					LoaderXMLV_03 xmlLoader = new LoaderXMLV_03();
+					var xmlLoader = new LoaderXmlv03();
 					xmlLoader.SetDocument(document,fileName);
 					return xmlLoader;
 				default:

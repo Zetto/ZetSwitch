@@ -19,27 +19,19 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ZetSwitch
-{
-	class LoaderDefault : ILoader
-	{
-		public List<Profile> LoadProfiles()
-		{
+namespace ZetSwitch {
+	class LoaderDefault : ILoader {
+		public List<Profile> LoadProfiles() {
 			return new List<Profile>();
 		}
 
-		public bool SaveProfiles(List<Profile> list)
-		{
+		public bool SaveProfiles(List<Profile> list) {
 			return false;
 		}
 
-		public void InitString(string init)
-		{
+		public void InitString(string init) {
 
 		}
 	}

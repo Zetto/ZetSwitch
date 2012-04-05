@@ -19,15 +19,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ZetSwitch
-{
-	interface ILoader
-	{
+namespace ZetSwitch {
+	interface ILoader {
 		List<Profile> LoadProfiles();
 		bool SaveProfiles(List<Profile> list);
 	}

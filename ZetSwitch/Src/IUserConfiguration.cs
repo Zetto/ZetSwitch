@@ -19,7 +19,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 namespace ZetSwitch {
 	public interface IUserConfiguration {
 		ConfigurationState LoadConfiguration();

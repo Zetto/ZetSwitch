@@ -19,15 +19,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ZetSwitch{
 
-	interface ILoaderFactory
-	{
+	interface ILoaderFactory {
 		ILoader GetLoader();
 		void InitString(string init);
 	}

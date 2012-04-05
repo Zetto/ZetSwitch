@@ -20,35 +20,27 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Management;
-using System.Windows;
 using ZetSwitch.Forms;
 
 namespace ZetSwitch
 {
     static class Program {
-		private const int ATTACH_PARENT_PROCESS = -1;
+		private const int AttachParentProcess = -1;
 
         static private void BadArgs(Arguments arg) {
-            NativeMethods.AttachConsole(ATTACH_PARENT_PROCESS);
+            NativeMethods.AttachConsole(AttachParentProcess);
             Console.Write(arg.Errors);
             NativeMethods.FreeConsole();
-            return;
         }
 
         static private void ConsoleApp(Arguments arg) {
-            ConsoleApp(arg);
-            NativeMethods.AttachConsole(ATTACH_PARENT_PROCESS);
-            DataModel model = new DataModel();
-            ProfileManager manager = new ProfileManager();
-            manager.Model = model;
-            try {
+            NativeMethods.AttachConsole(AttachParentProcess);
+            var model = new DataModel();
+        	var manager = new ProfileManager {Model = model};
+        	try {
                 manager.LoadSettings();
             }
             catch (Exception e) {
@@ -68,21 +60,17 @@ namespace ZetSwitch
                                 Console.WriteLine(profile + ": FAILED");
                         }
                         break;
-                    default:
-                        break;
                 }
             }
             model.Dispose();
             NativeMethods.FreeConsole();
-            return;
         }
 
         static void WinFormApp(Arguments arg) {
             InitServices();
-            DataModel model = new DataModel();
-            ProfileManager manager = new ProfileManager();
-            manager.Model = model;
-            try {
+            var model = new DataModel();
+        	var manager = new ProfileManager {Model = model};
+        	try {
                 manager.LoadSettings();
                 model.LoadData();
             }
@@ -91,12 +79,12 @@ namespace ZetSwitch
                 UseTrace(e);
             }
 
-            WelcomeController welcome = new WelcomeController(new ViewFactory());
+            var welcome = new WelcomeController(new ViewFactory());
             welcome.TryShow();
 
-            MainForm frm = new MainForm(manager);
+            var frm = new MainForm(manager);
 			try {
-				MainController controller = new MainController(frm, manager);
+				new MainController(frm, manager);
 				if (arg.Minimalize) {
 					frm.GoToTray();
 					Application.Run();
@@ -106,7 +94,7 @@ namespace ZetSwitch
 				manager.SaveSettings();
 			}
 			catch (Exception e) {
-				using (ExceptionForm form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
+				using (var form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
 					form.FormBorderStyle = FormBorderStyle.FixedDialog;
 					form.StartPosition = FormStartPosition.CenterScreen;
 					form.ShowDialog();
@@ -126,7 +114,7 @@ namespace ZetSwitch
         /// </summary>
 		/// 
         [STAThread]
-        static void Main(string[] Args)
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -134,8 +122,8 @@ namespace ZetSwitch
             SetDebugSettings();
             LoadLanguage();
 
-            Arguments arg = new Arguments();
-            if (!arg.Parse(Args))  {  //bad arguments
+            var arg = new Arguments();
+            if (!arg.Parse(args))  {  //bad arguments
                 BadArgs(arg);
             }
             else if (arg.Count != 0)  { //console
@@ -167,22 +155,20 @@ namespace ZetSwitch
         }
 
       
-        private static bool LoadLanguage() {
-            try {
-				LanguagesStore store = new LanguagesStore();
+        private static void LoadLanguage() {
+        	try {
+				var store = new LanguagesStore();
 				Language.LoadDefault(store);
 				Language.LoadWords(Properties.Settings.Default.ActLanguage, store);
             }
             catch (Exception e) {
-                MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(e.Message, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 UseTrace(e);
-                return false;
             }
-            return true;
         }
 
-        private static void SetDebugSettings() {
-			using (TextWriterTraceListener fileListener = new TextWriterTraceListener("errorlog.txt")) {
+    	private static void SetDebugSettings() {
+			using (var fileListener = new TextWriterTraceListener("errorlog.txt")) {
 				Trace.Listeners.Clear();
 				Trace.Listeners.Add(fileListener);
 			}

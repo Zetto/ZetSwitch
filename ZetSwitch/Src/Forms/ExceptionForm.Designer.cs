@@ -54,7 +54,7 @@
 			this.btnMail.TabIndex = 1;
 			this.btnMail.TabStop = true;
 			this.btnMail.Text = "tomas.skarecky@gmail.com";
-			this.btnMail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnMail_LinkClicked);
+			this.btnMail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MailLinkClicked);
 			// 
 			// btnOk
 			// 
@@ -64,7 +64,7 @@
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.OkClick);
 			// 
 			// textTrace
 			// 

@@ -20,199 +20,156 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
-namespace ZetSwitch
-{
-    [Serializable]
-    public class IPAddress
-    {
-        private byte[] IP;
+namespace ZetSwitch {
+	[Serializable]
+	public class IPAddress {
+		public IPAddress() {
+			IP = new byte[4];
+		}
 
-        public IPAddress()
-        {
-            IP = new byte[4];
-        }
+		public IPAddress(byte[] bytes) {
+			IP = new byte[4];
+			IP = bytes;
+		}
 
-        public IPAddress(byte[] Bytes)
-        {
-            IP = new byte[4];
-            IP = Bytes;
-        }
+		public IPAddress(IPAddress old) {
+			IP = new byte[4];
+			for (var i = 0; i < 4; i++) {
+				IP[i] = old.IP[i];
+			}
+		}
 
-        public IPAddress(IPAddress Old)
-        {
-            IP = new byte[4];
-            for (int i = 0; i < 4; i++)
-            {
-                IP[i] = Old.IP[i];
-            }
-        }
+		public IPAddress(string str) {
+			IP = ConvertStringIPToByteIP(str);
+		}
 
-        public IPAddress(string Str)
-        {
-            IP = ConvertStringIPToByteIP(Str);
-        }
-
-        public byte[] m_IP
-        {
-            get { return IP; }
-        }
+		public byte[] IP { get; private set; }
 
 
-        public byte[] ConvertStringIPToByteIP(string StrIP)
-        {
+		public byte[] ConvertStringIPToByteIP(string strIP) {
 
-            byte[] ByteIP = new byte[4];
-            string[] StrAr = StrIP.Split('.');
-            if (StrAr.Length != 4)
+			var byteIP = new byte[4];
+			var strAr = strIP.Split('.');
+			if (strAr.Length != 4)
 				return new byte[4];
-			try
-			{
-				for (int i = 0; i < 4; i++)
-				{
-					if (StrAr[i] == "")
-						ByteIP[i] = 0;
-					else
-						ByteIP[i] = Convert.ToByte(StrAr[i]);
+			for (var i = 0; i < 4; i++) {
+				if (strAr[i] == "")
+					byteIP[i] = 0;
+				else
+					Byte.TryParse(strAr[i],out byteIP[i]);
+			}
+			return byteIP;
+		}
+
+		public void Clear() {
+			IP = new byte[4];
+		}
+
+		public override string ToString() {
+			var str = new StringBuilder();
+			for (var i = 0; i < 4; i++) {
+				str.Append(IP[i]);
+				if (i != 3)
+					str.Append('.');
+			}
+			return str.ToString();
+		}
+
+
+		public static implicit operator byte[](IPAddress mip) {
+			return mip.IP;
+		}
+
+		public static implicit operator IPAddress(string strIP) {
+			return new IPAddress(strIP);
+		}
+
+		public static IPAddress operator ~(IPAddress mip) {
+			var newIP = new byte[4];
+			for (var i = 0; i < 4; i++) {
+				newIP[i] = (byte) ~mip.IP[i];
+			}
+			return new IPAddress(newIP);
+		}
+
+
+		public bool Compare(IPAddress b) {
+			for (var i = 0; i < 4; i++) {
+				if (IP[i] != b.IP[i])
+					return false;
+			}
+			return true;
+		}
+
+
+		public static IPAddress operator &(IPAddress a, IPAddress b) {
+			var newIP = new IPAddress(a);
+			for (var i = 0; i < 4; i++)
+				newIP.IP[i] &= b.IP[i];
+			return newIP;
+		}
+
+		public static IPAddress operator ^(IPAddress a, IPAddress b) {
+			var newIP = new IPAddress(a);
+			for (var i = 0; i < 4; i++)
+				newIP.IP[i] ^= b.IP[i];
+			return newIP;
+		}
+
+		public bool Validation() {
+			return true;
+		}
+
+		public bool IsZero() {
+			for (int i = 0; i < 4; i++) {
+				if (IP[i] != 0)
+					return false;
+			}
+			return true;
+		}
+
+		public bool SubnetMaskValidation() {
+			bool wasZero = false;
+			if (IP[0] < 224)
+				return false;
+
+			for (int i = 0; i < 4; i++) {
+				byte mask = 128;
+				for (int j = 0; j < 8; j++) {
+					int res = IP[i] & mask;
+					if (res == 0) {
+						wasZero = true;
+					}
+					else if (wasZero)
+						return false;
+					mask >>= 1;
 				}
 			}
-			catch (Exception) { }
+			return true;
+		}
 
-            return ByteIP;
-        }
+		public bool ValidateIPWithMask(IPAddress mask) {
+			if (!mask.SubnetMaskValidation())
+				throw new Exception(Language.GetText("NonValidSubNetMask"));
 
-        public void Clear()
-        {
-            IP = new byte[4];
-        }
+			IPAddress negMask = ~mask;
+			IPAddress pcAddress = this & negMask;
+			if (pcAddress.IsZero()) //address of network
+				return false;
+			IPAddress broadTest = pcAddress ^ negMask;
+			return !broadTest.IsZero();
+		}
 
-        public override string ToString()
-        {
-            StringBuilder str = new StringBuilder();
-            for (int i = 0; i < 4; i++)
-            {
-                str.Append(IP[i]);
-                if (i != 3)
-                    str.Append('.');
-            }
-            return str.ToString();
-        }
+		public bool ComapreIPGWNet(IPAddress mask, IPAddress gw) {
+			if (!mask.SubnetMaskValidation())
+				throw new Exception(Language.GetText("NonValidSubNetMask"));
 
+			IPAddress gwNet = gw & mask;
+			IPAddress ipNet = this & mask;
 
-        public static implicit operator byte[](IPAddress MIP)
-        {
-            return MIP.IP;
-        }
-
-        public static implicit operator IPAddress(string StrIP)
-        {
-            return new IPAddress(StrIP);
-        }
-
-        public static IPAddress operator ~(IPAddress MIP)
-        {
-            byte[] NewIP = new byte[4];
-            for (int i = 0; i < 4; i++)
-            {
-                NewIP[i] = (byte)~MIP.m_IP[i];
-            }
-            return new IPAddress(NewIP);
-        }
-
-
-        public bool Compare(IPAddress b)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (this.m_IP[i] != b.m_IP[i])
-                    return false;
-            }
-            return true;
-        }
-
-
-        public static IPAddress operator &(IPAddress a, IPAddress b)
-        {
-            IPAddress NewIP = new IPAddress(a);
-            for (int i = 0; i < 4; i++)
-                NewIP.m_IP[i] &= b.m_IP[i];
-            return NewIP;
-        }
-
-        public static IPAddress operator ^(IPAddress a, IPAddress b)
-        {
-            IPAddress NewIP = new IPAddress(a);
-            for (int i = 0; i < 4; i++)
-                NewIP.m_IP[i] ^= b.m_IP[i];
-            return NewIP;
-        }
-
-        public bool Validation()
-        {
-            return true;
-        }
-
-        public bool IsZero()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (this.m_IP[i] != 0)
-                    return false;
-            }
-            return true;
-        }
-
-        public bool SubnetMaskValidation()
-        {
-            bool WasZero = false;
-            if (IP[0] < 224)
-                return false;
-
-            for (int i = 0; i < 4; i++)
-            {
-                byte Mask = 128;
-                int res = 0;
-                for (int j = 0; j < 8; j++)
-                {
-                    res = IP[i] & Mask;
-                    if (res == 0)
-                    {
-                        WasZero = true;
-                    }
-                    else if (WasZero)
-                        return false;
-                    Mask >>= 1;
-                }
-            }
-            return true;
-        }
-
-        public bool ValidateIPWithMask(IPAddress Mask)
-        {
-            if (!Mask.SubnetMaskValidation())
-                throw new Exception(Language.GetText("NonValidSubNetMask"));
-
-            IPAddress NegMask = ~Mask;
-            IPAddress PCAddress = this & NegMask;
-            if (PCAddress.IsZero())   //address of network
-                return false;
-            IPAddress BroadTest = PCAddress ^ NegMask;
-            if (BroadTest.IsZero())  //broadcast address
-                return false;
-            return true;
-        }
-
-        public bool ComapreIPGWNet(IPAddress Mask, IPAddress GW)
-        {
-            if (!Mask.SubnetMaskValidation())
-                throw new Exception(Language.GetText("NonValidSubNetMask"));
-
-            IPAddress GWNet = GW & Mask;
-            IPAddress IPNet = this & Mask;
-
-            return GWNet.Compare(IPNet);
-        }
-    }
+			return gwNet.Compare(ipNet);
+		}
+	}
 }

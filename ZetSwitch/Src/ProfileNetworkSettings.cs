@@ -22,117 +22,93 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ZetSwitch.Network;
 
-namespace ZetSwitch
-{
+namespace ZetSwitch {
 	[Serializable]
-	public class ProfileNetworkSettings
-	{
-		bool use = false;
-		bool useNetwork = false;
-		bool useMac = false;
+	public class ProfileNetworkSettings {
+		private bool use;
+		private bool useNetwork;
+		private bool useMac;
 
-		NetworkInterfaceSettings settings;
+		private NetworkInterfaceSettings settings;
 
-		public bool Use
-		{
+		public bool Use {
 			get { return use; }
 			set { use = value; }
 		}
 
-		public bool UseNetwork
-		{
+		public bool UseNetwork {
 			get { return useNetwork; }
 			set { useNetwork = value; }
 		}
 
-		public bool UseMac
-		{
+		public bool UseMac {
 			get { return useMac; }
 			set { useMac = value; }
 		}
 
-		public NetworkInterfaceSettings Settings
-		{
+		public NetworkInterfaceSettings Settings {
 			get { return settings; }
 			set { settings = value; }
 		}
 
-		public ProfileNetworkSettings() 
-		{
+		public ProfileNetworkSettings() {
 			settings = new NetworkInterfaceSettings();
 		}
 
-		public ProfileNetworkSettings(NetworkInterfaceSettings settings)
-		{
+		public ProfileNetworkSettings(NetworkInterfaceSettings settings) {
 			this.settings = settings;
 		}
 	}
 
 	[Serializable]
-	public class ProfileNetworkSettingsList : List<ProfileNetworkSettings>
-	{
-		public ProfileNetworkSettingsList() { }
-		public ProfileNetworkSettingsList(ProfileNetworkSettingsList other) : base(other) { }
-		public ProfileNetworkSettingsList(List<NetworkInterfaceSettings> other) 
-		{
-			foreach (NetworkInterfaceSettings setting in other) 
-			{
+	public class ProfileNetworkSettingsList : List<ProfileNetworkSettings> {
+		public ProfileNetworkSettingsList() {
+		}
+
+		public ProfileNetworkSettingsList(IEnumerable<ProfileNetworkSettings> other) : base(other) {
+		}
+
+		public ProfileNetworkSettingsList(IEnumerable<NetworkInterfaceSettings> other) {
+			foreach (NetworkInterfaceSettings setting in other) {
 				Add(new ProfileNetworkSettings(setting));
 			}
 		}
 
-		public ProfileNetworkSettings GetProfileNetworkSettings(string name)
-		{
+		public ProfileNetworkSettings GetProfileNetworkSettings(string name) {
 			return Find(item => item.Settings.Name == name);
 		}
 
-		public NetworkInterfaceSettings GetNetworkSettings(string name)
-		{
+		public NetworkInterfaceSettings GetNetworkSettings(string name) {
 			ProfileNetworkSettings set = GetProfileNetworkSettings(name);
 			return set == null ? null : set.Settings;
 		}
 
-		public List<string> GetNetworkInterfaceNames()
-		{
-			List<string> names = new List<string>();
-			foreach (ProfileNetworkSettings setting in this)
-			{
-				names.Add(setting.Settings.Name);
-			}
-			return names;
+		public List<string> GetNetworkInterfaceNames() {
+			return this.Select(setting => setting.Settings.Name).ToList();
 		}
 
-		public ProfileNetworkSettings GetSetting(string Name)
-		{
-			return Find(item => item.Settings.Name == Name);
+		public ProfileNetworkSettings GetSetting(string name) {
+			return Find(item => item.Settings.Name == name);
 		}
 
 		public bool Contains(string name) {
 			return GetSetting(name) != null;
 		}
 
-		public void PrepareSave()
-		{
-			ProfileNetworkSettingsList lst = new ProfileNetworkSettingsList();
-			foreach (ProfileNetworkSettings setting in this)
-			{
-				if (setting.Use)
-					lst.Add(setting);
-			}
-			this.Clear();
-			this.AddRange(lst);
+		public void PrepareSave() {
+			var lst = new ProfileNetworkSettingsList();
+			lst.AddRange(this.Where(setting => setting.Use));
+			Clear();
+			AddRange(lst);
 		}
 
-		public bool IsUsed(string name)
-		{
-			return Find(item => item.Settings.Name == name && item.Use == true) != null;
+		public bool IsUsed(string name) {
+			return Find(item => item.Settings.Name == name && item.Use) != null;
 		}
 
-		public void UseNetworkInterface(string name, bool use)
-		{
+		public void UseNetworkInterface(string name, bool use) {
 			ProfileNetworkSettings set = GetProfileNetworkSettings(name);
 			if (set == null)
 				return;
@@ -141,7 +117,7 @@ namespace ZetSwitch
 
 		internal void RemoveUnused() {
 			var items = FindAll(item => item.Use == false);
-			foreach (var item in items) 
+			foreach (var item in items)
 				Remove(item);
 		}
 	}

@@ -20,135 +20,109 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace ZTools
-{
-    class DirectoryPath
-    {
-        string[] _Directories;
-        string _File;
-        string _Disk;
+namespace ZTools {
+	internal class DirectoryPath {
+		private string[] directories;
+		private string disk;
 
-       
-        public DirectoryPath(string FilePath)
-        {
-            Parse(FilePath);
-        }
 
-        private bool Parse(string FilePath)
-        {
-            if (FilePath == null)
-                return false;
-            string[] Buff = FilePath.Split('\\');
-            
-            int FirstIndex = 0;
-            int LastIndex = Buff.Length;
+		public DirectoryPath(string filePath) {
+			Parse(filePath);
+		}
 
-            if (Buff.Length < 1)
-                throw new Exception();
+		private bool Parse(string filePath) {
+			if (filePath == null)
+				return false;
+			string[] buff = filePath.Split('\\');
 
-            if (FilePath[FilePath.Length - 1] == '\\')
-            {
-                _File = null;
-                LastIndex--;
-            }
-            else
-            {
-                _File = Buff[Buff.Length - 1];
-                LastIndex--;                
-            }
+			int firstIndex = 0;
+			int lastIndex = buff.Length;
 
-            if (FilePath.Length > 2 && FilePath[1] == ':')
-            {
-                _Disk = Buff[0];
-                FirstIndex++;
-            }
-            _Directories = new string[LastIndex - FirstIndex];
-            
-            for (int i = FirstIndex; i < LastIndex; i++)
-                _Directories[i - FirstIndex] = Buff[i];
-            
+			if (buff.Length < 1)
+				throw new Exception();
 
-            return true;
-        }
+			if (filePath[filePath.Length - 1] == '\\') {
+				FileName = null;
+				lastIndex--;
+			}
+			else {
+				FileName = buff[buff.Length - 1];
+				lastIndex--;
+			}
 
-        public bool SetDirectory(string Path)
-        {
-            return Parse(Path);
-        }
+			if (filePath.Length > 2 && filePath[1] == ':') {
+				disk = buff[0];
+				firstIndex++;
+			}
+			directories = new string[lastIndex - firstIndex];
 
-        public string DirectoryName
-        {
-            get 
-            { 
-                StringBuilder str = new StringBuilder();
-                str.Append(_Disk + '\\');
-                for (int i = 0; i < _Directories.Length;i++)
-                {
-                    str.Append( _Directories[i]);
-                    str.Append('\\');
-                }
-                return str.ToString();
-            }
-        }
+			for (int i = firstIndex; i < lastIndex; i++)
+				directories[i - firstIndex] = buff[i];
 
-        public string[] DirectoryArray
-        {
-            get { return _Directories; } 
-        }
 
-        public string FileName
-        {
-            get { return _File; } 
-        }
+			return true;
+		}
 
-        public string CompletePath
-        {
-            get { return DirectoryName + FileName; }
-        }
+		public bool SetDirectory(string path) {
+			return Parse(path);
+		}
 
-        public bool IsSubDirectory(DirectoryPath ComparePath)
-        {
-            int Len = _Directories.Length;
-            if (ComparePath.DirectoryArray.Length < _Directories.Length)
-                return false;
+		public string DirectoryName {
+			get {
+				var str = new StringBuilder();
+				str.Append(disk + '\\');
+				foreach (string t in directories) {
+					str.Append(t);
+					str.Append('\\');
+				}
+				return str.ToString();
+			}
+		}
 
-            if (!ComparePath._Disk.Equals(_Disk))
-                return false;
+		public string[] DirectoryArray {
+			get { return directories; }
+		}
 
-            for (int i = 0; i < Len; i++)
-            {
-                if (!ComparePath.DirectoryArray[i].Equals(_Directories[i]))
-                    return false;
-            }
-            return true;
-        }
+		public string FileName { get; private set; }
 
-        public void CreateDirectory()
-        {
-            if (!DirectoryExists())
-                Directory.CreateDirectory(DirectoryName);
-        }
+		public string CompletePath {
+			get { return DirectoryName + FileName; }
+		}
 
-        public bool DirectoryExists()
-        {
-           return Directory.Exists(DirectoryName);
-        }
+		public bool IsSubDirectory(DirectoryPath comparePath) {
+			int len = directories.Length;
+			if (comparePath.DirectoryArray.Length < directories.Length)
+				return false;
 
-        public string[] GetFiles()
-        {
-            return Directory.GetFiles(DirectoryName);
-        }
+			if (!comparePath.disk.Equals(disk))
+				return false;
 
-        public string ReducePath(string Name)
-        {
-            int i = Name.IndexOf(DirectoryName);
-            if (i==0)
-                return Name.Substring(DirectoryName.Length);
-            return null;
-        }
-    }
+			for (int i = 0; i < len; i++) {
+				if (!comparePath.DirectoryArray[i].Equals(directories[i]))
+					return false;
+			}
+			return true;
+		}
+
+		public void CreateDirectory() {
+			if (!DirectoryExists())
+				Directory.CreateDirectory(DirectoryName);
+		}
+
+		public bool DirectoryExists() {
+			return Directory.Exists(DirectoryName);
+		}
+
+		public string[] GetFiles() {
+			return Directory.GetFiles(DirectoryName);
+		}
+
+		public string ReducePath(string name) {
+			int i = name.IndexOf(DirectoryName, System.StringComparison.Ordinal);
+			return i == 0 ? name.Substring(DirectoryName.Length) : null;
+		}
+	}
 }

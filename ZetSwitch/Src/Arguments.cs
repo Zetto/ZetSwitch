@@ -21,101 +21,93 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace ZetSwitch
-{
-    enum ConsoleActions
-    {
-        UseProfile
-    }
-    class Arguments
-    {
-        StringBuilder strErrors;
-        public string Errors
-        {
-            get { return strErrors.ToString(); }
-        }
-        ArrayList actions;
-       public ArrayList Actions
-        {
-            get { return actions; }
-        }
-        ArrayList profiles;
-        public ArrayList Profiles
-        {
-            get { return profiles; }
-        }
-    
-        bool consoleMode;
-        public bool ConsoleMode
-        {
-            get { return consoleMode; }
-        }
-        bool minimalize;
-        public bool Minimalize
-        {
-            get { return minimalize; }
-        }
-        int count;
-        public int Count
-        {
-            get { return count;}
-        }
+namespace ZetSwitch {
+	internal enum ConsoleActions {
+		UseProfile
+	}
 
-        public Arguments()
-        {
-            strErrors = new StringBuilder();
-            actions = new ArrayList();
-            profiles = new ArrayList();
-        }
+	internal class Arguments {
+		private readonly StringBuilder errors;
 
-        public bool Parse(string[] Args)
-        {
-            int c = Args.Length;
+		public string Errors {
+			get { return errors.ToString(); }
+		}
 
-            for (int i = 0; i < c; i++)
-            {
-                switch (Args[i])
-                {
-                    case "-autorun":
-                        minimalize = true;
-                        return true;
-                        
-                    case "-p":
-                        ++i;
-                        if (i >= c)
-                        {
-                            strErrors.Append(Language.GetText("ConsoleNotProfiles"));
-                            break;
-                        }
-                        GetProfilesString(i,Args);
-                        actions.Add(ConsoleActions.UseProfile);
-                        count++;
-                        consoleMode = true;
-                        break;
-                    default:
-                        strErrors.Append(Language.GetText("ConsoleInvalidArgument"));
-                        break;
-                }
-            }
-            return (strErrors.Length == 0);
-        }
+		private readonly ArrayList actions;
 
-        int GetProfilesString(int start, string[] Args)
-        {
-            string[] prof = Args[start].Split(';');
-            if (prof.Length < 1)
-            {
-                strErrors.Append(Language.GetText("ConsoleNotProfiles"));
-            }
-            foreach (string str in prof)
-            {
-                if (str.Length > 0)
-                    profiles.Add(str);
-            }
-            return 1;
-        }
-    }
+		public ArrayList Actions {
+			get { return actions; }
+		}
+
+		private readonly ArrayList profiles;
+
+		public ArrayList Profiles {
+			get { return profiles; }
+		}
+
+		private bool consoleMode;
+
+		public bool ConsoleMode {
+			get { return consoleMode; }
+		}
+
+		private bool minimalize;
+
+		public bool Minimalize {
+			get { return minimalize; }
+		}
+
+		private int count;
+
+		public int Count {
+			get { return count; }
+		}
+
+		public Arguments() {
+			errors = new StringBuilder();
+			actions = new ArrayList();
+			profiles = new ArrayList();
+		}
+
+		public bool Parse(string[] args) {
+			var c = args.Length;
+
+			for (int i = 0; i < c; i++) {
+				switch (args[i]) {
+					case "-autorun":
+						minimalize = true;
+						return true;
+
+					case "-p":
+						++i;
+						if (i >= c) {
+							errors.Append(Language.GetText("ConsoleNotProfiles"));
+							break;
+						}
+						GetProfilesString(i, args);
+						actions.Add(ConsoleActions.UseProfile);
+						count++;
+						consoleMode = true;
+						break;
+					default:
+						errors.Append(Language.GetText("ConsoleInvalidArgument"));
+						break;
+				}
+			}
+			return (errors.Length == 0);
+		}
+
+		private void GetProfilesString(int start, IList<string> args) {
+			if (args == null) throw new ArgumentNullException("args");
+			var prof = args[start].Split(';');
+			if (prof.Length < 1)
+				errors.Append(Language.GetText("ConsoleNotProfiles"));
+			foreach (var str in prof.Where(str => str.Length > 0))
+				profiles.Add(str);
+		}
+	}
 }

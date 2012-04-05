@@ -19,11 +19,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ZetSwitch
 {
 	class LoaderFactorySerialization : ILoaderFactory
@@ -40,7 +35,7 @@ namespace ZetSwitch
 				return new LoaderDefault();
 
 			// todo: resolve version and get propriet loader
-			LoaderSerializationV0_3 loader = new LoaderSerializationV0_3();
+			var loader = new LoaderSerializationV03();
 			loader.SetFileName(fileName);
 			return loader;
 		}

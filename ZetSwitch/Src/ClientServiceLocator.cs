@@ -21,30 +21,27 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ZetSwitch;
 
 namespace ZetSwitch {
 	public class ClientServiceLocator {
-		private static Dictionary<Type, object> services = new Dictionary<Type,object>();
+		private static readonly Dictionary<Type, object> Services = new Dictionary<Type,object>();
 
 		static private object GetService(Type type) {
-			if (!services.ContainsKey(type))
-				throw new System.ApplicationException(string.Format("{0} is not set",type.ToString()));
-			return services[type];
+			if (!Services.ContainsKey(type))
+				throw new ApplicationException(string.Format("{0} is not set",type.ToString()));
+			return Services[type];
 		}
 
-		static public bool Register<T>(T service) {
+		static public bool Register<T>(T service) where T : class {
 			if (service == null)
-				throw new ArgumentNullException("ClientServiceLocator::Register");
+				throw new ArgumentNullException("service");
 
-			if (services.ContainsKey(typeof(T))) {
-				services.Remove(typeof(T));
+			if (Services.ContainsKey(typeof(T))) {
+				Services.Remove(typeof(T));
 //				return false;
 			}
-			services.Add(typeof(T),service);
+			Services.Add(typeof(T),service);
 			return true;
 		}
 

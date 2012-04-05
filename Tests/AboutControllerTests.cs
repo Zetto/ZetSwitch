@@ -19,15 +19,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Is = Rhino.Mocks.Constraints.Is;
 using ZetSwitch;
-using Rhino.Mocks.Interfaces;
 
 namespace Tests {
 	[TestFixture]
@@ -50,15 +45,13 @@ namespace Tests {
 
 		[Test]
 		public void ShouldShowViewAndAttachEmailClickedEvent() {
-			ConfigurationState state = new ConfigurationState();
-			state.ShowWelcome = false;
 			factory.Stub(x => x.CreateAboutView()).Return(view);
 			view.Stub(x => x.ShowView()).Repeat.Once();
 			view.EmailClicked += null;
 			LastCall.Constraints(Is.NotNull());
 			mocks.ReplayAll();
 
-			AboutController controller = new AboutController(factory);
+			var controller = new AboutController(factory);
 			controller.Show();
 		}
 	}

@@ -19,7 +19,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using NUnit.Framework;
 using ZetSwitch;
 using Rhino.Mocks;
@@ -38,7 +37,7 @@ namespace Tests {
 			config = mocks.StrictMock<IUserConfiguration>();
 			factory = mocks.Stub<IViewFactory>();
 			view = MockRepository.GenerateStub<ISettingsView>();
-			ClientServiceLocator.Register<IUserConfiguration>(config);
+			ClientServiceLocator.Register(config);
 		}
 
 		[TearDown]
@@ -48,27 +47,27 @@ namespace Tests {
 
 		[Test]
 		public void ShouldSaveUserConfigurationAfterUserChooseSaveSettings() {
-			ConfigurationState state = new ConfigurationState();
+			var state = new ConfigurationState();
 			factory.Stub(x => x.CreateSettingsView()).Return(view);
 			view.Stub(x => x.ShowView()).Return(true);
 			config.Stub(x => x.LoadConfiguration()).Repeat.Once().Return(state);
 			config.Stub(x => x.SaveConfigurate(state)).Repeat.Once();
 			mocks.ReplayAll();
 			
-			SettingsController controller = new SettingsController(factory);
+			var controller = new SettingsController(factory);
 			Assert.AreEqual(true,controller.Show());
 		}
 
 		[Test]
 		public void ShouldNotSaveUserConfigurationAfterUserChooseCancel() {
-			ConfigurationState state = new ConfigurationState();
+			var state = new ConfigurationState();
 			factory.Stub(x => x.CreateSettingsView()).Return(view);
 			view.Stub(x => x.ShowView()).Return(false);
 			config.Stub(x => x.LoadConfiguration()).Repeat.Once().Return(state);
 			config.Stub(x => x.SaveConfigurate(state)).Repeat.Never();
 			mocks.ReplayAll();
 
-			SettingsController controller = new SettingsController(factory);
+			var controller = new SettingsController(factory);
 			Assert.AreEqual(false,controller.Show());
 		}
 	}

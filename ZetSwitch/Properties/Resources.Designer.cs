@@ -148,6 +148,15 @@ namespace ZetSwitch.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif.
+        /// </summary>
+        internal static string imagesDialogString {
+            get {
+                return ResourceManager.GetString("imagesDialogString", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap opera {
             get {
                 object obj = ResourceManager.GetObject("opera", resourceCulture);

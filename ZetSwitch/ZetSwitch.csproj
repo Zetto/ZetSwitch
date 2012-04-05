@@ -82,6 +82,7 @@
     <Compile Include="Src\Configuration\LoaderSerializationV0_3.cs" />
     <Compile Include="Src\Configuration\LoaderXMLV_03.cs" />
     <Compile Include="Src\Controller\AboutController.cs" />
+    <Compile Include="Src\Controller\IProfileController.cs" />
     <Compile Include="Src\Controller\IAboutController.cs" />
     <Compile Include="Src\Controller\WelcomeController.cs" />
     <Compile Include="Src\Controller\ISettingsController.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Src\Tools\Path.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Src\View\IProfileView.cs" />
     <Compile Include="Src\View\ISettingsView.cs" />
     <Compile Include="Src\View\IViewFactory.cs" />
     <Compile Include="Src\View\IWelcomeView.cs" />

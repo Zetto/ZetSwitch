@@ -19,43 +19,25 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using ZetSwitch.Network;
-using System.Runtime.Serialization;
-using System.Security;
+using System.Globalization;
 
-namespace ZetSwitch
-{
-	public class ProfileManager : IProfileManager 
-	{
-		List<Profile> profiles = new List<Profile>();
-		DataModel model;
+namespace ZetSwitch {
+	public class ProfileManager : IProfileManager {
+		private List<Profile> profiles = new List<Profile>();
+		private DataModel model;
 
-		public ProfileManager()
-		{
-
-		}
-
-        #region public
-
-		public List<Profile> Profiles
-		{
+		public List<Profile> Profiles {
 			get { return profiles; }
 		}
 
-		public DataModel Model
-		{
+		public DataModel Model {
 			set { model = value; }
 			get { return model; }
 		}
 
 		public void LoadSettings() {
-			DataStore data = new DataStore();
+			var data = new DataStore();
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
 			factory.InitString(".\\Data\\profiles.xml");
 			profiles = factory.GetLoader().LoadProfiles();
@@ -64,14 +46,14 @@ namespace ZetSwitch
 		public void SaveSettings() {
 			foreach (Profile profile in profiles)
 				profile.PrepareSave();
-			DataStore data = new DataStore();
+			var data = new DataStore();
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
 			factory.InitString(".\\Data\\profiles.xml");
 			factory.GetLoader().SaveProfiles(profiles);
 		}
 
 		public bool Apply(string name) {
-			Profile profile = GetProfile(name);
+			var profile = GetProfile(name);
 			if (profile == null)
 				return false;
 			model.ApplyProfile(profile);
@@ -83,17 +65,15 @@ namespace ZetSwitch
 		}
 
 		public Profile New() {
-			Profile profile = new Profile();
-			profile.Name = GetNewProfileName();
-			profile.Browsers = model.GetBrowsers();
+			var profile = new Profile {Name = GetNewProfileName(), Browsers = model.GetBrowsers()};
 			return profile;
 		}
 
 		public Profile Clone(string name) {
-			Profile old = null;
-			if ((old= profiles.Find(o => o.Name == name)) == null)
+			Profile old;
+			if ((old = profiles.Find(o => o.Name == name)) == null)
 				return New();
-			return old.cloneProfile();
+			return old.CloneProfile();
 		}
 
 		public void Add(Profile profile) {
@@ -103,13 +83,13 @@ namespace ZetSwitch
 		}
 
 		public void Delete(string name) {
-			Profile profile = null;
+			Profile profile;
 			if ((profile = profiles.Find(o => o.Name == name)) != null)
 				profiles.Remove(profile);
 		}
 
 		public void Change(string oldName, Profile profile) {
-			Profile old = profiles.Find(item => item.Name == oldName);
+			var old = profiles.Find(item => item.Name == oldName);
 			if (old != null) {
 				int index = profiles.IndexOf(old);
 				profiles.Remove(old);
@@ -124,12 +104,10 @@ namespace ZetSwitch
 			string newName = newNameBase;
 			int offset = 1;
 			while (profiles.Find(o => o.Name == newName) != null) {
-				newName = newNameBase + " " + offset.ToString();
+				newName = newNameBase + " " + offset.ToString(CultureInfo.InvariantCulture);
 				offset++;
 			}
 			return newName;
 		}
-		#endregion
-
 	}
 }

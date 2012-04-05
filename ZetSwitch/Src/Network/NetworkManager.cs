@@ -21,53 +21,48 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Management;
-using System.Collections;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Threading;
 
-namespace ZetSwitch.Network
-{
-    public class NetworkManager : IDisposable 
-	{
+namespace ZetSwitch.Network {
+	public class NetworkManager : IDisposable {
 		#region variables
 
-		bool disposed = false;
-
-		List<NetworkInterfaceSettings> connections;
-		BackgroundWorker loader = new BackgroundWorker();
-		bool loaded = false;
-		private AutoResetEvent waitingEvent = new AutoResetEvent(false);
+		private readonly List<NetworkInterfaceSettings> connections;
+		private readonly BackgroundWorker loader = new BackgroundWorker();
+		private bool loaded;
+		private bool disposed;
+		private readonly AutoResetEvent waitingEvent = new AutoResetEvent(false);
 
 
 		public event EventHandler DataLoaded;
-		
+
 		#endregion
 
 		~NetworkManager() {
 			Dispose(false);
 		}
 
-		private void loader_DoWork(object o, DoWorkEventArgs e) {
-			BackgroundWorker worker = (BackgroundWorker)o;
+		private void LoaderDoWork(object o, DoWorkEventArgs e) {
+			var worker = (BackgroundWorker) o;
 			connections.Clear();
 			try {
-				ManagementObjectCollection AdaptersCollection = LoadAdapters();
-				if (AdaptersCollection == null)
+				ManagementObjectCollection adaptersCollection = LoadAdapters();
+				if (adaptersCollection == null)
 					return;
 
-				foreach (ManagementObject ObjMo in AdaptersCollection) {
-					if (worker.CancellationPending == true) {
+				foreach (ManagementObject objMo in adaptersCollection) {
+					if (worker.CancellationPending) {
 						e.Cancel = true;
 						connections.Clear();
 						waitingEvent.Set();
 						return;
 					}
 					try {
-						NetworkInterfaceSettings If = new NetworkInterfaceSettings(new AdapterDataHelper(ObjMo));
+						var If = new NetworkInterfaceSettings(new AdapterDataHelper(objMo));
 						connections.Add(If);
 					}
 					catch (Exception ex) {
@@ -89,7 +84,7 @@ namespace ZetSwitch.Network
 			}
 		}
 
-		private void loader_RunWorkerCompleted(object o, RunWorkerCompletedEventArgs e) {
+		private void LoaderRunWorkerCompleted(object o, RunWorkerCompletedEventArgs e) {
 			waitingEvent.Set();
 			if (e.Cancelled)
 				return;
@@ -100,75 +95,56 @@ namespace ZetSwitch.Network
 
 		#region private
 
-		private void SaveDataToRegistry(NetworkInterfaceSettings settings,string ControlSet)
-		{
-			RegistryKey Key = Registry.LocalMachine.CreateSubKey("SYSTEM\\" + ControlSet + "\\Services\\Tcpip\\Parameters\\Interfaces\\" + settings.SettingId);
-			if (Key != null)
-			{
-				string[] Multi = new string[1];
-				if (settings.IsDHCP)
-				{
-					Multi[0] = "";
-					Key.SetValue("EnableDHCP", 1);
-					Key.SetValue("IPAddress", Multi, RegistryValueKind.MultiString);
-					Key.SetValue("SubnetMask", Multi, RegistryValueKind.MultiString);
-					Key.SetValue("DefaultGateway", Multi, RegistryValueKind.MultiString);
+		private void SaveDataToRegistry(NetworkInterfaceSettings settings, string controlSet) {
+			var key =
+				Registry.LocalMachine.CreateSubKey("SYSTEM\\" + controlSet + "\\Services\\Tcpip\\Parameters\\Interfaces\\" +
+				                                   settings.SettingId);
+			if (key != null) {
+				var multi = new string[1];
+				if (settings.IsDHCP) {
+					multi[0] = "";
+					key.SetValue("EnableDHCP", 1);
+					key.SetValue("IPAddress", multi, RegistryValueKind.MultiString);
+					key.SetValue("SubnetMask", multi, RegistryValueKind.MultiString);
+					key.SetValue("DefaultGateway", multi, RegistryValueKind.MultiString);
 				}
-				else
-				{
-					Key.SetValue("EnableDHCP", 0);
-					Multi[0] = settings.IP.ToString();
-					Key.SetValue("IPAddress", Multi, RegistryValueKind.MultiString);
-					Multi[0] = settings.Mask.ToString();
-					Key.SetValue("SubnetMask", Multi, RegistryValueKind.MultiString);
-					Multi[0] = settings.GateWay.ToString();
-					Key.SetValue("DefaultGateway", Multi, RegistryValueKind.MultiString);
+				else {
+					key.SetValue("EnableDHCP", 0);
+					multi[0] = settings.IP.ToString();
+					key.SetValue("IPAddress", multi, RegistryValueKind.MultiString);
+					multi[0] = settings.Mask.ToString();
+					key.SetValue("SubnetMask", multi, RegistryValueKind.MultiString);
+					multi[0] = settings.GateWay.ToString();
+					key.SetValue("DefaultGateway", multi, RegistryValueKind.MultiString);
 				}
 			}
 		}
 
-		private ManagementObjectCollection LoadAdapters()
-		{
-			ManagementObjectCollection AdaptersCollection = null;
-			using (ManagementObjectSearcher objMC = new ManagementObjectSearcher()) {
-				using (ManagementObjectSearcher SearchAdapt = new ManagementObjectSearcher()) {
-					objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
-
-					if (objMC == null) {
-						Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
-						Trace.Flush();
-						return null;
-					}
-					AdaptersCollection = objMC.Get();
-					if (AdaptersCollection == null) {
-						Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
-						Trace.Flush();
-						return null;
-					}
-				}
+		private static ManagementObjectCollection LoadAdapters() {
+			ManagementObjectCollection adaptersCollection;
+			using (var objMC = new ManagementObjectSearcher()) {
+				objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
+				adaptersCollection = objMC.Get();
 			}
-			return AdaptersCollection;
+			return adaptersCollection;
 		}
 
 		#endregion
 
 		#region public
 
-		public NetworkManager()
-		{
+		public NetworkManager() {
 			connections = new List<NetworkInterfaceSettings>();
 			loader.WorkerSupportsCancellation = true;
-			loader.DoWork += new DoWorkEventHandler(loader_DoWork);
-			loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loader_RunWorkerCompleted);
+			loader.DoWork += LoaderDoWork;
+			loader.RunWorkerCompleted += LoaderRunWorkerCompleted;
 		}
 
-		public List<NetworkInterfaceSettings> Connections
-		{
+		public List<NetworkInterfaceSettings> Connections {
 			get { return connections; }
 		}
 
-		public int InterfaceCount
-		{
+		public int InterfaceCount {
 			get { return connections.Count; }
 		}
 
@@ -181,78 +157,56 @@ namespace ZetSwitch.Network
 				loader.RunWorkerAsync();
 		}
 
-		public bool Save(NetworkInterfaceSettings settings)
-		{
-			ManagementObjectCollection AdaptersCollection = null;
+		public bool Save(NetworkInterfaceSettings settings) {
+			ManagementObjectCollection adaptersCollection;
 
-			using (ManagementObjectSearcher objMC = new ManagementObjectSearcher()) {
+			using (var objMC = new ManagementObjectSearcher()) {
 				objMC.Query = new ObjectQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled = True");
 
-				if (objMC == null)
-				{
-					Trace.WriteLine("Nepodarilo se vytvorit tridu Win32_NetworkAdapterConfiguration. Nelze pokracovat");
-					Trace.Flush();
-				}
-
-				AdaptersCollection = objMC.Get();
-				if (AdaptersCollection == null)
-				{
-					Trace.WriteLine("Nepodarilo se ziskat informace o pripojenich");
-					Trace.Flush();
-					return false;
-				}
+				adaptersCollection = objMC.Get();
 			}
 
-			foreach (ManagementObject ObjMo in AdaptersCollection)
-			{
-				if (Convert.ToBoolean(ObjMo["ipEnabled"]) == false)
+			foreach (ManagementObject objMo in adaptersCollection) {
+				if (Convert.ToBoolean(objMo["ipEnabled"]) == false)
 					continue;
 
-				if (settings.SettingId != (string)ObjMo["SettingID"])
+				if (settings.SettingId != (string) objMo["SettingID"])
 					continue;
 
-				ManagementBaseObject objNewIP = null;
-				ManagementBaseObject objSetIP = null;
-				ManagementBaseObject objNewGate = null;
 				//IP
-				if (settings.IsDHCP)
-				{
-					objSetIP = ObjMo.InvokeMethod("EnableDHCP", null, null);
+				if (settings.IsDHCP) {
+					objMo.InvokeMethod("EnableDHCP", null, null);
 				}
-				else
-				{
+				else {
 
-					objNewIP = ObjMo.GetMethodParameters("EnableStatic");
-					objNewGate = ObjMo.GetMethodParameters("SetGateways");
+					ManagementBaseObject objNewIP = objMo.GetMethodParameters("EnableStatic");
+					ManagementBaseObject objNewGate = objMo.GetMethodParameters("SetGateways");
 
-					objNewGate["DefaultIPGateway"] = new string[] { settings.GateWay.ToString() };
-					objNewGate["GatewayCostMetric"] = new int[] { 1 };
+					objNewGate["DefaultIPGateway"] = new[] {settings.GateWay.ToString()};
+					objNewGate["GatewayCostMetric"] = new[] {1};
 
-					objNewIP["IPAddress"] = new string[] { settings.IP.ToString() };
-					objNewIP["SubnetMask"] = new string[] { settings.Mask.ToString() };
+					objNewIP["IPAddress"] = new[] {settings.IP.ToString()};
+					objNewIP["SubnetMask"] = new[] {settings.Mask.ToString()};
 
-					objSetIP = ObjMo.InvokeMethod("EnableStatic", objNewIP, null);
-					objSetIP = ObjMo.InvokeMethod("SetGateways", objNewGate, null);
+					objMo.InvokeMethod("EnableStatic", objNewIP, null);
+					objMo.InvokeMethod("SetGateways", objNewGate, null);
 				}
 
-				ManagementBaseObject objNewDNS = null;
-				objNewDNS = ObjMo.GetMethodParameters("SetDNSServerSearchOrder");
-				string[] Buff = new string[1];
+				ManagementBaseObject objNewDNS = objMo.GetMethodParameters("SetDNSServerSearchOrder");
+				var buff = new string[1];
 
 				if (settings.IsDNSDHCP)
-					Buff = null;
-				else
-				{
-					if (settings.DNS2.m_IP[0] != 0)
-					{
-						Buff = new string[2];
-						Buff[1] = settings.DNS2.ToString();
+					buff = null;
+				else {
+					if (settings.DNS2.IP[0] != 0) {
+						buff = new string[2];
+						buff[1] = settings.DNS2.ToString();
 					}
-					Buff[0] = settings.DNS1.ToString();
+					buff[0] = settings.DNS1.ToString();
 
 				}
-				objNewDNS["DNSServerSearchOrder"] = Buff;
-				objSetIP = ObjMo.InvokeMethod("SetDNSServerSearchOrder", objNewDNS, null);
+				objNewDNS["DNSServerSearchOrder"] = buff;
+				objMo.InvokeMethod("SetDNSServerSearchOrder", objNewDNS, null);
 
 			}
 
@@ -262,10 +216,10 @@ namespace ZetSwitch.Network
 			return true;
 		}
 
-		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings()
-		{
+		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() {
 			return connections;
 		}
+
 		#endregion
 
 		private void Dispose(bool disposing) {

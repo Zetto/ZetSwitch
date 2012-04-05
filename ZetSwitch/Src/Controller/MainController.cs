@@ -20,41 +20,38 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ZetSwitch {
 	public class MainController {
-		IMainView view;
-		IProfileManager manager;
+		readonly IMainView view;
+		readonly IProfileManager manager;
 
 		public MainController(IMainView view, IProfileManager manager) {
 			this.view = view;
 			this.manager = manager;
 
-			view.ApplyProfile += new EventHandler<ProfileEventArgs>(OnApplyProfile);
-			view.RemoveProfile += new EventHandler(OnRemoveProfile);
-            view.ChangeProfile += new EventHandler(OnChangeProfile);
-			view.NewProfile += new EventHandler(OnNewProfile);
-			view.Exit += new EventHandler(OnExit);
-			view.OpenAbout += new EventHandler(OnOpenAbout);
-			view.OpenSettings += new EventHandler(OnOpenSettings);
-			view.CreateShortcut += new EventHandler(OnCreateShortcut);
+			view.ApplyProfile += OnApplyProfile;
+			view.RemoveProfile += OnRemoveProfile;
+            view.ChangeProfile += OnChangeProfile;
+			view.NewProfile += OnNewProfile;
+			view.Exit += OnExit;
+			view.OpenAbout += OnOpenAbout;
+			view.OpenSettings += OnOpenSettings;
+			view.CreateShortcut += OnCreateShortcut;
 		}
 
 		void OnCreateShortcut(object sender, EventArgs e) {
-			string profile = view.GetSelectedProfile();
+			var profile = view.GetSelectedProfile();
 			if (profile == null)
 				return;
-			Profile p = manager.GetProfile(profile);
-			IShortcutCreator shortcut = ClientServiceLocator.GetService<IShortcutCreator>();
+			var p = manager.GetProfile(profile);
+			var shortcut = ClientServiceLocator.GetService<IShortcutCreator>();
 			shortcut.CreateProfileLnk(p);
 		}
 
 		private void OnApplyProfile(object sender, ProfileEventArgs e) {
-			string profile = e == null ? view.GetSelectedProfile() : e.Name;
+			var profile = e == null ? view.GetSelectedProfile() : e.Name;
 			if (profile == null)
 				return;
 			if (!view.AskToApplyProfile(profile))
@@ -84,7 +81,7 @@ namespace ZetSwitch {
 			if (name == null)
 				return;
 			Profile profile = manager.Clone(name);
-            using (ProfileForm dlg = new ProfileForm(false, profile, (ProfileManager)manager))
+            using (var dlg = new ProfileForm(false, profile, (ProfileManager)manager))
             {
 				if (dlg.ShowDialog() == DialogResult.OK) {
 					manager.Change(name, profile);
@@ -95,8 +92,8 @@ namespace ZetSwitch {
 		}
 
 		private void OnNewProfile(object sender, EventArgs e) {
-			Profile profile = manager.New();
-            using (ProfileForm dlg = new ProfileForm(true, profile, (ProfileManager)manager)) {
+			var profile = manager.New();
+            using (var dlg = new ProfileForm(true, profile, (ProfileManager)manager)) {
 				if (dlg.ShowDialog() == DialogResult.OK) {
 					manager.Add(profile);
 					view.ReloadList();
@@ -110,13 +107,13 @@ namespace ZetSwitch {
 		}
 
 		private void OnOpenSettings(object sender, EventArgs e) {
-			ISettingsController controler = ClientServiceLocator.GetService<ISettingsController>();
+			var controler = ClientServiceLocator.GetService<ISettingsController>();
 			if (controler.Show())
 				view.ResetLanguage();
 		}
 
 		private void OnOpenAbout(object sender, EventArgs e) {
-			IAboutController controler = ClientServiceLocator.GetService<IAboutController>();
+			var controler = ClientServiceLocator.GetService<IAboutController>();
 			controler.Show();
 		}
 	}

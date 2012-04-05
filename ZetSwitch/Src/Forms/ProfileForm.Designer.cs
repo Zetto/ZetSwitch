@@ -96,7 +96,7 @@
 			this.ButtonPictureChange.TabIndex = 32;
 			this.ButtonPictureChange.Text = "Change";
 			this.ButtonPictureChange.UseVisualStyleBackColor = true;
-			this.ButtonPictureChange.Click += new System.EventHandler(this.ButtonPictureChange_Click);
+			this.ButtonPictureChange.Click += new System.EventHandler(this.ButtonPictureChangeClick);
 			// 
 			// CButton
 			// 
@@ -107,7 +107,7 @@
 			this.CButton.TabIndex = 40;
 			this.CButton.Text = "Cancel";
 			this.CButton.UseVisualStyleBackColor = true;
-			this.CButton.Click += new System.EventHandler(this.CButton_Click);
+			this.CButton.Click += new System.EventHandler(this.CButtonClick);
 			// 
 			// OkButton
 			// 
@@ -117,7 +117,7 @@
 			this.OkButton.TabIndex = 39;
 			this.OkButton.Text = "Ok";
 			this.OkButton.UseVisualStyleBackColor = true;
-			this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
+			this.OkButton.Click += new System.EventHandler(this.OkButtonClick);
 			// 
 			// label7
 			// 
@@ -150,7 +150,7 @@
 			this.ListBoxInterfaces.Name = "ListBoxInterfaces";
 			this.ListBoxInterfaces.Size = new System.Drawing.Size(183, 184);
 			this.ListBoxInterfaces.TabIndex = 28;
-			this.ListBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.ListBoxInterfaces_SelectedIndexChanged);
+			this.ListBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.ListBoxInterfacesSelectedIndexChanged);
 			// 
 			// TabControl
 			// 
@@ -162,7 +162,7 @@
 			this.TabControl.SelectedIndex = 0;
 			this.TabControl.Size = new System.Drawing.Size(257, 318);
 			this.TabControl.TabIndex = 42;
-			this.TabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
+			this.TabControl.SelectedIndexChanged += new System.EventHandler(this.TabControlSelectedIndexChanged);
 			// 
 			// tabPageIP
 			// 

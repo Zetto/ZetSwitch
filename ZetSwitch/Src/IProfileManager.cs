@@ -1,5 +1,4 @@
-﻿using System;
-namespace ZetSwitch {
+﻿namespace ZetSwitch {
 	public interface IProfileManager {
 		Profile New();
 		Profile Clone(string name);

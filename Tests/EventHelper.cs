@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using Rhino.Mocks;
 using Is = Rhino.Mocks.Constraints.Is;
 using Rhino.Mocks.Interfaces;
@@ -8,7 +6,7 @@ using Rhino.Mocks.Interfaces;
 
 namespace Tests {
 	class EventHelper {
-		IEventRaiser raiser;
+		readonly IEventRaiser raiser;
 
 		public delegate void EventDelegate();
 

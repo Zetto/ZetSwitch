@@ -21,25 +21,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
+using System.Linq;
 using ZetSwitch.Browsers;
 using ZetSwitch.Network;
 
-namespace ZetSwitch
-{
-	public class DataModel : IDisposable
-	{
-		NetworkManager interfaceManager = new NetworkManager();
-		Dictionary<BROWSERS, Browser> browsers = new Dictionary<BROWSERS, Browser>();
+namespace ZetSwitch {
+	public class DataModel : IDisposable {
+		private readonly NetworkManager interfaceManager = new NetworkManager();
+		private readonly Dictionary<BROWSERS, Browser> browsers = new Dictionary<BROWSERS, Browser>();
 
-		bool disposed = false;
-		
-		public DataModel()
-		{
-			browsers[BROWSERS.IE] = BrowserFactory.createBrowser(BROWSERS.IE);
-			browsers[BROWSERS.FIREFOX] = BrowserFactory.createBrowser(BROWSERS.FIREFOX);
-			interfaceManager.DataLoaded += new EventHandler(interfaceManager_DataLoaded);
+		private bool disposed;
+
+		public DataModel() {
+			browsers[BROWSERS.Ie] = BrowserFactory.CreateBrowser(BROWSERS.Ie);
+			browsers[BROWSERS.Firefox] = BrowserFactory.CreateBrowser(BROWSERS.Firefox);
+			interfaceManager.DataLoaded += InterfaceManagerDataLoaded;
 		}
 
 		~DataModel() {
@@ -50,7 +46,7 @@ namespace ZetSwitch
 			return interfaceManager.IsLoaded();
 		}
 
-		private void interfaceManager_DataLoaded(object o, EventArgs e) {
+		private void InterfaceManagerDataLoaded(object o, EventArgs e) {
 			if (DataLoaded != null)
 				DataLoaded(this, null);
 		}
@@ -64,24 +60,19 @@ namespace ZetSwitch
 			return true;
 		}
 
-		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() 
-		{
+		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() {
 			return new List<NetworkInterfaceSettings>(interfaceManager.GetNetworkInterfaceSettings());
 		}
 
-		public Dictionary<BROWSERS, Browser> GetBrowsers()
-		{
+		public Dictionary<BROWSERS, Browser> GetBrowsers() {
 			return new Dictionary<BROWSERS, Browser>(browsers);
 		}
 
-		public bool ApplyProfile(Profile profile) 
-		{
+		public bool ApplyProfile(Profile profile) {
 			// TODO: MAC address
 			// TODO: browsers
-			foreach (ProfileNetworkSettings settings in profile.Connections)
-			{
-				if (settings.Use /*&& settings.UseNetwork*/)
-					interfaceManager.Save(settings.Settings);
+			foreach (ProfileNetworkSettings settings in profile.Connections.Where(settings => settings.Use)) {
+				interfaceManager.Save(settings.Settings);
 			}
 			return true;
 		}

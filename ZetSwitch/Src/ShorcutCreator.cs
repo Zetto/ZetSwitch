@@ -10,13 +10,21 @@ namespace ZetSwitch {
 		void CreateProfileLnk(Profile profile);
 	}
 
-	class ShorcutCreator : IShortcutCreator {
+	internal class ShorcutCreator : IShortcutCreator {
 		public void CreateProfileLnk(Profile profile) {
-			WshShellClass wshShell = new WshShellClass();
-			IWshRuntimeLibrary.IWshShortcut shortcut;
-			shortcut = (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\"+profile.Name+".lnk");
+			var wshShell = new WshShellClass();
+			var shortcut =
+				wshShell.CreateShortcut(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\" + profile.Name +
+				                        ".lnk") as IWshShortcut;
+			if (shortcut == null)
+				return;
+
 			shortcut.TargetPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-			shortcut.WorkingDirectory = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).Directory.FullName;
+			var directoryInfo = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).Directory;
+			if (directoryInfo == null)
+				return;
+
+			shortcut.WorkingDirectory = directoryInfo.FullName;
 			shortcut.Arguments = "-p " + profile.Name;
 			shortcut.Save();
 		}

@@ -51,9 +51,9 @@ namespace ZetSwitch {
 
 		string GetSelectedProfile();
 		void GoToTray();
-		void SetSelectByName(string Name);
+		void SetSelectByName(string name);
 
-		void closeView();
+		void CloseView();
 
 		bool AskToApplyProfile(string name);
 	}

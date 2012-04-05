@@ -66,7 +66,7 @@
 			this.comboBoxLang.Size = new System.Drawing.Size(121, 21);
 			this.comboBoxLang.TabIndex = 35;
 			this.comboBoxLang.Text = "Česky";
-			this.comboBoxLang.SelectedIndexChanged += new System.EventHandler(this.comboBoxLang_SelectedIndexChanged);
+			this.comboBoxLang.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLangSelectedIndexChanged);
 			// 
 			// buttonOk
 			// 
@@ -76,7 +76,7 @@
 			this.buttonOk.TabIndex = 37;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+			this.buttonOk.Click += new System.EventHandler(this.ButtonOkClick);
 			// 
 			// buttonCancel
 			// 
@@ -87,7 +87,7 @@
 			this.buttonCancel.TabIndex = 38;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancelClick);
 			// 
 			// Setting
 			// 

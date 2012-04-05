@@ -20,24 +20,15 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Configuration;
-using System.Diagnostics;
-using System.Collections;
 using ZetSwitch.Network;
 
 namespace ZetSwitch
 {
 
     public partial class MainForm : Form, IMainView {
-        
-        ProfileManager profiles;
+    	readonly ProfileManager profiles;
 
         public MainForm(ProfileManager profiles) {
             this.profiles = profiles;
@@ -52,8 +43,8 @@ namespace ZetSwitch
 			ImgCollection.Instance.PathToImages = Application.StartupPath + Properties.Settings.Default.ImagesPath;
         }
 
-		void onNotifyApplyClick(object sender, EventArgs e) {
-			ToolStripItem item = sender as ToolStripItem;
+		void OnNotifyApplyClick(object sender, EventArgs e) {
+			var item = sender as ToolStripItem;
 			if (item == null || ApplyProfile == null)
 				return;
 			ApplyProfile(this, new ProfileEventArgs(item.Text));
@@ -61,61 +52,58 @@ namespace ZetSwitch
        
 		private bool CreateMenuList() {
 			contextMenuTray.Items.Clear();
-			contextMenuTray.Items.Add(Language.GetText("ProfileNew"),null,New_Click);
+			contextMenuTray.Items.Add(Language.GetText("ProfileNew"),null,NewClick);
 
 			if (ListBoxItems.Items.Count != 0)
 				contextMenuTray.Items.Add("-");
 
-			foreach (string Text in ListBoxItems.Items) {
-				contextMenuTray.Items.Add(Text,null,onNotifyApplyClick);
+			foreach (string text in ListBoxItems.Items) {
+				contextMenuTray.Items.Add(text,null,OnNotifyApplyClick);
 			}
 
 			if (ListBoxItems.Items.Count != 0)
 				contextMenuTray.Items.Add("-");
-			contextMenuTray.Items.Add(Language.GetText("Exit"), null, exitToolStripMenuItem1_Click);
+			contextMenuTray.Items.Add(Language.GetText("Exit"), null, ExitToolStripMenuItem1Click);
 
 			return true;
 		}
 
 		public void ResetLanguage() {
-			this.fileToolStripMenuItem1.Text = Language.GetText("MenuFile");
-			this.newProfileToolStripMenuItem1.Text = Language.GetText("ProfileNew");
-			this.deleteProfileToolStripMenuItem.Text = Language.GetText("ProfileDelete");
-			this.exitToolStripMenuItem1.Text = Language.GetText("Exit");
-			this.actionToolStripMenuItem1.Text = Language.GetText("MenuAction");
-			this.applyProfileToolStripMenuItem1.Text = Language.GetText("ProfileApply");
-			this.changeProfileToolStripMenuItem1.Text = Language.GetText("ProfileChange");
-			this.helpToolStripMenuItem1.Text = Language.GetText("MenuHelp");
-			this.aaboutToolStripMenuItem.Text = Language.GetText("MenuAbout");
-			this.desktopShortcut.Text = Language.GetText("DesktopShortcut");
-			this.toolStripButton1.Text = Language.GetText("Apply");
-			this.toolStripButton2.Text = Language.GetText("New");
-			this.toolStripButton3.Text = Language.GetText("Change");
-			this.toolStripButton4.Text = Language.GetText("Delete");
-			this.labelVersion.Text = Language.GetText("StatusBarVer") + Properties.Resources.Version;
-			this.newProfileToolStripMenuItem.Text = Language.GetText("ProfileApply");
-			this.createProfileToolStripMenuItem.Text = Language.GetText("ProfileNew");
-			this.changeProfileToolStripMenuItem.Text = Language.GetText("ProfileChange");
-			this.deleteProfileToolStripMenuItem1.Text = Language.GetText("ProfileDelete");
-			this.NotifyIcon.Text = Language.GetText("TrayOpen");
-			this.nastaveniToolStripMenuItem.Text = Language.GetText("Settings");
-
-			return;
+			fileToolStripMenuItem1.Text = Language.GetText("MenuFile");
+			newProfileToolStripMenuItem1.Text = Language.GetText("ProfileNew");
+			deleteProfileToolStripMenuItem.Text = Language.GetText("ProfileDelete");
+			exitToolStripMenuItem1.Text = Language.GetText("Exit");
+			actionToolStripMenuItem1.Text = Language.GetText("MenuAction");
+			applyProfileToolStripMenuItem1.Text = Language.GetText("ProfileApply");
+			changeProfileToolStripMenuItem1.Text = Language.GetText("ProfileChange");
+			helpToolStripMenuItem1.Text = Language.GetText("MenuHelp");
+			aaboutToolStripMenuItem.Text = Language.GetText("MenuAbout");
+			desktopShortcut.Text = Language.GetText("DesktopShortcut");
+			toolStripButton1.Text = Language.GetText("Apply");
+			toolStripButton2.Text = Language.GetText("New");
+			toolStripButton3.Text = Language.GetText("Change");
+			toolStripButton4.Text = Language.GetText("Delete");
+			labelVersion.Text = Language.GetText("StatusBarVer") + Properties.Resources.Version;
+			newProfileToolStripMenuItem.Text = Language.GetText("ProfileApply");
+			createProfileToolStripMenuItem.Text = Language.GetText("ProfileNew");
+			changeProfileToolStripMenuItem.Text = Language.GetText("ProfileChange");
+			deleteProfileToolStripMenuItem1.Text = Language.GetText("ProfileDelete");
+			NotifyIcon.Text = Language.GetText("TrayOpen");
+			nastaveniToolStripMenuItem.Text = Language.GetText("Settings");
 		}
 
         public void ReloadList() {
             ListBoxItems.Items.Clear();
-            foreach (Profile profile in profiles.Profiles) {
+            foreach (var profile in profiles.Profiles) {
                 ListBoxItems.Items.Add(profile.Name);
             }
         }
 
-        public void SetSelectByName(string Name) {
-            int i = ListBoxItems.FindStringExact(Name);
+        public void SetSelectByName(string name) {
+            var i = ListBoxItems.FindStringExact(name);
             if (i < 0) {
                 if (ListBoxItems.SelectedIndex < 0 && ListBoxItems.Items.Count > 0)
                     ListBoxItems.SetSelected(0, true);
-                return;
             }
             else {
                 if (!(ListBoxItems.SelectedIndex < 0))
@@ -125,7 +113,7 @@ namespace ZetSwitch
         }
 
 		public void GoToTray() {
-			this.NotifyIcon.Visible = true;
+			NotifyIcon.Visible = true;
 			Hide();
 		}
 
@@ -147,8 +135,8 @@ namespace ZetSwitch
 			return ListBoxItems.SelectedItem.ToString();
 		}
 
-		public void closeView() {
-			this.Close();
+		public void CloseView() {
+			Close();
 		}
 
 		public bool AskToApplyProfile(string profile) {
@@ -158,29 +146,29 @@ namespace ZetSwitch
 
 		#region handlers
 
-		private void MainForm_SizeChange(object sender, EventArgs e)
+		private void MainFormSizeChange(object sender, EventArgs e)
 		{
 			ReloadList();
 		}
 
-		private void New_Click(object sender, EventArgs e) {
+		private void NewClick(object sender, EventArgs e) {
 			NewProfileFunc();
 		}
 
-		private void Delete_Click(object sender, EventArgs e) {
+		private void DeleteClick(object sender, EventArgs e) {
 			DeleteActualProfile();
 		}
 
 		//apply
-		private void Apply_Click(object sender, EventArgs e) {
+		private void ApplyClick(object sender, EventArgs e) {
 			ApplyProfileFunc();
 		}
 
-		private void Change_Click(object sender, EventArgs e) {
+		private void ChangeClick(object sender, EventArgs e) {
 			ChangeProfileFunc();
 		}
 
-		private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void AboutToolStripMenuItemClick(object sender, EventArgs e) {
 			if (OpenAbout != null) {
 				OpenAbout(this, null);
 			}
@@ -194,7 +182,6 @@ namespace ZetSwitch
 		private void NewProfileFunc() {
 			if (NewProfile != null)
 				NewProfile(this, null);
-			return;
 		}
 
 		private void ChangeProfileFunc() {
@@ -207,7 +194,7 @@ namespace ZetSwitch
 				ApplyProfile(this, null);
 		}
 
-		private void desktopShortcut_Click(object sender, EventArgs e) {
+		private void DesktopShortcutClick(object sender, EventArgs e) {
 			if (CreateShortcut != null)
 				CreateShortcut(this, null);
 		}
@@ -218,89 +205,82 @@ namespace ZetSwitch
 			
 		}
 
-		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+		private void MainFormFormClosed(object sender, FormClosedEventArgs e) {
 			this.NotifyIcon.Dispose(); //todo: dat nekam do dza
 			ExitFunc();
 		}
 
-		private void ListBoxItems_DoubleClick(object sender, EventArgs e) {
+		private void ListBoxItemsDoubleClick(object sender, EventArgs e) {
 			ApplyProfileFunc();
 		}
 
-		private void exitToolStripMenuItem1_Click(object sender, EventArgs e) {
+		private void ExitToolStripMenuItem1Click(object sender, EventArgs e) {
 			Close();
 		}
 
 
-		private void ListBoxItems_MouseClick(object sender, MouseEventArgs e) {
-			if (e.Button == MouseButtons.Right) {
-				Point Loc = ListBoxItems.PointToScreen(new Point(e.X, e.Y));
-				for (int i = 0; i < ListBoxItems.Items.Count; i++) {
-					Rectangle Rec = ListBoxItems.GetItemRectangle(i);
-					if (Rec.X <= e.X && (Rec.X + Rec.Width) >= e.X && Rec.Y <= e.Y && (Rec.Y + Rec.Height) >= e.Y) {
-						ItemContextMenu.Items[0].Enabled = true;
-						ItemContextMenu.Items[2].Enabled = true;
-						ItemContextMenu.Items[3].Enabled = true;
-						ItemContextMenu.Items[4].Enabled = true;
-						ListBoxItems.ClearSelected();
-						ListBoxItems.SetSelected(i, true);
-						ItemContextMenu.Show(Loc);
-						return;
-					}
+		private void ListBoxItemsMouseClick(object sender, MouseEventArgs e) {
+			if (e.Button != MouseButtons.Right) return;
+			var loc = ListBoxItems.PointToScreen(new Point(e.X, e.Y));
+			for (int i = 0; i < ListBoxItems.Items.Count; i++) {
+				var rec = ListBoxItems.GetItemRectangle(i);
+				if (rec.X <= e.X && (rec.X + rec.Width) >= e.X && rec.Y <= e.Y && (rec.Y + rec.Height) >= e.Y) {
+					ItemContextMenu.Items[0].Enabled = true;
+					ItemContextMenu.Items[2].Enabled = true;
+					ItemContextMenu.Items[3].Enabled = true;
+					ItemContextMenu.Items[4].Enabled = true;
+					ListBoxItems.ClearSelected();
+					ListBoxItems.SetSelected(i, true);
+					ItemContextMenu.Show(loc);
+					return;
 				}
-				ItemContextMenu.Items[0].Enabled = false;
-				ItemContextMenu.Items[3].Enabled = false;
-				ItemContextMenu.Items[4].Enabled = false;
-				ItemContextMenu.Show(Loc);
 			}
-			return;
+			ItemContextMenu.Items[0].Enabled = false;
+			ItemContextMenu.Items[3].Enabled = false;
+			ItemContextMenu.Items[4].Enabled = false;
+			ItemContextMenu.Show(loc);
 		}
 
 
-		private void settingsToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void SettingsToolStripMenuItemClick(object sender, EventArgs e) {
 			if (OpenSettings != null)
 				OpenSettings(this, null);
 		}
 		
-		void NotifyIcon_DoubleClick(object sender, System.EventArgs e) {
+		void NotifyIconDoubleClick(object sender, EventArgs e) {
 			Show();
 			WindowState = FormWindowState.Normal;
-			this.NotifyIcon.Visible = false;
+			NotifyIcon.Visible = false;
 		}
 
-		void NotifyIcon_Click(object sender, MouseEventArgs e) {
-			if (e.Button == MouseButtons.Right)
+		void NotifyIconClick(object sender, MouseEventArgs e) {
+			if (e.Button != MouseButtons.Right) return;
+			if (CreateMenuList())
 			{
-				if (CreateMenuList())
-				{
-					contextMenuTray.Visible = true;
-				}
+				contextMenuTray.Visible = true;
 			}
 		}
 
-		void MainForm_Resize(object sender, System.EventArgs e) {
+    	void MainFormResize(object sender, EventArgs e) {
 			if (FormWindowState.Minimized == WindowState)
 			{
 				GoToTray();
 			}
 		}
-		
-		void contextMenuTray_LostFocus(object sender, System.EventArgs e) {
-			contextMenuTray.Hide();
-		}
 
-		private void ListBoxItems_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e) {
-			Rectangle rc = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height - 5);
+    	private void ListBoxItemsDrawItem(object sender, DrawItemEventArgs e) {
+			var rc = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height - 5);
 
 			if (e.Index < 0)
 				return;
 
-			ListBox List = (ListBox)sender;
-			string str = (string)List.Items[e.Index];
-			Profile profile = profiles.GetProfile(str);
-			NetworkInterfaceSettings settings;
+			var list = (ListBox)sender;
+			var str = (string)list.Items[e.Index];
+			var profile = profiles.GetProfile(str);
+			if (profile == null)
+				return;
 
-			StringFormat sf = null;
+    		StringFormat sf = null;
 			Brush br = null, solid = null, selected = null, nonselected = null;
 			Font titleFont = null, ipFont = null;
 
@@ -330,16 +310,10 @@ namespace ZetSwitch
 
 				//draw ip address
 
-				if (profile != null && profile.Connections.Count != 0) {
-					settings = profile.Connections[0].Settings;
+				if (profile.Connections.Count != 0) {
+					NetworkInterfaceSettings settings = profile.Connections[0].Settings;
 					sf.Alignment = StringAlignment.Far;
-					if (settings.IsDHCP) {
-						e.Graphics.DrawString("DHCP", ipFont, br, rc, sf);
-					}
-					else {
-						e.Graphics.DrawString(settings.IP.ToString(), ipFont, br, rc, sf);
-					}
-
+					e.Graphics.DrawString(settings.IsDHCP ? "DHCP" : settings.IP.ToString(), ipFont, br, rc, sf);
 				}
 			}
 			finally {
@@ -359,19 +333,18 @@ namespace ZetSwitch
 			}
 			else
 			{
-				string fileName = profile.IconFile;
+				var fileName = profile.IconFile;
 				try
 				{
-					Bitmap Bit = ImgCollection.Instance.GetImage(fileName);
-					e.Graphics.DrawImage(Bit, new Point(1, e.Bounds.Y));
+					var bit = ImgCollection.Instance.GetImage(fileName);
+					e.Graphics.DrawImage(bit, new Point(1, e.Bounds.Y));
 				}
 				catch (Exception)
 				{
 					e.Graphics.DrawImage(Properties.Resources._default, new Point(1, e.Bounds.Y));
 				}
 			}
-			return;
-		}
+    	}
 
 
 		#endregion

@@ -21,66 +21,52 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
 using System.IO;
-using System.Collections;
-using System.Windows.Forms;
-using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 
 using ZetSwitch.Browsers;
 using ZetSwitch.Network;
 
 
-namespace ZetSwitch
-{
+namespace ZetSwitch {
 	[Serializable]
-    public class Profile 
-    {
-        string name;
-        string iconFile;
-		bool useBrowser;
+	public class Profile {
+		private string iconFile;
+		private bool useBrowser;
 
 		protected ProfileNetworkSettingsList connections;
 		protected Dictionary<BROWSERS, Browser> browsers;
 
-		public Profile()
-        {
-			name = "New";
+		public Profile() {
+			Name = "New";
 			iconFile = "default";
 			useBrowser = false;
 			connections = new ProfileNetworkSettingsList();
 			browsers = new Dictionary<BROWSERS, Browser>();
-        }
+		}
 
-		public Profile(Profile other)
-		{
-			name = other.name;
+		public Profile(Profile other) {
+			Name = other.Name;
 			iconFile = other.iconFile;
 			useBrowser = other.useBrowser;
 			connections = new ProfileNetworkSettingsList(other.connections);
 			browsers = new Dictionary<BROWSERS, Browser>(other.browsers);
 		}
 
-		public Profile cloneProfile() 
-		{
-			Profile result = null;
+		public Profile CloneProfile() {
+			Profile result;
 
-			using (MemoryStream ms = new MemoryStream())
-			{
+			using (var ms = new MemoryStream()) {
 				var formatter = new BinaryFormatter();
 				formatter.Serialize(ms, this);
 				ms.Position = 0;
-				result = (Profile)formatter.Deserialize(ms);
+				result = (Profile) formatter.Deserialize(ms);
 			}
 
 			return result;
 		}
 
-		public ProfileNetworkSettingsList Connections
-		{
+		public ProfileNetworkSettingsList Connections {
 			get { return connections; }
 			set { connections = value; }
 		}
@@ -89,43 +75,35 @@ namespace ZetSwitch
 			return connections.Contains(name);
 		}
 
-		public Dictionary<BROWSERS, Browser> Browsers
-		{
+		public Dictionary<BROWSERS, Browser> Browsers {
 			set { browsers = value; }
 		}
 
-		public bool UseBrowser
-		{
+		public bool UseBrowser {
 			get { return useBrowser; }
 			set { useBrowser = value; }
 		}
-		
-		public Browser GetBrowser(BROWSERS browser) 
-		{
+
+		public Browser GetBrowser(BROWSERS browser) {
 			return browsers[browser];
 		}
 
-		public List<string> GetNetworkInterfaceNames()
-		{
+		public List<string> GetNetworkInterfaceNames() {
 			return connections.GetNetworkInterfaceNames();
 		}
 
-		public void SetSelectedInterfaces(List<string> names)
-		{
+		public void SetSelectedInterfaces(List<string> names) {
 		}
 
-		public void PrepareSave()
-		{
+		public void PrepareSave() {
 			connections.PrepareSave();
 		}
 
-		public bool IsNetworkInterfaceInProfile(string name)
-		{
+		public bool IsNetworkInterfaceInProfile(string name) {
 			return connections.IsUsed(name);
 		}
 
-		public void UseNetworkInterface(string name, bool use)
-		{
+		public void UseNetworkInterface(string name, bool use) {
 			connections.UseNetworkInterface(name, use);
 		}
 
@@ -133,29 +111,22 @@ namespace ZetSwitch
 			connections.RemoveUnused();
 		}
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+		public string Name { get; set; }
 
-        public string IconFile
-        {
-            get { return iconFile; }
-            set { iconFile = value; }
-        }
-
-		public override int GetHashCode()
-		{
-			return name.GetHashCode();
+		public string IconFile {
+			get { return iconFile; }
+			set { iconFile = value; }
 		}
 
-		public override bool Equals(object obj)
-		{
-			Profile other = (Profile)obj;
+		public override int GetHashCode() {
+			return Name.GetHashCode();
+		}
+
+		public override bool Equals(object obj) {
+			var other = obj as Profile;
 			if (other == null)
 				return false;
-			return other.Name == name;
+			return other.Name == Name;
 		}
 
 		internal void AddNetworkInterface(NetworkInterfaceSettings setting) {

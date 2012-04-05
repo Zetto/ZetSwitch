@@ -20,33 +20,29 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ZetSwitch {
 	public class WelcomeController {
-		IViewFactory factory;
+		readonly IViewFactory factory;
 		public WelcomeController(IViewFactory factory) {
 			this.factory = factory;
 		}
 
 		public void TryShow() {
-			IUserConfiguration config = ClientServiceLocator.GetService<IUserConfiguration>();
-			ConfigurationState state = config.LoadConfiguration();
+			var config = ClientServiceLocator.GetService<IUserConfiguration>();
+			var state = config.LoadConfiguration();
 			if (!state.ShowWelcome)
 				return;
-			using (IWelcomeView view = factory.CreateWelcomeView()) {
+			using (var view = factory.CreateWelcomeView()) {
 				view.LanguageChanged += new EventHandler( (o,e) => {
-					config.SaveConfigurate(state); 
-					view.ResetLanguage();
-				});
+				                                          	config.SaveConfigurate(state);
+				                                          	if (view != null) view.ResetLanguage();
+				                                          });
 
 				view.SetState(state);
 				view.ShowView();
 				config.SaveConfigurate(state);
 			}
-			return;
 		}
 	}
 }

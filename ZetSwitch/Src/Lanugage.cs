@@ -21,46 +21,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Text;
 using System.IO;
 using System.Windows.Forms;
 
 namespace ZetSwitch
 {
 	public class LanguageDescription {
-		string name = "";
-		string shortName = "";
+		public string Name { get; private set; }
 
-		public string Name {
-			get { return name; }
+		public string ShortName { get; private set; }
+
+		public LanguageDescription() {
+			ShortName = "";
+			Name = "";
 		}
 
-		public string ShortName {
-			get { return shortName; }
-		}
-		
-		public LanguageDescription() { }
 		public LanguageDescription(string name, string shortName) {
-			this.name = name;
-			this.shortName = shortName;
+			Name = name;
+			ShortName = shortName;
 		}
 	}
 	
-    class LanguagesStore
-    {
-		List<LanguageDescription> languages;
-		static LanguageDescription defaultLanguage = new LanguageDescription(@"English", @"en");
-		bool listLoaded = false;
+    class LanguagesStore {
+		static readonly LanguageDescription DefaultLanguage = new LanguageDescription(@"English", @"en");
+		readonly List<LanguageDescription> languages;
+		bool listLoaded;
 
 		public LanguagesStore() {
-			languages = new List<LanguageDescription>();
-			languages.Add(defaultLanguage);
+			languages = new List<LanguageDescription> {DefaultLanguage};
 		}
 
 		public Dictionary<string, string> LoadDefaultLanguage() {
 			Dictionary<string, string> words;
-			using (StringReader reader = new StringReader(Properties.Resources.DefaultLang)) {
+			using (var reader = new StringReader(Properties.Resources.DefaultLang)) {
 				words = LoadData(reader);
 			}
 			return words;
@@ -68,19 +61,18 @@ namespace ZetSwitch
 
 		public Dictionary<string, string> LoadLanguage(string name) {
 			Dictionary<string, string> words;
-			using (StreamReader reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + name + ".lng")) {
+			using (var reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + name + ".lng")) {
 				words = LoadData(reader);
 			}
 			return words;
 		}
 
 		private Dictionary<string, string> LoadData(TextReader read) {
-			Dictionary<string, string> words = new Dictionary<string, string>();
+			var words = new Dictionary<string, string>();
             string line;
-			string[] buf = new string[2];
 			while ((line = read.ReadLine()) != null) {
-				buf = line.Split(';');
-				if (buf == null || buf.Length != 2 || buf[0] == null || buf[1] == null)
+				string[] buf = line.Split(';');
+				if (buf.Length != 2 || buf[0] == null || buf[1] == null)
 					continue;
 				words.Add(buf[0], buf[1]);
 			}
@@ -98,10 +90,9 @@ namespace ZetSwitch
 			try {
 				reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\languages.info");
 				string line;
-				string[] buf = new string[2];
 				while ((line = reader.ReadLine()) != null) {
-					buf = line.Split(';');
-					if (buf == null || buf.Length != 2 || buf[0] == null || buf[1] == null)
+					string[] buf = line.Split(';');
+					if (buf.Length != 2 || buf[0] == null || buf[1] == null)
 						continue;
 					if (languages.Find(i=>i.Name==buf[0]) != null)
 						continue;
@@ -121,8 +112,7 @@ namespace ZetSwitch
 		
     }
 
-    static class Language
-    {
+    static class Language {
 		static Dictionary<string, string> actualLang;
 		static Dictionary<string, string> defaultLang;
        
@@ -131,11 +121,11 @@ namespace ZetSwitch
 			defaultLang = new Dictionary<string, string>();
         }
 
-        static public string GetText(string ID) {
-			string Text = actualLang.ContainsKey(ID) ? actualLang[ID] : null ;
-            if (Text == null || Text.Length == 0) 
-                return defaultLang.ContainsKey(ID) ? defaultLang[ID] : "";
-            return Text;
+        static public string GetText(string id) {
+			string text = actualLang.ContainsKey(id) ? actualLang[id] : null ;
+            if (string.IsNullOrEmpty(text)) 
+                return defaultLang.ContainsKey(id) ? defaultLang[id] : "";
+            return text;
         }
 
 		static public void LoadDefault(LanguagesStore store) {

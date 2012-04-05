@@ -20,51 +20,33 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-namespace ZetSwitch.Forms
-{
-	public partial class ExceptionForm : Form
-	{
-		public ExceptionForm(string trace)
-		{
+namespace ZetSwitch.Forms {
+	public partial class ExceptionForm : Form {
+		public ExceptionForm(string trace) {
 			InitializeComponent();
 			textTrace.Text = trace;
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
-		{
+		private void OkClick(object sender, EventArgs e) {
 			Close();
 		}
 
-		private void btnMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			try
-			{
+		private void MailLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+			try {
 				System.Diagnostics.Process.Start("mailto:tomas.skarecky@gmail.com");
 			}
-			catch (System.ComponentModel.Win32Exception noBrowser)
-			{
+			catch (System.ComponentModel.Win32Exception noBrowser) {
 				if (noBrowser.ErrorCode == -2147467259)
 					MessageBox.Show(noBrowser.Message);
 			}
-			catch (System.Exception)
-			{
-
-			}
 		}
 
-		private void ResetLanguage()
-		{
-			this.lblMessage.Text = Language.GetText("ExecptionError");
-			this.lblAttach.Text = Language.GetText("ExceptionAttach");
-			this.Text = Language.GetText("Welcome");
+		private void ResetLanguage() {
+			lblMessage.Text = Language.GetText("ExecptionError");
+			lblAttach.Text = Language.GetText("ExceptionAttach");
+			Text = Language.GetText("Welcome");
 		}
 	}
 }
