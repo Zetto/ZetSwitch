@@ -20,234 +20,196 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
 using System.Windows.Forms;
 using IPAddressControlLib;
 using ZetSwitch.Browsers;
 using ZetSwitch.Network;
 
-namespace ZetSwitch
-{
-    abstract class SettingPanel : TabPage
-    {
-		protected string interfaceName;
-		protected Profile profile;
+namespace ZetSwitch {
+	internal abstract class SettingPanel : TabPage {
 
-		public Profile ActualProfile
-		{
-			set { profile = value; }
-		}
+		public Profile ActualProfile { protected get; set; }
+		public string InterfaceName { protected get; set; }
 
-		public string InterfaceName
-		{
-			set { interfaceName = value; }
-		}
-
-        public SettingPanel()
-        {
-        }
-
-        public abstract bool DataValidation(out string error); // todo: validaci dat dat nejspis nekam uplne jinam
+		public abstract bool DataValidation(out string error); // todo: validaci dat dat nejspis nekam uplne jinam
 		public abstract bool SavePanel();
 		public abstract bool LoadPanel();
 		public abstract void SetControls();
-    }
+	}
 
-    class IPPage : SettingPanel
-    {
-		
-        #region DOCASNE
-		//private System.Windows.Forms.CheckBox CbUse;
-        private IPAddressControlLib.IPAddressControl IpGW;
-        private IPAddressControlLib.IPAddressControl IpMask;
-        private IPAddressControlLib.IPAddressControl IpIpAddress;
-        private System.Windows.Forms.RadioButton IPDHCPManual;
-        private System.Windows.Forms.RadioButton IPDHCPAuto;
-        private System.Windows.Forms.RadioButton DNSDHCPManual;
-        private System.Windows.Forms.RadioButton DNSDHCPAuto;
-        private IPAddressControlLib.IPAddressControl IpDNS2;
-        private IPAddressControlLib.IPAddressControl IpDNS1;
-        #endregion
-		
-		public IPPage() { }
+	internal class IPPage : SettingPanel {
 
-		public override void SetControls()
-        {
-            #region DOCASNE
+		#region DOCASNE
+
+		//private CheckBox CbUse;
+		private IPAddressControl ipGW;
+		private IPAddressControl ipMask;
+		private IPAddressControl ipIpAddress;
+		private RadioButton ipdhcpManual;
+		private RadioButton ipdhcpAuto;
+		private RadioButton dnsdhcpManual;
+		private RadioButton dnsdhcpAuto;
+		private IPAddressControl ipDNS2;
+		private IPAddressControl ipDNS1;
+
+		#endregion
+
+		public override void SetControls() {
+			#region DOCASNE
+
 			//CbUse = (CheckBox)Controls["cbUseNetwork"];
-            IpGW = (IPAddressControl)Controls["groupBox1"].Controls["IpGW"];
-            IpMask = (IPAddressControl)Controls["groupBox1"].Controls["IpMask"];
-            IpIpAddress = (IPAddressControl)Controls["groupBox1"].Controls["IpIpAddress"];
-            IPDHCPManual = (RadioButton)Controls["groupBox1"].Controls["IPDHCPManual"];
-            IPDHCPAuto = (RadioButton)Controls["groupBox1"].Controls["IPDHCPAuto"];
-            DNSDHCPManual = (RadioButton)Controls["groupBox2"].Controls["DNSDHCPManual"];
-            DNSDHCPAuto = (RadioButton)Controls["groupBox2"].Controls["DNSDHCPAuto"];
-            IpDNS2 = (IPAddressControl)Controls["groupBox2"].Controls["IpDNS2"];
-            IpDNS1 = (IPAddressControl)Controls["groupBox2"].Controls["IpDNS1"];
+			ipGW = (IPAddressControl) Controls["groupBox1"].Controls["IpGW"];
+			ipMask = (IPAddressControl) Controls["groupBox1"].Controls["IpMask"];
+			ipIpAddress = (IPAddressControl) Controls["groupBox1"].Controls["IpIpAddress"];
+			ipdhcpManual = (RadioButton) Controls["groupBox1"].Controls["IPDHCPManual"];
+			ipdhcpAuto = (RadioButton) Controls["groupBox1"].Controls["IPDHCPAuto"];
+			dnsdhcpManual = (RadioButton) Controls["groupBox2"].Controls["DNSDHCPManual"];
+			dnsdhcpAuto = (RadioButton) Controls["groupBox2"].Controls["DNSDHCPAuto"];
+			ipDNS2 = (IPAddressControl) Controls["groupBox2"].Controls["IpDNS2"];
+			ipDNS1 = (IPAddressControl) Controls["groupBox2"].Controls["IpDNS1"];
 
-			this.IpGW.TextChanged += new System.EventHandler(this.OnDataChanged);
-			this.IpMask.TextChanged += new System.EventHandler(this.OnDataChanged);
-			this.IpIpAddress.TextChanged += new System.EventHandler(this.OnDataChanged);
-			this.IpDNS2.TextChanged += new System.EventHandler(this.OnDataChanged);
-			this.IpDNS1.TextChanged += new System.EventHandler(this.OnDataChanged);
+			ipGW.TextChanged += OnDataChanged;
+			ipMask.TextChanged += OnDataChanged;
+			ipIpAddress.TextChanged += OnDataChanged;
+			ipDNS2.TextChanged += OnDataChanged;
+			ipDNS1.TextChanged += OnDataChanged;
 
-			this.IPDHCPManual.CheckedChanged += new System.EventHandler(this.IPDHCPManual_CheckedChanged);
-			this.IPDHCPManual.CheckedChanged += new System.EventHandler(this.OnDataChanged);
-			this.IPDHCPAuto.CheckedChanged += new System.EventHandler(this.IPDHCPAuto_CheckedChanged);
-			this.IPDHCPAuto.CheckedChanged += new System.EventHandler(this.OnDataChanged);
-			this.DNSDHCPAuto.CheckedChanged += new System.EventHandler(this.DNSDHCPAuto_CheckedChanged);
-			this.DNSDHCPAuto.CheckedChanged += new System.EventHandler(this.OnDataChanged);
-			this.DNSDHCPManual.CheckedChanged += new System.EventHandler(this.DNSDHCPManual_CheckedChanged);
-			this.DNSDHCPManual.CheckedChanged += new System.EventHandler(this.OnDataChanged);
-			
+			ipdhcpManual.CheckedChanged += IpdhcpManualCheckedChanged;
+			ipdhcpManual.CheckedChanged += OnDataChanged;
+			ipdhcpAuto.CheckedChanged += IpdhcpAutoCheckedChanged;
+			ipdhcpAuto.CheckedChanged += OnDataChanged;
+			dnsdhcpAuto.CheckedChanged += DNSDHCPAutoCheckedChanged;
+			dnsdhcpAuto.CheckedChanged += OnDataChanged;
+			dnsdhcpManual.CheckedChanged += DNSDHCPManualCheckedChanged;
+			dnsdhcpManual.CheckedChanged += OnDataChanged;
 
-            #endregion		
-        }
+
+			#endregion
+		}
 
 		public event EventHandler DataChanged;
 
-        public void SetDisableControl(bool DHCPIP, bool DHCPDNS)
-        {
-            DNSDHCPAuto.Enabled = DHCPIP;  //disable DNS from DHCP if IP address is set manualy
-            if (DHCPIP == false)
-                DHCPDNS = false;
+		public void SetDisableControl(bool dhcpip, bool dhcpdns) {
+			dnsdhcpAuto.Enabled = dhcpip; //disable DNS from DHCP if IP address is set manualy
+			if (dhcpip == false)
+				dhcpdns = false;
 
-            IPDHCPAuto.Checked = DHCPIP;
-            IPDHCPManual.Checked = !DHCPIP;
-            IpMask.Enabled = !DHCPIP;
-            IpIpAddress.Enabled = !DHCPIP;
-            IpGW.Enabled = !DHCPIP;
+			ipdhcpAuto.Checked = dhcpip;
+			ipdhcpManual.Checked = !dhcpip;
+			ipMask.Enabled = !dhcpip;
+			ipIpAddress.Enabled = !dhcpip;
+			ipGW.Enabled = !dhcpip;
 
-            DNSDHCPAuto.Checked = DHCPDNS;
-            DNSDHCPManual.Checked = !DHCPDNS;
-            IpDNS1.Enabled = !DHCPDNS;
-            IpDNS2.Enabled = !DHCPDNS;
-        }
+			dnsdhcpAuto.Checked = dhcpdns;
+			dnsdhcpManual.Checked = !dhcpdns;
+			ipDNS1.Enabled = !dhcpdns;
+			ipDNS2.Enabled = !dhcpdns;
+		}
 
 		public void OnDataChanged(object sender, EventArgs e) {
 			if (DataChanged != null)
 				DataChanged(this, null);
 		}
 
-		public override bool SavePanel()
-		{
-			ProfileNetworkSettings profileSet = profile.Connections.GetProfileNetworkSettings(interfaceName);
+		public override bool SavePanel() {
+			ProfileNetworkSettings profileSet = ActualProfile.Connections.GetProfileNetworkSettings(InterfaceName);
 			if (profileSet == null)
 				return true;
 			NetworkInterfaceSettings settings = profileSet.Settings;
 			if (settings == null)
 				return true;
-			try
-			{
-				//profileSet.UseNetwork = CbUse.Checked;
-				settings.IsDHCP = IPDHCPAuto.Checked;
-				settings.GateWay = IpGW.Text;
-				settings.IP = IpIpAddress.Text;
-				settings.Mask = IpMask.Text;
-				if (DNSDHCPAuto.Checked)
-				{
-					settings.DNS1 = null;
-					settings.DNS2 = null;
-					settings.IsDNSDHCP = true;
-				}
-				else
-				{
-					settings.DNS1 = IpDNS1.Text;
-					settings.DNS2 = IpDNS2.Text;
-					settings.IsDNSDHCP = false;
-				}
+			//profileSet.UseNetwork = CbUse.Checked;
+			settings.IsDHCP = ipdhcpAuto.Checked;
+			settings.GateWay = ipGW.Text;
+			settings.IP = ipIpAddress.Text;
+			settings.Mask = ipMask.Text;
+			if (dnsdhcpAuto.Checked) {
+				settings.DNS1 = null;
+				settings.DNS2 = null;
+				settings.IsDNSDHCP = true;
 			}
-			catch { }
+			else {
+				settings.DNS1 = ipDNS1.Text;
+				settings.DNS2 = ipDNS2.Text;
+				settings.IsDNSDHCP = false;
+			}
 			return true;
 		}
 
-		public override bool LoadPanel()
-		{
-			ProfileNetworkSettings profileSet = profile.Connections.GetProfileNetworkSettings(interfaceName);
+		public override bool LoadPanel() {
+			ProfileNetworkSettings profileSet = ActualProfile.Connections.GetProfileNetworkSettings(InterfaceName);
 			if (profileSet == null)
 				return true;
-			NetworkInterfaceSettings settings = profile.Connections.GetNetworkSettings(interfaceName);
-			if (settings == null )
+			NetworkInterfaceSettings settings = ActualProfile.Connections.GetNetworkSettings(InterfaceName);
+			if (settings == null)
 				return true;
-			try
-			{
-				//CbUse.Checked= profileSet.UseNetwork;
-				IpMask.SetAddressBytes(settings.Mask);
-				IpIpAddress.SetAddressBytes(settings.IP);
-				IpGW.SetAddressBytes(settings.GateWay);
-				if (settings.DNS1 != null && !settings.DNS1.IsZero())
-				{
-					IpDNS1.SetAddressBytes(settings.DNS1);
-					if (settings.DNS2 != null && !settings.DNS2.IsZero())
-						IpDNS2.SetAddressBytes(settings.DNS2);
-					SetDisableControl(settings.IsDHCP, settings.IsDNSDHCP);
-				}
-				else
-					SetDisableControl(settings.IsDHCP, settings.IsDNSDHCP);
+			ipMask.SetAddressBytes(settings.Mask);
+			ipIpAddress.SetAddressBytes(settings.IP);
+			ipGW.SetAddressBytes(settings.GateWay);
+			if (settings.DNS1 != null && !settings.DNS1.IsZero()) {
+				ipDNS1.SetAddressBytes(settings.DNS1);
+				if (settings.DNS2 != null && !settings.DNS2.IsZero())
+					ipDNS2.SetAddressBytes(settings.DNS2);
+				SetDisableControl(settings.IsDHCP, settings.IsDNSDHCP);
 			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Program.UseTrace(e);
-				return false;
-			}
+			else
+				SetDisableControl(settings.IsDHCP, settings.IsDNSDHCP);
 			return true;
 		}
 
-		public override bool DataValidation(out string error)
-		{
+		public override bool DataValidation(out string error) {
 			error = "";
-			NetworkInterfaceSettings settings = profile.Connections.GetNetworkSettings(interfaceName);
-			return settings == null ? true : settings.Validate(out error);
+			NetworkInterfaceSettings settings = ActualProfile.Connections.GetNetworkSettings(InterfaceName);
+			return settings == null || settings.Validate(out error);
 		}
 
-		private void IPDHCPManual_CheckedChanged(object sender, EventArgs e) {
-			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		private void IpdhcpManualCheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(ipdhcpAuto.Checked, dnsdhcpAuto.Checked);
 		}
 
-		private void IPDHCPAuto_CheckedChanged(object sender, EventArgs e) {
-			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		private void IpdhcpAutoCheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(ipdhcpAuto.Checked, dnsdhcpAuto.Checked);
 		}
 
-		private void DNSDHCPAuto_CheckedChanged(object sender, EventArgs e) {
-			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		private void DNSDHCPAutoCheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(ipdhcpAuto.Checked, dnsdhcpAuto.Checked);
 		}
 
-		private void DNSDHCPManual_CheckedChanged(object sender, EventArgs e) {
-			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
+		private void DNSDHCPManualCheckedChanged(object sender, EventArgs e) {
+			SetDisableControl(ipdhcpAuto.Checked, dnsdhcpAuto.Checked);
 		}
 
-    }
+	}
 
-    class ProxyPage : SettingPanel
-    {
-        #region DOCASNE
-        private System.Windows.Forms.TextBox textBoxHPort;
-        private System.Windows.Forms.TextBox textBoxHTTP;
-        private System.Windows.Forms.TextBox textBoxSOPort;
-        private System.Windows.Forms.TextBox textBoxSOCK;
-        private System.Windows.Forms.TextBox textBoxSSPort;
-        private System.Windows.Forms.TextBox textBoxSSL;
-        private System.Windows.Forms.TextBox textBoxFPort;
-        private System.Windows.Forms.TextBox textBoxFTP;
-        private System.Windows.Forms.CheckBox checkBoxUseForAll;
-        private System.Windows.Forms.TextBox textBoxHomePage;
-		private System.Windows.Forms.CheckBox cbUse;
-        private System.Windows.Forms.CheckBox checkBoxIE;
-        private System.Windows.Forms.CheckBox checkBoxOp;
-        private System.Windows.Forms.CheckBox checkBoxFF;
-        private System.Windows.Forms.RadioButton radioButtonIE;
-        private System.Windows.Forms.RadioButton radioButtonFF;
-        private System.Windows.Forms.RadioButton radioButtonOP;
-        #endregion
+	internal class ProxyPage : SettingPanel {
+		#region DOCASNE
 
-		BROWSERS actualBrowser = BROWSERS.Ie;
+		private TextBox textBoxHPort;
+		private TextBox textBoxHTTP;
+		private TextBox textBoxSOPort;
+		private TextBox textBoxSOCK;
+		private TextBox textBoxSSPort;
+		private TextBox textBoxSSL;
+		private TextBox textBoxFPort;
+		private TextBox textBoxFTP;
+		private CheckBox checkBoxUseForAll;
+		private TextBox textBoxHomePage;
+		private CheckBox cbUse;
+		private CheckBox checkBoxIE;
+		private CheckBox checkBoxOp;
+		private CheckBox checkBoxFF;
+		private RadioButton radioButtonIE;
+		private RadioButton radioButtonFF;
+		private RadioButton radioButtonOP;
 
-		#region private 
+		#endregion
 
-		public void ClearControls()
-		{
+		private BROWSERS actualBrowser = BROWSERS.Ie;
+
+		#region private
+
+		public void ClearControls() {
 			EnableOtherControl();
 			textBoxHTTP.Text = "";
 			textBoxHPort.Text = "";
@@ -263,24 +225,7 @@ namespace ZetSwitch
 			textBoxSSPort.Text = "";
 		}
 
-		private void DisableAll()
-		{
-			textBoxHTTP.Enabled = false;
-			textBoxHPort.Enabled = false;
-			textBoxHomePage.Enabled = false;
-			DisableOtherControl();
-		}
-
-		private void EnableAll()
-		{
-			textBoxHTTP.Enabled = true;
-			textBoxHPort.Enabled = true;
-			textBoxHomePage.Enabled = true;
-			EnableOtherControl();
-		}
-
-		private void DisableOtherControl()
-		{
+		private void DisableOtherControl() {
 			textBoxFTP.Enabled = false;
 			textBoxSOCK.Enabled = false;
 			textBoxSSL.Enabled = false;
@@ -290,8 +235,7 @@ namespace ZetSwitch
 			textBoxSSPort.Enabled = false;
 		}
 
-		private void EnableOtherControl()
-		{
+		private void EnableOtherControl() {
 			textBoxFTP.Enabled = true;
 			textBoxSOCK.Enabled = true;
 			textBoxSSL.Enabled = true;
@@ -301,24 +245,22 @@ namespace ZetSwitch
 			textBoxSSPort.Enabled = true;
 		}
 
-		private void ReloadData()
-		{
-			Browser browser = profile.GetBrowser(actualBrowser);
+		private void ReloadData() {
+			Browser browser = ActualProfile.GetBrowser(actualBrowser);
 			ProxySettings proxy = browser.Proxy;
 			ClearControls();
 			textBoxHTTP.Text = proxy.HTTP;
-			textBoxHPort.Text = proxy.HPort.ToString();
+			textBoxHPort.Text = proxy.HPort.ToString(CultureInfo.InvariantCulture);
 			checkBoxUseForAll.Checked = proxy.UseAdrForAll;
 
-			if (proxy.UseAdrForAll == false)
-			{
+			if (proxy.UseAdrForAll == false) {
 				textBoxFTP.Text = proxy.FTP;
 				textBoxSOCK.Text = proxy.Socks;
 				textBoxSSL.Text = proxy.SSL;
 
-				textBoxFPort.Text = proxy.FTPPort.ToString();
-				textBoxSOPort.Text = proxy.SocksPort.ToString();
-				textBoxSSPort.Text = proxy.SSLPort.ToString();
+				textBoxFPort.Text = proxy.FTPPort.ToString(CultureInfo.InvariantCulture);
+				textBoxSOPort.Text = proxy.SocksPort.ToString(CultureInfo.InvariantCulture);
+				textBoxSSPort.Text = proxy.SSLPort.ToString(CultureInfo.InvariantCulture);
 			}
 			else
 				DisableOtherControl();
@@ -328,97 +270,83 @@ namespace ZetSwitch
 
 		#endregion
 
-		public ProxyPage() { }
+		public override void SetControls() {
+			#region DOCASNE
 
-		public override void SetControls()
-        {
-            #region DOCASNE
-            textBoxHPort = (TextBox)Controls["groupBox4"].Controls["textBoxHPort"];
-            textBoxHTTP = (TextBox)Controls["groupBox4"].Controls["textBoxHTTP"];
-            textBoxSOPort = (TextBox)Controls["groupBox4"].Controls["textBoxSOPort"];
-            textBoxSOCK = (TextBox)Controls["groupBox4"].Controls["textBoxSOCK"];
-            textBoxSSPort = (TextBox)Controls["groupBox4"].Controls["textBoxSSPort"];
-            textBoxSSL = (TextBox)Controls["groupBox4"].Controls["textBoxSSL"];
-            textBoxFPort = (TextBox)Controls["groupBox4"].Controls["textBoxFPort"];
-            textBoxFTP = (TextBox)Controls["groupBox4"].Controls["textBoxFTP"];
-            checkBoxUseForAll = (CheckBox)Controls["groupBox4"].Controls["checkBoxUseForAll"];
-			cbUse = (CheckBox)Controls["groupBox4"].Controls["cbUseBrowser"];
-            checkBoxIE = (CheckBox)Controls["groupBox4"].Controls["checkBoxIE"];
-            checkBoxOp = (CheckBox)Controls["groupBox4"].Controls["checkBoxOp"];
-            checkBoxFF = (CheckBox)Controls["groupBox4"].Controls["checkBoxFF"];
-            radioButtonIE = (RadioButton)Controls["groupBox4"].Controls["radioButtonIE"];
-            radioButtonFF = (RadioButton)Controls["groupBox4"].Controls["radioButtonFF"];
-            radioButtonOP = (RadioButton)Controls["groupBox4"].Controls["radioButtonOP"];
-            textBoxHomePage = (TextBox)Controls["groupBox5"].Controls["textBoxHomePage"];
-            #endregion
-        }
+			textBoxHPort = (TextBox) Controls["groupBox4"].Controls["textBoxHPort"];
+			textBoxHTTP = (TextBox) Controls["groupBox4"].Controls["textBoxHTTP"];
+			textBoxSOPort = (TextBox) Controls["groupBox4"].Controls["textBoxSOPort"];
+			textBoxSOCK = (TextBox) Controls["groupBox4"].Controls["textBoxSOCK"];
+			textBoxSSPort = (TextBox) Controls["groupBox4"].Controls["textBoxSSPort"];
+			textBoxSSL = (TextBox) Controls["groupBox4"].Controls["textBoxSSL"];
+			textBoxFPort = (TextBox) Controls["groupBox4"].Controls["textBoxFPort"];
+			textBoxFTP = (TextBox) Controls["groupBox4"].Controls["textBoxFTP"];
+			checkBoxUseForAll = (CheckBox) Controls["groupBox4"].Controls["checkBoxUseForAll"];
+			cbUse = (CheckBox) Controls["groupBox4"].Controls["cbUseBrowser"];
+			checkBoxIE = (CheckBox) Controls["groupBox4"].Controls["checkBoxIE"];
+			checkBoxOp = (CheckBox) Controls["groupBox4"].Controls["checkBoxOp"];
+			checkBoxFF = (CheckBox) Controls["groupBox4"].Controls["checkBoxFF"];
+			radioButtonIE = (RadioButton) Controls["groupBox4"].Controls["radioButtonIE"];
+			radioButtonFF = (RadioButton) Controls["groupBox4"].Controls["radioButtonFF"];
+			radioButtonOP = (RadioButton) Controls["groupBox4"].Controls["radioButtonOP"];
+			textBoxHomePage = (TextBox) Controls["groupBox5"].Controls["textBoxHomePage"];
 
-		public override bool SavePanel()
-        {
-			profile.UseBrowser = cbUse.Checked;
-			return true; 
-        }
+			#endregion
+		}
 
-		public bool ChangeBrowser()
-        {
+		public override bool SavePanel() {
+			ActualProfile.UseBrowser = cbUse.Checked;
+			return true;
+		}
+
+		public bool ChangeBrowser() {
 			if (radioButtonIE.Checked)
 				actualBrowser = BROWSERS.Ie;
 			else if (radioButtonFF.Checked)
 				actualBrowser = BROWSERS.Firefox;
 			ReloadData();
 			return true;
-        }
+		}
 
-		public override bool LoadPanel()
-        {
-			cbUse.Checked = profile.UseBrowser;
-			if (!profile.GetBrowser(Browsers.BROWSERS.Ie).IsDetected) 
-			{
+		public override bool LoadPanel() {
+			cbUse.Checked = ActualProfile.UseBrowser;
+			if (!ActualProfile.GetBrowser(BROWSERS.Ie).IsDetected) {
 				radioButtonIE.Enabled = false;
 				checkBoxIE.Enabled = false;
 			}
 
-			if (!profile.GetBrowser(Browsers.BROWSERS.Firefox).IsDetected) 
-			{
+			if (!ActualProfile.GetBrowser(BROWSERS.Firefox).IsDetected) {
 				radioButtonFF.Enabled = false;
-                checkBoxFF.Enabled = false;
+				checkBoxFF.Enabled = false;
 			}
-            radioButtonOP.Enabled = false;
-            checkBoxOp.Enabled = false;
+			radioButtonOP.Enabled = false;
+			checkBoxOp.Enabled = false;
 
 			ReloadData();
-            return true;
-        }
+			return true;
+		}
 
-        public override bool DataValidation(out string error)
-        {
+		public override bool DataValidation(out string error) {
 			error = "";
-            return true;
-        }
-    }
+			return true;
+		}
+	}
 
-    class MACPage : SettingPanel
-    {
-		public MACPage() { }
-
-		public override void SetControls()
-		{
+	internal class MACPage : SettingPanel {
+		public override void SetControls() {
 
 		}
 
-		public override bool SavePanel()
-        {
+		public override bool SavePanel() {
 			return true;
-        }
+		}
 
-        public override bool LoadPanel()
-        {
-            return true;
-        }
+		public override bool LoadPanel() {
+			return true;
+		}
 
-        public override bool DataValidation(out string error)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override bool DataValidation(out string error) {
+			throw new NotImplementedException();
+		}
+	}
 }

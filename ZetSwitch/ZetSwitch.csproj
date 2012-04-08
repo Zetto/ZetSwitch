@@ -84,6 +84,7 @@
     <Compile Include="Src\Controller\AboutController.cs" />
     <Compile Include="Src\Controller\IProfileController.cs" />
     <Compile Include="Src\Controller\IAboutController.cs" />
+    <Compile Include="Src\Controller\ProfileController.cs" />
     <Compile Include="Src\Controller\WelcomeController.cs" />
     <Compile Include="Src\Controller\ISettingsController.cs" />
     <Compile Include="Src\Controller\MainController.cs" />
@@ -98,14 +99,13 @@
     <Compile Include="Src\Browsers\BrowserFactory.cs" />
     <Compile Include="Src\Browsers\Firefox.cs" />
     <Compile Include="Src\Browsers\IE.cs" />
-    <Compile Include="Src\DataModel.cs" />
     <Compile Include="Src\Forms\ExceptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\IProfileManager.cs" />
+    <Compile Include="Src\IDataManager.cs" />
     <Compile Include="Src\IUserConfiguration.cs" />
     <Compile Include="Src\Model\ConfigurationState.cs" />
     <Compile Include="Src\UserConfiguration.cs" />
@@ -124,7 +124,7 @@
     <Compile Include="Src\Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\ImgCollection.cs" />
+    <Compile Include="Src\ImageRepository.cs" />
     <Compile Include="Src\Forms\ProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,7 +133,7 @@
     </Compile>
     <Compile Include="Src\Network\NetworkInterfaceSettings.cs" />
     <Compile Include="Src\Network\NetworkManager.cs" />
-    <Compile Include="Src\ProfileManager.cs" />
+    <Compile Include="Src\DataManager.cs" />
     <Compile Include="Src\ProfileNetworkSettings.cs" />
     <Compile Include="Src\ShorcutCreator.cs" />
     <Compile Include="Src\Tools\Path.cs" />

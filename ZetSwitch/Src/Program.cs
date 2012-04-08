@@ -38,15 +38,14 @@ namespace ZetSwitch
 
         static private void ConsoleApp(Arguments arg) {
             NativeMethods.AttachConsole(AttachParentProcess);
-            var model = new DataModel();
-        	var manager = new ProfileManager {Model = model};
+        	var manager = new DataManager();
         	try {
-                manager.LoadSettings();
+                manager.LoadProfiles();
             }
             catch (Exception e) {
                 Console.WriteLine(Language.GetText("Error") + ": " + e.Message);
                 UseTrace(e);
-                model.Dispose();
+                manager.Dispose();
                 return;
             }
 
@@ -62,27 +61,29 @@ namespace ZetSwitch
                         break;
                 }
             }
-            model.Dispose();
+            manager.Dispose();
             NativeMethods.FreeConsole();
         }
 
         static void WinFormApp(Arguments arg) {
             InitServices();
-            var model = new DataModel();
-        	var manager = new ProfileManager {Model = model};
-        	try {
-                manager.LoadSettings();
-                model.LoadData();
-            }
-            catch (Exception e) {
-                MessageBox.Show(e.Message, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                UseTrace(e);
-            }
 
-            var welcome = new WelcomeController(new ViewFactory());
+			var welcome = new WelcomeController(new ViewFactory());
             welcome.TryShow();
 
+			var manager = new DataManager();
+
+			try {
+				manager.StartDelayedLoading();
+				manager.LoadProfiles();
+			}
+			catch (Exception e) {
+				MessageBox.Show(e.Message, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+				UseTrace(e);
+			}
+
             var frm = new MainForm(manager);
+
 			try {
 				new MainController(frm, manager);
 				if (arg.Minimalize) {
@@ -102,7 +103,7 @@ namespace ZetSwitch
 				UseTrace(e);
 			}
 			finally {
-				model.Dispose();
+				manager.Dispose();
 				frm.Dispose();
 				Properties.Settings.Default.Save();
 			}
@@ -138,10 +139,19 @@ namespace ZetSwitch
 
 		private static void InitServices() {
 			IViewFactory viewFactory = new ViewFactory();
+			var imageRepository = new ImageRepository();
+			try {
+				imageRepository.PathToImages = Application.StartupPath + Properties.Settings.Default.ImagesPath;
+			}
+			catch (Exception) {
+			}
+			ClientServiceLocator.Register<IViewFactory>(viewFactory);
 			ClientServiceLocator.Register<IUserConfiguration>(new UserConfiguration());
 			ClientServiceLocator.Register<ISettingsController>(new SettingsController(viewFactory));
 			ClientServiceLocator.Register<IAboutController>(new AboutController(viewFactory));
+			ClientServiceLocator.Register<IProfileController>(new ProfileController());
 			ClientServiceLocator.Register<IShortcutCreator>(new ShorcutCreator());
+			ClientServiceLocator.Register<IImageRepository>(imageRepository);
 		}
 
 		#region TOOLS

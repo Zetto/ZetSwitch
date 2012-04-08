@@ -24,5 +24,6 @@ namespace ZetSwitch {
 		ISettingsView CreateSettingsView();
 		IWelcomeView CreateWelcomeView();
 		IAboutView CreateAboutView();
+		IProfileView CreateProfileView();
 	}
 }

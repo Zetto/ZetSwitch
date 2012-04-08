@@ -32,5 +32,9 @@ namespace ZetSwitch {
 		public IAboutView CreateAboutView() {
 			return new AboutBox();
 		}
+
+		public IProfileView CreateProfileView() {
+			return new ProfileForm();
+		}
 	}
 }

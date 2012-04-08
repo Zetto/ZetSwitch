@@ -21,178 +21,181 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using ZetSwitch.Network;
 using ZetSwitch.Properties;
 
 
-namespace ZetSwitch
-{
-    public partial class ProfileForm : Form
-	{
+namespace ZetSwitch {
+	public partial class ProfileForm : Form, IProfileView {
+		private readonly List<SettingPanel> panels = new List<SettingPanel>();
+		private int oldSelIndex = -1;
+		private Profile actProfile;
 
-		#region variables
 
-    	readonly ProfileManager _profiles;
-    	readonly Profile _profile;
-    	readonly bool _isNew;
-    	readonly string _oldName;
-		int _oldSelIndex = -1;
-    	readonly List<SettingPanel> _panels = new List<SettingPanel>();
-
-		#endregion
-
-        public ProfileForm(bool newProfile, Profile profile, ProfileManager profiles) {
+		public ProfileForm() {
 			InitializeComponent();
-            _profile = profile;
-            _profiles = profiles;
-            _isNew = newProfile;
-            _oldName = profile.Name;
-            
+			ResetLanguage();
+
 			tabPageIP.DataChanged += OnDataChange;
-            _panels.Add(tabPageIP);
-            /*	panels.Add(tabPageProxy);
-                panels.Add(tabPageMAC);*/
+			panels.Add(tabPageIP);
 
-            foreach (SettingPanel panel in _panels)
-            {
-                panel.SetControls();
-                panel.ActualProfile = profile;
-            }
+			/*	panels.Add(tabPageProxy);
+				panels.Add(tabPageMAC);*/
+		}
 
-            LoadData();
+		public void SetProfile(Profile profile) {
+			actProfile = profile;
+			TextBoxName.Text = actProfile.Name;
+			UpdateIcon();
 
-            if (profiles.Model.IsIFLoaded())
-                PopulateListBox();
-            else
-                profiles.Model.DataLoaded += ModelDataLoaded;
-            ResetLanguage();
-        }
+			foreach (SettingPanel panel in panels) {
+				panel.SetControls();
+				panel.ActualProfile = profile;
+			}
+		}
 
-		#region private
+		public bool ShowView() {
+			return ShowDialog() == DialogResult.OK;
+		}
 
-		private void PopulateListBox() {
+		public void UpdateInterfaceList() {
+			if (IsHandleCreated && InvokeRequired) {
+				BeginInvoke(new MethodInvoker(UpdateInterfaceList),null);
+				return;
+			}
+
 			ListBoxInterfaces.IsLoaded = true;
-			var names = _profile.GetNetworkInterfaceNames();
-            var ifs = _profiles.Model.GetNetworkInterfaceSettings();
-			foreach (NetworkInterfaceSettings setting in ifs.Where(setting => !names.Contains(setting.Name))) {
-				names.Add(setting.Name);
-				_profile.AddNetworkInterface(setting);
+			var names = actProfile.GetNetworkInterfaceNames();
+			foreach (var name in names) {
+				ListBoxInterfaces.Items.Add(name);
+				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, actProfile.IsNetworkInterfaceInProfile(name));
 			}
 
-			foreach (string name in names) {
-				ListBoxInterfaces.Items.Add(name);
-				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, _profile.IsNetworkInterfaceInProfile(name));
-			}
 			if (ListBoxInterfaces.Items.Count > 0)
 				ListBoxInterfaces.SetSelected(0, true);
 		}
 
-		private void LoadData() {
-			TextBoxName.Text = _profile.Name;
-			LoadItemIcon(_profile.IconFile);
+		public void UpdateIcon() {
+			Picture.Image = actProfile.GetIcon();
 		}
 
-		private void LoadItemIcon(string file)
-		{
-			try
-			{
-				Picture.Image = ImgCollection.Instance.GetImage(file);
+		public string AskToSelectNewIcon(string path, string filter) {
+			using (var dialog = new OpenFileDialog()) {
+				dialog.InitialDirectory = path;
+				dialog.Filter = filter;
+				if (dialog.ShowDialog() == DialogResult.OK)
+					return dialog.FileName;
 			}
-			catch (Exception)
-			{
-				MessageBox.Show(Language.GetText("CanLoadIconFile") + file, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-				_profile.IconFile = "default";
-				Picture.Image = Resources._default;
-			}
+			return null;
 		}
 
-		private bool CanChange(int index)
-		{
-			string error;
-			if (_panels.Count <= index || index < 0)
-				return true;
-			if (_panels[index].DataValidation(out error))
-				return true;
-			MessageBox.Show(error, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return false;
+		private void ButtonPictureChangeClick(object sender, EventArgs e) {
+			if (SelectProfileIcon != null)
+				SelectProfileIcon(this, null);
 		}
 
-		private bool SaveTabPage(int index)
-		{
-			if (_panels.Count <= index || index < 0)
-				return true;
-			return _panels[index].SavePanel();
-		}
 
-		private void LoadTabPage(int index)
-		{
-			if (_panels.Count <= index || index < 0)
-				return;
-			_panels[index].LoadPanel();
-		}
-
-		private bool DataValidation()
-		{
-			var message = new StringBuilder();
-			if (_isNew || _oldName != _profile.Name) {
-                if (_profiles.GetProfile(TextBoxName.Text) != null)
-				{
+		private bool DataValidation() {
+		/*	var message = new StringBuilder();
+			if (isNew || oldName != actProfile.Name) {
+				if (datas.GetProfile(TextBoxName.Text) != null) {
 					message.Append("Profil '" + TextBoxName.Text + "' již existuje.\n");
 				}
 			}
 			if (TextBoxName.Text.Length == 0) {
 				message.Append(Language.GetText("ProfileNameIsEmpty") + "\n");
 			}
-			if (ListBoxInterfaces.SelectedIndex >= 0 && ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.SelectedIndex))
-			{
+			if (ListBoxInterfaces.SelectedIndex >= 0 && ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.SelectedIndex)) {
 				if (!CanChange(TabControl.SelectedIndex))
 					return false;
 			}
-			if (message.Length > 0)
-			{
+			if (message.Length > 0) {
 				MessageBox.Show(message.ToString(), Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return false;
-			}
+			}*/
 			return true;
 		}
 
-		
-
-		private void SelectProfileIcon()
-		{
-			using (var dialog = new OpenFileDialog()) {
-				dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
-				dialog.Filter = Resources.imagesDialogString;
-
-				if (dialog.ShowDialog() == DialogResult.OK) {
-					string fileName = dialog.FileName;
-					fileName = ImgCollection.Instance.InitImage(fileName);
-					LoadItemIcon(fileName);
-					_profile.IconFile = fileName;
-				}
-			}
-		}
-
-		private bool SaveData()
-		{
-			_profile.Name = TextBoxName.Text;
+		private bool SaveData() {
+			actProfile.Name = TextBoxName.Text;
 			if (!DataValidation())
 				return false;
 
 			SaveTabPage(TabControl.SelectedIndex);
-			
+
 			foreach (string name in ListBoxInterfaces.Items) {
-				_profile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
+				actProfile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
 			}
-			_profile.RemoveUnusedItenrfaces();
+			actProfile.RemoveUnusedInterfaces();
 			return true;
 		}
 
-		private void ResetLanguage()
-		{
+		private bool SaveTabPage(int index) {
+			if (panels.Count <= index || index < 0)
+				return true;
+			return panels[index].SavePanel();
+		}
+
+		private void LoadTabPage(int index) {
+			if (panels.Count <= index || index < 0)
+				return;
+			panels[index].LoadPanel();
+		}
+
+		private bool CanChange(int index) {
+			string error;
+			if (panels.Count <= index || index < 0)
+				return true;
+			if (panels[index].DataValidation(out error))
+				return true;
+			MessageBox.Show(error, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+			return false;
+		}
+
+		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e) {
+			int index = ListBoxInterfaces.SelectedIndex;
+			if (index < 0 || oldSelIndex == index)
+				return;
+			if (oldSelIndex >= 0 && ListBoxInterfaces.GetItemChecked(oldSelIndex) && !CanChange(TabControl.SelectedIndex)) {
+				ListBoxInterfaces.SetSelected(oldSelIndex, true);
+				return;
+			}
+			if (oldSelIndex >= 0 && !SaveTabPage(TabControl.SelectedIndex))
+				return;
+			foreach (SettingPanel panel in panels)
+				panel.InterfaceName = (string) ListBoxInterfaces.Items[index];
+			LoadTabPage(TabControl.SelectedIndex);
+			oldSelIndex = index;
+		}
+
+		private void TabControlSelectedIndexChanged(object sender, EventArgs e) {
+			LoadTabPage(TabControl.SelectedIndex);
+		}
+
+		private void OkButtonClick(object sender, EventArgs e) {
+			if (!SaveData())
+				return;
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void CButtonClick(object sender, EventArgs e) {
+			Close();
+		}
+
+		private void OnDataChange(object o, EventArgs e) {
+			SetUseActualSelection();
+		}
+
+		private void SetUseActualSelection() {
+			int index = ListBoxInterfaces.SelectedIndex;
+			if (index < 0)
+				return;
+			ListBoxInterfaces.SetItemChecked(index, true);
+		}
+
+
+		private void ResetLanguage() {
 			label6.Text = Language.GetText("Name");
 			ButtonPictureChange.Text = Language.GetText("Change");
 			IPDHCPManual.Text = Language.GetText("TextUseThisSetting");
@@ -206,73 +209,6 @@ namespace ZetSwitch
 			label7.Text = Language.GetText("TextConSelect");
 		}
 
-		#endregion
-
-		#region handlers
-
-		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e)
-		{
-			// todo: projit z jistit jestli to neni uplny nesmysl
-			int index = ListBoxInterfaces.SelectedIndex;
-			if (index < 0 || _oldSelIndex == index)
-				return;
-			if (_oldSelIndex >= 0 && ListBoxInterfaces.GetItemChecked(_oldSelIndex) && !CanChange(TabControl.SelectedIndex))
-			{
-				ListBoxInterfaces.SetSelected(_oldSelIndex, true);
-				return;
-			}
-			if (_oldSelIndex >= 0 && !SaveTabPage(TabControl.SelectedIndex))
-				return;
-			foreach (SettingPanel panel in _panels)
-				panel.InterfaceName = (string)ListBoxInterfaces.Items[index];
-			LoadTabPage(TabControl.SelectedIndex);
-			_oldSelIndex = index;
-		}
-
-		private void TabControlSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LoadTabPage(TabControl.SelectedIndex);
-		}
-
-		private void OkButtonClick(object sender, EventArgs e)
-		{
-			if (!SaveData())
-				return;
-			DialogResult = DialogResult.OK;
-			Close();
-		}
-
-		private void CButtonClick(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void ButtonPictureChangeClick(object sender, EventArgs e)
-		{
-			SelectProfileIcon();
-		}
-
-		#endregion
-
-
-		#region public
-
-		private void ModelDataLoaded(object o, EventArgs e) {
-			_profiles.Model.DataLoaded -= ModelDataLoaded;
-			PopulateListBox();
-		}
-
-		private void OnDataChange(object o, EventArgs e) {
-			SetUseActualSelection();
-		}
-
-		private void SetUseActualSelection() {
-			int index = ListBoxInterfaces.SelectedIndex;
-			if (index < 0 )
-				return;
-			ListBoxInterfaces.SetItemChecked(index,true);
-		}
-
-		#endregion
+		public event EventHandler SelectProfileIcon;
 	}
 }

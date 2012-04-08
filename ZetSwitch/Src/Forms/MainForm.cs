@@ -28,10 +28,10 @@ namespace ZetSwitch
 {
 
     public partial class MainForm : Form, IMainView {
-    	readonly ProfileManager profiles;
+    	readonly DataManager manager;
 
-        public MainForm(ProfileManager profiles) {
-            this.profiles = profiles;
+        public MainForm(DataManager manager) {
+            this.manager = manager;
 
             InitializeComponent();
             ResetLanguage();
@@ -40,7 +40,6 @@ namespace ZetSwitch
          
             if (ListBoxItems.Items.Count > 0)
                 ListBoxItems.SetSelected(0, true);
-			ImgCollection.Instance.PathToImages = Application.StartupPath + Properties.Settings.Default.ImagesPath;
         }
 
 		void OnNotifyApplyClick(object sender, EventArgs e) {
@@ -94,7 +93,7 @@ namespace ZetSwitch
 
         public void ReloadList() {
             ListBoxItems.Items.Clear();
-            foreach (var profile in profiles.Profiles) {
+            foreach (var profile in manager.Profiles) {
                 ListBoxItems.Items.Add(profile.Name);
             }
         }
@@ -276,7 +275,7 @@ namespace ZetSwitch
 
 			var list = (ListBox)sender;
 			var str = (string)list.Items[e.Index];
-			var profile = profiles.GetProfile(str);
+			var profile = manager.GetProfile(str);
 			if (profile == null)
 				return;
 
@@ -325,27 +324,8 @@ namespace ZetSwitch
 				if (titleFont != null) titleFont.Dispose();
 				if (ipFont != null) ipFont.Dispose();
 			}
-
-			//draw icon
-			if (profile.IconFile == null || profile.IconFile == "default" || profile.IconFile.Length == 0)
-			{
-				e.Graphics.DrawImage(Properties.Resources._default, new Point(1, e.Bounds.Y));
-			}
-			else
-			{
-				var fileName = profile.IconFile;
-				try
-				{
-					var bit = ImgCollection.Instance.GetImage(fileName);
-					e.Graphics.DrawImage(bit, new Point(1, e.Bounds.Y));
-				}
-				catch (Exception)
-				{
-					e.Graphics.DrawImage(Properties.Resources._default, new Point(1, e.Bounds.Y));
-				}
-			}
+			e.Graphics.DrawImage(profile.GetIcon(), new Point(1, e.Bounds.Y));
     	}
-
 
 		#endregion
 

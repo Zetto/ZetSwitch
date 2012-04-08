@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -31,26 +32,25 @@ using ZetSwitch.Network;
 namespace ZetSwitch {
 	[Serializable]
 	public class Profile {
-		private string iconFile;
 		private bool useBrowser;
 
-		protected ProfileNetworkSettingsList connections;
-		protected Dictionary<BROWSERS, Browser> browsers;
+		public ProfileNetworkSettingsList Connections { get; set; }
+		public Dictionary<BROWSERS, Browser> Browsers { protected get; set; }
 
 		public Profile() {
 			Name = "New";
-			iconFile = "default";
+			IconFile = "default";
 			useBrowser = false;
-			connections = new ProfileNetworkSettingsList();
-			browsers = new Dictionary<BROWSERS, Browser>();
+			Connections = new ProfileNetworkSettingsList();
+			Browsers = new Dictionary<BROWSERS, Browser>();
 		}
 
 		public Profile(Profile other) {
 			Name = other.Name;
-			iconFile = other.iconFile;
+			IconFile = other.IconFile;
 			useBrowser = other.useBrowser;
-			connections = new ProfileNetworkSettingsList(other.connections);
-			browsers = new Dictionary<BROWSERS, Browser>(other.browsers);
+			Connections = new ProfileNetworkSettingsList(other.Connections);
+			Browsers = new Dictionary<BROWSERS, Browser>(other.Browsers);
 		}
 
 		public Profile CloneProfile() {
@@ -66,17 +66,8 @@ namespace ZetSwitch {
 			return result;
 		}
 
-		public ProfileNetworkSettingsList Connections {
-			get { return connections; }
-			set { connections = value; }
-		}
-
 		public bool ContainsIF(string name) {
-			return connections.Contains(name);
-		}
-
-		public Dictionary<BROWSERS, Browser> Browsers {
-			set { browsers = value; }
+			return Connections.Contains(name);
 		}
 
 		public bool UseBrowser {
@@ -85,37 +76,43 @@ namespace ZetSwitch {
 		}
 
 		public Browser GetBrowser(BROWSERS browser) {
-			return browsers[browser];
+			return Browsers[browser];
 		}
 
 		public List<string> GetNetworkInterfaceNames() {
-			return connections.GetNetworkInterfaceNames();
+			return Connections.GetNetworkInterfaceNames();
 		}
 
 		public void SetSelectedInterfaces(List<string> names) {
 		}
 
 		public void PrepareSave() {
-			connections.PrepareSave();
+			Connections.PrepareSave();
 		}
 
 		public bool IsNetworkInterfaceInProfile(string name) {
-			return connections.IsUsed(name);
+			return Connections.IsUsed(name);
 		}
 
 		public void UseNetworkInterface(string name, bool use) {
-			connections.UseNetworkInterface(name, use);
+			Connections.UseNetworkInterface(name, use);
 		}
 
-		public void RemoveUnusedItenrfaces() {
-			connections.RemoveUnused();
+		public void RemoveUnusedInterfaces() {
+			Connections.RemoveUnused();
 		}
 
 		public string Name { get; set; }
+		public string IconFile { get; set; }
 
-		public string IconFile {
-			get { return iconFile; }
-			set { iconFile = value; }
+		public Image GetIcon() {
+			var images = ClientServiceLocator.GetService<IImageRepository>();
+			Image image = Properties.Resources._default;
+			try {
+				image = images.GetImage(IconFile);
+			}
+			catch(Exception) {}
+			return image;
 		}
 
 		public override int GetHashCode() {
@@ -130,7 +127,7 @@ namespace ZetSwitch {
 		}
 
 		internal void AddNetworkInterface(NetworkInterfaceSettings setting) {
-			connections.Add(new ProfileNetworkSettings(setting));
+			Connections.Add(new ProfileNetworkSettings(setting));
 		}
 	}
 }

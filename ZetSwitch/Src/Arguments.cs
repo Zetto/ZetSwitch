@@ -37,40 +37,16 @@ namespace ZetSwitch {
 			get { return errors.ToString(); }
 		}
 
-		private readonly ArrayList actions;
-
-		public ArrayList Actions {
-			get { return actions; }
-		}
-
-		private readonly ArrayList profiles;
-
-		public ArrayList Profiles {
-			get { return profiles; }
-		}
-
-		private bool consoleMode;
-
-		public bool ConsoleMode {
-			get { return consoleMode; }
-		}
-
-		private bool minimalize;
-
-		public bool Minimalize {
-			get { return minimalize; }
-		}
-
-		private int count;
-
-		public int Count {
-			get { return count; }
-		}
+		public ArrayList Actions { get; private set; }
+		public ArrayList Profiles { get; private set; }
+		public bool ConsoleMode { get; private set; }
+		public bool Minimalize { get; private set; }
+		public int Count { get; private set; }
 
 		public Arguments() {
 			errors = new StringBuilder();
-			actions = new ArrayList();
-			profiles = new ArrayList();
+			Actions = new ArrayList();
+			Profiles = new ArrayList();
 		}
 
 		public bool Parse(string[] args) {
@@ -79,7 +55,7 @@ namespace ZetSwitch {
 			for (int i = 0; i < c; i++) {
 				switch (args[i]) {
 					case "-autorun":
-						minimalize = true;
+						Minimalize = true;
 						return true;
 
 					case "-p":
@@ -89,9 +65,9 @@ namespace ZetSwitch {
 							break;
 						}
 						GetProfilesString(i, args);
-						actions.Add(ConsoleActions.UseProfile);
-						count++;
-						consoleMode = true;
+						Actions.Add(ConsoleActions.UseProfile);
+						Count++;
+						ConsoleMode = true;
 						break;
 					default:
 						errors.Append(Language.GetText("ConsoleInvalidArgument"));
@@ -107,7 +83,7 @@ namespace ZetSwitch {
 			if (prof.Length < 1)
 				errors.Append(Language.GetText("ConsoleNotProfiles"));
 			foreach (var str in prof.Where(str => str.Length > 0))
-				profiles.Add(str);
+				Profiles.Add(str);
 		}
 	}
 }

@@ -25,9 +25,9 @@ using System.Windows.Forms;
 namespace ZetSwitch {
 	public class MainController {
 		readonly IMainView view;
-		readonly IProfileManager manager;
+		readonly IDataManager manager;
 
-		public MainController(IMainView view, IProfileManager manager) {
+		public MainController(IMainView view, IDataManager manager) {
 			this.view = view;
 			this.manager = manager;
 
@@ -81,29 +81,40 @@ namespace ZetSwitch {
 			if (name == null)
 				return;
 			Profile profile = manager.Clone(name);
-            using (var dlg = new ProfileForm(false, profile, (ProfileManager)manager))
-            {
-				if (dlg.ShowDialog() == DialogResult.OK) {
+			using (IProfileView profileView = ClientServiceLocator.GetService<IViewFactory>().CreateProfileView()) {
+				var controller = ClientServiceLocator.GetService<IProfileController>();
+				controller.SetView(profileView);
+				controller.SetManager(manager);
+				if (controller.Show(profile,false)) {
 					manager.Change(name, profile);
 					view.ReloadList();
 					view.SetSelectByName(profile.Name);
 				}
+
 			}
 		}
 
 		private void OnNewProfile(object sender, EventArgs e) {
 			var profile = manager.New();
-            using (var dlg = new ProfileForm(true, profile, (ProfileManager)manager)) {
-				if (dlg.ShowDialog() == DialogResult.OK) {
+			using (IProfileView profileView = ClientServiceLocator.GetService<IViewFactory>().CreateProfileView()) {
+				var controller = ClientServiceLocator.GetService<IProfileController>();
+				controller.SetView(profileView);
+				controller.SetManager(manager);
+				if (controller.Show(profile, true)) {
 					manager.Add(profile);
 					view.ReloadList();
 					view.SetSelectByName(profile.Name);
 				}
+
 			}
 		}
 
 		private void OnExit(object sender, EventArgs e) {
 			Application.Exit();
+		}
+
+		private void OnApplicationStarted(object sender, EventArgs e) {
+			
 		}
 
 		private void OnOpenSettings(object sender, EventArgs e) {

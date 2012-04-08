@@ -21,6 +21,8 @@
 
 namespace ZetSwitch {
 	public interface IProfileController {
-		bool Show();
+		bool Show(Profile profile, bool isNew);
+		void SetView(IProfileView view);
+		void SetManager(IDataManager manager);
 	}
 }
