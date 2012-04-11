@@ -58,30 +58,6 @@ namespace ZetSwitch.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int NewItemName {
-            get {
-                return ((int)(this["NewItemName"]));
-            }
-            set {
-                this["NewItemName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\Data\\Images\\")]
-        public string ImagesPath {
-            get {
-                return ((string)(this["ImagesPath"]));
-            }
-            set {
-                this["ImagesPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowWelcomeDialog {
             get {

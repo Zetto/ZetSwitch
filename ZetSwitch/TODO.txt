@@ -1,2 +1,0 @@
-﻿pridat nejake defaultni ikonky
-porad se spatne vyhodnocuje zobrazeni DNS

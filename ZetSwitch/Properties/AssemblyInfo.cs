@@ -9,9 +9,9 @@ using System.Resources;
 [assembly: AssemblyTitle("Zet Switch")]
 [assembly: AssemblyDescription("Program umožňuje vytvářet, měnit \na používat síťové profily.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ZetTsofT")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Zet Switch")]
-[assembly: AssemblyCopyright("Copyright © Tomáš Škarecký 2008")]
+[assembly: AssemblyCopyright("Copyright © Tomas Skarecky 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

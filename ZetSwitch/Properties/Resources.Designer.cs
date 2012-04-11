@@ -60,13 +60,6 @@ namespace ZetSwitch.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap _default {
-            get {
-                object obj = ResourceManager.GetObject("_default", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap about {
             get {
                 object obj = ResourceManager.GetObject("about", resourceCulture);

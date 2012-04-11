@@ -22,6 +22,7 @@
 using NUnit.Framework;
 using ZetSwitch;
 using Rhino.Mocks;
+using ZetSwitchData;
 
 namespace Tests {
 	[TestFixture]

@@ -121,9 +121,6 @@
     <value>Program allow to create network profiles.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="_default" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\default.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="trash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\trash.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -157,7 +154,7 @@
   <data name="opera" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\opera.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-	<data name="imagesDialogString">
-		<value xml:space="preserve">Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif</value>
-	</data>
+  <data name="imagesDialogString" xml:space="preserve">
+    <value>Obrázky (*.jpg) (*.bmp) (*.png) (*.gif) (*.ico) | *.ico ;*.jpg;*.bmp; *.png; *.gif</value>
+  </data>
 </root>

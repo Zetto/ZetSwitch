@@ -54,6 +54,10 @@
     <Compile Include="WelcomeControllerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ZetSwitchData\ZetSwitchData.csproj">
+      <Project>{19D2D19A-C25D-469C-AE17-C1A2BACEA90D}</Project>
+      <Name>ZetSwitchData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZetSwitch\ZetSwitch.csproj">
       <Project>{335C21C4-AE82-41D9-B258-6E1D3FC017A1}</Project>
       <Name>ZetSwitch</Name>

@@ -11,12 +11,6 @@
     <Setting Name="MainMinimumSize" Type="System.Drawing.Size" Scope="Application">
       <Value Profile="(Default)">345, 195</Value>
     </Setting>
-    <Setting Name="NewItemName" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="ImagesPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\Data\Images\</Value>
-    </Setting>
     <Setting Name="ShowWelcomeDialog" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

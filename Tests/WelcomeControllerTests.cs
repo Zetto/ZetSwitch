@@ -21,6 +21,7 @@
 
 using NUnit.Framework;
 using Rhino.Mocks;
+using ZetSwitchData;
 using Is = Rhino.Mocks.Constraints.Is;
 using ZetSwitch;
 using Rhino.Mocks.Interfaces;

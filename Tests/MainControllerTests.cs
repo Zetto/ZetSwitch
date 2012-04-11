@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ZetSwitchData;
 using Is = Rhino.Mocks.Constraints.Is;
 using Rhino.Mocks;
 using ZetSwitch;
@@ -21,7 +22,9 @@ namespace Tests {
 			mocks.Stub<IViewFactory>();
 			manager = mocks.DynamicMock<IDataManager>();
 			view = mocks.DynamicMock<IMainView>();
+			var language = mocks.DynamicMock<ILanguage>();
 			ClientServiceLocator.Register(config);
+			ClientServiceLocator.Register(language);
 			profile = new Profile {Name = Name};
 
 		}

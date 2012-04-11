@@ -64,7 +64,6 @@
       <HintPath>.\IPAddressControlLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -72,99 +71,76 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Src\ClientServiceLocator.cs" />
-    <Compile Include="Src\Configuration\DataStore.cs" />
-    <Compile Include="Src\Configuration\ILoader.cs" />
-    <Compile Include="Src\Configuration\ILoaderFactory.cs" />
-    <Compile Include="Src\Configuration\LoaderDefault.cs" />
-    <Compile Include="Src\Configuration\LoaderFactorySerialization.cs" />
-    <Compile Include="Src\Configuration\LoaderFactoryXML.cs" />
-    <Compile Include="Src\Configuration\LoaderSerializationV0_3.cs" />
-    <Compile Include="Src\Configuration\LoaderXMLV_03.cs" />
-    <Compile Include="Src\Controller\AboutController.cs" />
-    <Compile Include="Src\Controller\IProfileController.cs" />
-    <Compile Include="Src\Controller\IAboutController.cs" />
-    <Compile Include="Src\Controller\ProfileController.cs" />
-    <Compile Include="Src\Controller\WelcomeController.cs" />
-    <Compile Include="Src\Controller\ISettingsController.cs" />
-    <Compile Include="Src\Controller\MainController.cs" />
-    <Compile Include="Src\Controller\SettingsController.cs" />
-    <Compile Include="Src\Forms\AboutBox.cs">
+    <Compile Include="Controller\AboutController.cs" />
+    <Compile Include="Controller\IProfileController.cs" />
+    <Compile Include="Controller\IAboutController.cs" />
+    <Compile Include="Controller\ProfileController.cs" />
+    <Compile Include="Controller\WelcomeController.cs" />
+    <Compile Include="Controller\ISettingsController.cs" />
+    <Compile Include="Controller\MainController.cs" />
+    <Compile Include="Controller\SettingsController.cs" />
+    <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\AboutBox.Designer.cs">
+    <Compile Include="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\Browsers\Browser.cs" />
-    <Compile Include="Src\Browsers\BrowserFactory.cs" />
-    <Compile Include="Src\Browsers\Firefox.cs" />
-    <Compile Include="Src\Browsers\IE.cs" />
-    <Compile Include="Src\Forms\ExceptionForm.cs">
+    <Compile Include="Forms\ExceptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
+    <Compile Include="Forms\ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\Forms\IPPageView.cs">
+    <Compile Include="Forms\IPPageView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Src\Forms\IPPageView.Designer.cs">
+    <Compile Include="Forms\IPPageView.Designer.cs">
       <DependentUpon>IPPageView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\IDataManager.cs" />
-    <Compile Include="Src\IUserConfiguration.cs" />
-    <Compile Include="Src\Model\ConfigurationState.cs" />
-    <Compile Include="Src\UserConfiguration.cs" />
-    <Compile Include="Src\View\IAboutView.cs" />
-    <Compile Include="Src\View\IMainView.cs" />
-    <Compile Include="Src\Forms\InterfaceListBox.cs">
+    <Compile Include="IUserConfiguration.cs" />
+    <Compile Include="Lanugage.cs" />
+    <Compile Include="Model\ConfigurationState.cs" />
+    <Compile Include="UserConfiguration.cs" />
+    <Compile Include="View\IAboutView.cs" />
+    <Compile Include="View\IMainView.cs" />
+    <Compile Include="Forms\InterfaceListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Src\Network\AdapterDataHelper.cs" />
-    <Compile Include="Src\Arguments.cs" />
-    <Compile Include="Src\Network\IPAddress.cs" />
-    <Compile Include="Src\Lanugage.cs" />
-    <Compile Include="Src\Forms\MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\ImageRepository.cs" />
-    <Compile Include="Src\Forms\ProfileForm.cs">
+    <Compile Include="Forms\ProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\ProfileForm.Designer.cs">
+    <Compile Include="Forms\ProfileForm.Designer.cs">
       <DependentUpon>ProfileForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\Network\NetworkInterfaceSettings.cs" />
-    <Compile Include="Src\Network\NetworkManager.cs" />
-    <Compile Include="Src\DataManager.cs" />
-    <Compile Include="Src\ProfileNetworkSettings.cs" />
-    <Compile Include="Src\ShorcutCreator.cs" />
-    <Compile Include="Src\Tools\Path.cs" />
-    <Compile Include="Src\Program.cs" />
+    <Compile Include="ShorcutCreator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\View\IProfileView.cs" />
-    <Compile Include="Src\View\ISettingsView.cs" />
-    <Compile Include="Src\View\IViewFactory.cs" />
-    <Compile Include="Src\View\IWelcomeView.cs" />
-    <Compile Include="Src\View\ViewFactory.cs" />
-    <EmbeddedResource Include="Src\Forms\AboutBox.resx">
+    <Compile Include="View\IProfileView.cs" />
+    <Compile Include="View\ISettingsView.cs" />
+    <Compile Include="View\IViewFactory.cs" />
+    <Compile Include="View\IWelcomeView.cs" />
+    <Compile Include="View\ViewFactory.cs" />
+    <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\ExceptionForm.resx">
+    <EmbeddedResource Include="Forms\ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\IPPageView.resx">
+    <EmbeddedResource Include="Forms\IPPageView.resx">
       <DependentUpon>IPPageView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\ProfileForm.resx">
+    <EmbeddedResource Include="Forms\ProfileForm.resx">
       <DependentUpon>ProfileForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -178,11 +154,11 @@
       <LastGenOutput>Resources.cs-cz1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\SettingForm.resx">
+    <EmbeddedResource Include="Forms\SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\Forms\WelcomeScreen.resx">
+    <EmbeddedResource Include="Forms\WelcomeScreen.resx">
       <DependentUpon>WelcomeScreen.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -207,53 +183,42 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.cs-cz.resx</DependentUpon>
     </Compile>
-    <Compile Include="Src\Browsers\ProxySettings.cs" />
-    <Compile Include="Src\Forms\SettingForm.cs">
+    <Compile Include="Forms\SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\SettingForm.Designer.cs">
+    <Compile Include="Forms\SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Src\Profile.cs" />
-    <Compile Include="Src\Settings.cs" />
-    <Compile Include="Src\Forms\WelcomeScreen.cs">
+    <Compile Include="Settings.cs" />
+    <Compile Include="Forms\WelcomeScreen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Forms\WelcomeScreen.Designer.cs">
+    <Compile Include="Forms\WelcomeScreen.Designer.cs">
       <DependentUpon>WelcomeScreen.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\accept.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trash.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\change.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="IPAddressControlLib.dll" />
-    <Content Include="IPAddressControlLib.txt" />
+    <Content Include="libs\IPAddressControlLib.dll" />
+    <Content Include="libs\IPAddressControlLib.txt" />
     <Content Include="icon.ico" />
-    <Content Include="LICENSE.txt" />
-    <Content Include="Setup\innoSetup.iss" />
-    <Content Include="TODO.txt" />
-    <None Include="Resources\opera.png" />
-    <None Include="Resources\ff.png" />
-    <None Include="Resources\ie.png" />
+    <Content Include="license.txt" />
+    <None Include="Resources\about.png" />
+    <None Include="Resources\accept.png" />
+    <None Include="Resources\add.png" />
     <None Include="Resources\DefaultLang.txt" />
+    <None Include="Resources\ff.png" />
+    <None Include="Resources\change.png" />
+    <None Include="Resources\Icon.ico" />
+    <None Include="Resources\ie.png" />
+    <None Include="Resources\opera.png" />
+    <None Include="Resources\trash.png" />
+    <Content Include="Setup\innoSetup.iss" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\about.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -299,6 +264,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZetSwitchData\ZetSwitchData.csproj">
+      <Project>{19D2D19A-C25D-469C-AE17-C1A2BACEA90D}</Project>
+      <Name>ZetSwitchData</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
