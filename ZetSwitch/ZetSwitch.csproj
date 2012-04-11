@@ -105,6 +105,12 @@
     <Compile Include="Src\Forms\ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Src\Forms\IPPageView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Src\Forms\IPPageView.Designer.cs">
+      <DependentUpon>IPPageView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Src\IDataManager.cs" />
     <Compile Include="Src\IUserConfiguration.cs" />
     <Compile Include="Src\Model\ConfigurationState.cs" />
@@ -150,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Src\Forms\ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Src\Forms\IPPageView.resx">
+      <DependentUpon>IPPageView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Src\Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -199,9 +208,6 @@
       <DependentUpon>Resources.cs-cz.resx</DependentUpon>
     </Compile>
     <Compile Include="Src\Browsers\ProxySettings.cs" />
-    <Compile Include="Src\Forms\SettingPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Src\Forms\SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>

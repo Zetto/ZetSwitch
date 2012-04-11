@@ -10,9 +10,9 @@ namespace ZetSwitch {
 		void Add(Profile profile);
 		bool Apply(string name);
 		void Delete(string name);
-		string GetNewProfileName();
 		void Change(string oldName, Profile profile);
 		bool IsIFLoaded();
+		bool ContainsProfile(string name);
 
 		event EventHandler DataLoaded;
 		List<NetworkInterfaceSettings> GetNetworkInterfaceSettings();

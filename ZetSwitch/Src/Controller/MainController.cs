@@ -85,7 +85,8 @@ namespace ZetSwitch {
 				var controller = ClientServiceLocator.GetService<IProfileController>();
 				controller.SetView(profileView);
 				controller.SetManager(manager);
-				if (controller.Show(profile,false)) {
+				controller.SetProfile(profile, false);
+				if (controller.Show()) {
 					manager.Change(name, profile);
 					view.ReloadList();
 					view.SetSelectByName(profile.Name);
@@ -100,7 +101,8 @@ namespace ZetSwitch {
 				var controller = ClientServiceLocator.GetService<IProfileController>();
 				controller.SetView(profileView);
 				controller.SetManager(manager);
-				if (controller.Show(profile, true)) {
+				controller.SetProfile(profile, true);
+				if (controller.Show()) {
 					manager.Add(profile);
 					view.ReloadList();
 					view.SetSelectByName(profile.Name);

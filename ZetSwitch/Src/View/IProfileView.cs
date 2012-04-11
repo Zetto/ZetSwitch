@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ZetSwitch {
 	public interface IProfileView : IDisposable {
@@ -7,9 +8,11 @@ namespace ZetSwitch {
 		void UpdateInterfaceList();
 		void UpdateIcon();
 		string AskToSelectNewIcon(string path, string filter);
+		void ShowError(IList<string> messages);
+		void Accept();
 
 		event EventHandler SelectProfileIcon;
+		event EventHandler Confirm;
 
-		
 	}
 }

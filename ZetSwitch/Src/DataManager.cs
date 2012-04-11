@@ -150,7 +150,11 @@ namespace ZetSwitch {
 				profiles.Add(profile);
 		}
 
-		public string GetNewProfileName() {
+		public bool ContainsProfile(string name) {
+			return profiles.Find(i => i.Name == name) != null;
+		}
+
+		string GetNewProfileName() {
 			string newNameBase = Language.GetText("Profile");
 			string newName = newNameBase;
 			int offset = 1;

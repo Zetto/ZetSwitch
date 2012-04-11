@@ -129,5 +129,11 @@ namespace ZetSwitch {
 		internal void AddNetworkInterface(NetworkInterfaceSettings setting) {
 			Connections.Add(new ProfileNetworkSettings(setting));
 		}
+
+		public bool Validation(List<string> errors) {
+			if (Name.Length == 0)
+				errors.Add("Jméno profilu nesmí být prázdné");
+			return errors.Count == 0;
+		}
 	}
 }

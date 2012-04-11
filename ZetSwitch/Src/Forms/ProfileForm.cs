@@ -21,37 +21,31 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using ZetSwitch.Properties;
 
 
 namespace ZetSwitch {
 	public partial class ProfileForm : Form, IProfileView {
-		private readonly List<SettingPanel> panels = new List<SettingPanel>();
-		private int oldSelIndex = -1;
+		private readonly List<ISettingPanel> panels = new List<ISettingPanel>();
 		private Profile actProfile;
-
-
+		private bool changingIf = false;
+		
 		public ProfileForm() {
 			InitializeComponent();
 			ResetLanguage();
 
-			tabPageIP.DataChanged += OnDataChange;
-			panels.Add(tabPageIP);
+			ipPageView.DataChanged += OnDataChange;
 
-			/*	panels.Add(tabPageProxy);
-				panels.Add(tabPageMAC);*/
+			panels.Add(ipPageView);
 		}
 
 		public void SetProfile(Profile profile) {
 			actProfile = profile;
 			TextBoxName.Text = actProfile.Name;
 			UpdateIcon();
-
-			foreach (SettingPanel panel in panels) {
-				panel.SetControls();
-				panel.ActualProfile = profile;
-			}
 		}
 
 		public bool ShowView() {
@@ -89,94 +83,49 @@ namespace ZetSwitch {
 			return null;
 		}
 
+		public void ShowError(IList<string> messages) {
+			if (messages.Count!= 0) {
+				var message = new StringBuilder();
+				message.Append(Language.GetText("ProfileError"));
+				message.Append(String.Join("\n -", messages.ToArray()));
+				MessageBox.Show(message.ToString(), Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			}
+			
+		}
+
+		public void Accept() {
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
 		private void ButtonPictureChangeClick(object sender, EventArgs e) {
 			if (SelectProfileIcon != null)
 				SelectProfileIcon(this, null);
 		}
 
-
-		private bool DataValidation() {
-		/*	var message = new StringBuilder();
-			if (isNew || oldName != actProfile.Name) {
-				if (datas.GetProfile(TextBoxName.Text) != null) {
-					message.Append("Profil '" + TextBoxName.Text + "' již existuje.\n");
-				}
-			}
-			if (TextBoxName.Text.Length == 0) {
-				message.Append(Language.GetText("ProfileNameIsEmpty") + "\n");
-			}
-			if (ListBoxInterfaces.SelectedIndex >= 0 && ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.SelectedIndex)) {
-				if (!CanChange(TabControl.SelectedIndex))
-					return false;
-			}
-			if (message.Length > 0) {
-				MessageBox.Show(message.ToString(), Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				return false;
-			}*/
-			return true;
-		}
-
-		private bool SaveData() {
+		private void UpdateData() {
 			actProfile.Name = TextBoxName.Text;
-			if (!DataValidation())
-				return false;
 
-			SaveTabPage(TabControl.SelectedIndex);
-
-			foreach (string name in ListBoxInterfaces.Items) {
+			foreach (string name in ListBoxInterfaces.Items) 
 				actProfile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
-			}
-			actProfile.RemoveUnusedInterfaces();
-			return true;
-		}
 
-		private bool SaveTabPage(int index) {
-			if (panels.Count <= index || index < 0)
-				return true;
-			return panels[index].SavePanel();
-		}
-
-		private void LoadTabPage(int index) {
-			if (panels.Count <= index || index < 0)
-				return;
-			panels[index].LoadPanel();
-		}
-
-		private bool CanChange(int index) {
-			string error;
-			if (panels.Count <= index || index < 0)
-				return true;
-			if (panels[index].DataValidation(out error))
-				return true;
-			MessageBox.Show(error, Language.GetText("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-			return false;
+			foreach (var settingPanel in panels) 
+				settingPanel.UpdateData();
 		}
 
 		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e) {
-			int index = ListBoxInterfaces.SelectedIndex;
-			if (index < 0 || oldSelIndex == index)
+			if (ListBoxInterfaces.SelectedIndex < 0 )
 				return;
-			if (oldSelIndex >= 0 && ListBoxInterfaces.GetItemChecked(oldSelIndex) && !CanChange(TabControl.SelectedIndex)) {
-				ListBoxInterfaces.SetSelected(oldSelIndex, true);
-				return;
-			}
-			if (oldSelIndex >= 0 && !SaveTabPage(TabControl.SelectedIndex))
-				return;
-			foreach (SettingPanel panel in panels)
-				panel.InterfaceName = (string) ListBoxInterfaces.Items[index];
-			LoadTabPage(TabControl.SelectedIndex);
-			oldSelIndex = index;
-		}
-
-		private void TabControlSelectedIndexChanged(object sender, EventArgs e) {
-			LoadTabPage(TabControl.SelectedIndex);
+			changingIf = true;
+			foreach (var settingPanel in panels)
+				settingPanel.SetData(actProfile, actProfile.Connections.GetProfileNetworkSettings((string)ListBoxInterfaces.Items[ListBoxInterfaces.SelectedIndex]).Settings);
+			changingIf = false;
 		}
 
 		private void OkButtonClick(object sender, EventArgs e) {
-			if (!SaveData())
-				return;
-			DialogResult = DialogResult.OK;
-			Close();
+			UpdateData();
+			if (Confirm != null)
+				Confirm(this, null);
 		}
 
 		private void CButtonClick(object sender, EventArgs e) {
@@ -184,7 +133,8 @@ namespace ZetSwitch {
 		}
 
 		private void OnDataChange(object o, EventArgs e) {
-			SetUseActualSelection();
+			if (!changingIf)
+				SetUseActualSelection();
 		}
 
 		private void SetUseActualSelection() {
@@ -198,17 +148,17 @@ namespace ZetSwitch {
 		private void ResetLanguage() {
 			label6.Text = Language.GetText("Name");
 			ButtonPictureChange.Text = Language.GetText("Change");
-			IPDHCPManual.Text = Language.GetText("TextUseThisSetting");
-			DNSDHCPManual.Text = Language.GetText("TextUseThisSetting");
-			label3.Text = Language.GetText("TextDefGate");
-			IPDHCPAuto.Text = Language.GetText("TextOtainDNS");
-			label2.Text = Language.GetText("TextMask");
-			DNSDHCPAuto.Text = Language.GetText("TextOtainDNS");
 			CButton.Text = Language.GetText("Cancel");
 			OkButton.Text = Language.GetText("Ok");
 			label7.Text = Language.GetText("TextConSelect");
 		}
 
 		public event EventHandler SelectProfileIcon;
+		public event EventHandler Confirm;
+	}
+
+	public interface ISettingPanel {
+		void UpdateData();
+		void SetData(Profile profile, Network.NetworkInterfaceSettings actualInterface);
 	}
 }

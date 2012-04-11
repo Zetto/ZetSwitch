@@ -46,7 +46,6 @@ namespace ZetSwitch {
 		}
 
 		private void SaveNewName(int name) {
-			// todo: load data in patch change
 			Properties.Settings.Default.NewItemName = name;
 		}
 

@@ -27,76 +27,31 @@ namespace ZetSwitch.Network {
 	public class NetworkInterfaceSettings {
 		#region variables
 
-		private string name;
-		private string id;
-		private bool isDHCP;
-		private bool isDNSDHCP;
-		private IPAddress ip;
-		private IPAddress mask;
-		private IPAddress gateWay;
-		private IPAddress dns1;
-		private IPAddress dns2;
-
 		#endregion
 
 		#region access
 
-		public string SettingId {
-			get { return id; }
-			set { id = value; }
-		}
-
-		public string Name {
-			get { return name; }
-			set { name = value; }
-		}
-
-		public bool IsDNSDHCP {
-			get { return isDNSDHCP; }
-			set { isDNSDHCP = value; }
-		}
-
-		public bool IsDHCP {
-			get { return isDHCP; }
-			set { isDHCP = value; }
-		}
-
-		public IPAddress IP {
-			get { return ip; }
-			set { ip = value; }
-		}
-
-		public IPAddress Mask {
-			get { return mask; }
-			set { mask = value; }
-		}
-
-		public IPAddress GateWay {
-			get { return gateWay; }
-			set { gateWay = value; }
-		}
-
-		public IPAddress DNS1 {
-			get { return dns1; }
-			set { dns1 = value; }
-		}
-
-		public IPAddress DNS2 {
-			get { return dns2; }
-			set { dns2 = value; }
-		}
+		public string SettingId { get; set; }
+		public string Name { get; set; }
+		public bool IsDNSDHCP { get; set; }
+		public bool IsDHCP { get; set; }
+		public IPAddress IP { get; set; }
+		public IPAddress Mask { get; set; }
+		public IPAddress GateWay { get; set; }
+		public IPAddress DNS1 { get; set; }
+		public IPAddress DNS2 { get; set; }
 
 		public IPAddress[] DNS {
 			set {
 				if (value[0] == null && value[1] == null) {
-					isDNSDHCP = true;
+					IsDNSDHCP = true;
 				}
 				else
-					isDNSDHCP = false;
+					IsDNSDHCP = false;
 				if (value.Length > 0)
-					dns1 = value[0];
+					DNS1 = value[0];
 				if (value.Length > 1)
-					dns2 = value[1];
+					DNS2 = value[1];
 			}
 		}
 
@@ -112,6 +67,18 @@ namespace ZetSwitch.Network {
 			DNS2 = new IPAddress();
 		}
 
+		public NetworkInterfaceSettings(NetworkInterfaceSettings other) {
+			SettingId = other.SettingId;
+			Name = other.Name;
+			IsDHCP = other.IsDHCP;
+			IsDNSDHCP = other.IsDNSDHCP;
+			IP = new IPAddress(other.IP);
+			GateWay = new IPAddress(other.GateWay);
+			Mask = new IPAddress(other.Mask);
+			DNS1 = new IPAddress(other.DNS1);
+			DNS2 = new IPAddress(other.DNS2);
+		}
+
 		public NetworkInterfaceSettings(AdapterDataHelper adapter) {
 			SettingId = adapter.ID;
 			IsDHCP = adapter.DHCP;
@@ -124,7 +91,7 @@ namespace ZetSwitch.Network {
 
 		public bool Validate(out string error) {
 			error = "";
-			if (isDHCP)
+			if (IsDHCP)
 				return true;
 			var message = new StringBuilder();
 

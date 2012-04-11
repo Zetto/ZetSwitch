@@ -48,6 +48,7 @@
     <Compile Include="AboutControllerTests.cs" />
     <Compile Include="EventHelper.cs" />
     <Compile Include="MainControllerTests.cs" />
+    <Compile Include="ProfileControllerTests.cs" />
     <Compile Include="SettingsControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WelcomeControllerTests.cs" />
