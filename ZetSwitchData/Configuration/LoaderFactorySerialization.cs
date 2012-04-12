@@ -19,18 +19,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
-namespace ZetSwitchData.Configuration
-{
-	class LoaderFactorySerialization : ILoaderFactory
-	{
-		string fileName;
-		public void InitString(string init)
-		{
-			fileName = init;
+namespace ZetSwitchData.Configuration {
+	internal class LoaderFactorySerialization : ILoaderFactory {
+		private string fileName;
+
+		public void Init() {
+			fileName = @".\\Data\\profiles.xml";
 		}
 
-		public ILoader GetLoader()
-		{
+		public ILoader GetLoader() {
 			if (fileName == null)
 				return new LoaderDefault();
 

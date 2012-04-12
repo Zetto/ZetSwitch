@@ -22,49 +22,47 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Xml;
 using ZetSwitchData.Network;
 
-namespace ZetSwitchData.Configuration
-{
-	class LoaderXmlv03 : ILoader
-	{
-		XmlDocument document;
-		string fileName;
+namespace ZetSwitchData.Configuration {
+	internal class LoaderXmlv03 : ILoader {
+		private XmlDocument document;
+		private string saveName = "";
 
-		const string IdRoot = "config";
-		const string DefVersion = "0.3.0";
-		const string IdVersion = "version";
-		const string IdProfile = "profile";
-		const string IdName = "name";
-		const string IdIconFile = "iconFile";
-		const string IdNetwork = "network";
-		const string IdInterface = "interface";
-		const string IdIp = "ip";
-		const string IdMask = "mask";
-		const string IdGW = "gw";
-		const string IdDNS1 = "dns1";
-		const string IdDNS2 = "dns2";
-		const string IdAdapter = "adapter";
-		const string IdDNSDHCP = "DNSDHCP";
-		const string IdDHCP = "DHCP";
-		
+		private const string IdRoot = "config";
+		private const string DefVersion = "0.3.0";
+		private const string IdVersion = "version";
+		private const string IdProfile = "profile";
+		private const string IdName = "name";
+		private const string IdIconFile = "iconFile";
+		private const string IdNetwork = "network";
+		private const string IdInterface = "interface";
+		private const string IdIp = "ip";
+		private const string IdMask = "mask";
+		private const string IdGW = "gw";
+		private const string IdDNS1 = "dns1";
+		private const string IdDNS2 = "dns2";
+		private const string IdAdapter = "adapter";
+		private const string IdDNSDHCP = "DNSDHCP";
+		private const string IdDHCP = "DHCP";
+
 		#region private
 
-		private ProfileNetworkSettingsList GetNetworkSettingsList(XmlNode node)
-		{
+		private ProfileNetworkSettingsList GetNetworkSettingsList(XmlNode node) {
 			var list = new ProfileNetworkSettingsList();
 			XmlNode actNode = node.FirstChild;
 			while (actNode != null) {
 				if (actNode.Name == IdInterface) {
 					var settings = new ProfileNetworkSettings {Use = true};
 
-					var elmnt = (XmlElement)actNode;
+					var elmnt = (XmlElement) actNode;
 					settings.Settings.Name = elmnt.GetAttribute(IdName);
 					settings.Settings.SettingId = elmnt.GetAttribute(IdAdapter);
 					settings.Settings.IsDHCP = Boolean.Parse(elmnt.GetAttribute(IdDHCP));
 					settings.Settings.IsDNSDHCP = Boolean.Parse(elmnt.GetAttribute(IdDNSDHCP));
-					
+
 					settings.Settings.IP = new IPAddress(elmnt.GetAttribute(IdIp));
 					settings.Settings.Mask = new IPAddress(elmnt.GetAttribute(IdMask));
 					settings.Settings.GateWay = new IPAddress(elmnt.GetAttribute(IdGW));
@@ -77,12 +75,13 @@ namespace ZetSwitchData.Configuration
 			return list;
 		}
 
-		private Profile LoadProfile(XmlElement profileNode)
-		{
+		private Profile LoadProfile(XmlElement profileNode) {
 			if (profileNode == null)
 				return null;
-			var profile = new Profile {Name = profileNode.GetAttribute(IdName), 
-				IconFile = profileNode.GetAttribute(IdIconFile)};
+			var profile = new Profile {
+			                          	Name = profileNode.GetAttribute(IdName),
+			                          	IconFile = profileNode.GetAttribute(IdIconFile)
+			                          };
 
 			XmlNode actNode = profileNode.FirstChild;
 			while (actNode != null) {
@@ -101,27 +100,26 @@ namespace ZetSwitchData.Configuration
 
 		#region public
 
-		public void SetDocument(XmlDocument document, string fileName) {
-			this.document = document;
-			this.fileName = fileName;
+		public void SetDocument(XmlDocument doc,string save) {
+			document = doc;
+			saveName = save;
 		}
 
-		public List<Profile> LoadProfiles()
-		{
+		public List<Profile> LoadProfiles() {
 			if (document == null || document.DocumentElement == null)
 				return new List<Profile>();
 			var profiles = new List<Profile>();
 			XmlNodeList list = document.DocumentElement.GetElementsByTagName(IdProfile);
 
 			foreach (XmlNode node in list) {
-				var profile = LoadProfile((XmlElement)node);
+				var profile = LoadProfile((XmlElement) node);
 				if (profile != null)
 					profiles.Add(profile);
 			}
 			return profiles;
 		}
 
-		private void SaveNetworkSettingsList(IEnumerable<ProfileNetworkSettings> list, XmlDocument doc,XmlElement parent) {
+		private void SaveNetworkSettingsList(IEnumerable<ProfileNetworkSettings> list, XmlDocument doc, XmlElement parent) {
 			XmlElement network = doc.CreateElement(IdNetwork);
 			foreach (ProfileNetworkSettings settings in list) {
 				XmlElement interf = doc.CreateElement(IdInterface);
@@ -134,8 +132,7 @@ namespace ZetSwitchData.Configuration
 					interf.SetAttribute(IdMask, settings.Settings.Mask.ToString());
 					interf.SetAttribute(IdGW, settings.Settings.GateWay.ToString());
 				}
-				if (!settings.Settings.IsDNSDHCP)
-				{
+				if (!settings.Settings.IsDNSDHCP) {
 					interf.SetAttribute(IdDNS1, settings.Settings.DNS1.ToString());
 					if (settings.Settings.DNS2 != null)
 						interf.SetAttribute(IdDNS2, settings.Settings.DNS2.ToString());
@@ -145,29 +142,27 @@ namespace ZetSwitchData.Configuration
 			parent.AppendChild(network);
 		}
 
-		private void SaveProfile(Profile profile, XmlDocument doc, XmlElement parent)
-		{
+		private void SaveProfile(Profile profile, XmlDocument doc, XmlElement parent) {
 			XmlElement elmnt = doc.CreateElement(IdProfile);
 			elmnt.SetAttribute(IdName, profile.Name);
 			elmnt.SetAttribute(IdIconFile, profile.IconFile);
 			parent.AppendChild(elmnt);
-			SaveNetworkSettingsList(profile.Connections,doc,elmnt);
+			SaveNetworkSettingsList(profile.Connections, doc, elmnt);
 		}
 
-		public bool SaveProfiles(List<Profile> list)
-		{
-			if (string.IsNullOrEmpty(fileName))
+		public bool SaveProfiles(List<Profile> list) {
+			if (string.IsNullOrEmpty(saveName))
 				return false;
-
+			
 			var doc = new XmlDocument();
 			XmlElement root = doc.CreateElement(IdRoot);
 			root.SetAttribute(IdVersion, DefVersion);
 			doc.AppendChild(root);
 
 			foreach (var profile in list) {
-				SaveProfile(profile, doc,root);				
+				SaveProfile(profile, doc, root);
 			}
-			doc.Save(fileName);
+			doc.Save(saveName);
 			return true;
 		}
 

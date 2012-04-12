@@ -36,13 +36,22 @@ namespace ZetSwitchData {
 	public interface IImageRepository {
 		Bitmap GetImage(string name);
 		string InitImage(string name);
+		string GetDirectory();
 	}
 
 	public class ImageRepository : IImageRepository {
 		private readonly List<LoadedImage> images = new List<LoadedImage>();
-		private DirectoryPath collectionPath;
+		private readonly DirectoryPath collectionPath;
 
-
+		public ImageRepository() {
+			string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ZetSwitch";
+			try {
+				collectionPath = new DirectoryPath(dir + Properties.Settings.Default.ImagesPath);
+				collectionPath.CreateDirectory();
+			}
+			catch (Exception) {
+			}
+		}
 
 		private int LoadNewName() {
 			return Properties.Settings.Default.NewItemName;
@@ -102,16 +111,6 @@ namespace ZetSwitchData {
 			return false;
 		}
 
-		public void SetPathPrefix(string prefix) {
-			try {
-				collectionPath = new DirectoryPath(prefix + Properties.Settings.Default.ImagesPath);
-				collectionPath.CreateDirectory();
-			}
-			catch (Exception) {
-			}
-			
-		}
-
 		public Bitmap GetImage(string name) {
 			if (name == "default" || name.Length == 0)
 				return Properties.Resources._default;
@@ -129,6 +128,12 @@ namespace ZetSwitchData {
 			if (name == "default" || name.Length == 0)
 				return "default";
 			return IsManagedFile(name) ? name : SaveImage(name);
+		}
+
+		public string GetDirectory() {
+			if (collectionPath != null)
+				return collectionPath.DirectoryName;
+			return "";
 		}
 	}
 }

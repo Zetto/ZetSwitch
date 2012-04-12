@@ -23,6 +23,6 @@ namespace ZetSwitchData.Configuration {
 
 	interface ILoaderFactory {
 		ILoader GetLoader();
-		void InitString(string init);
+		void Init();
 	}
 }

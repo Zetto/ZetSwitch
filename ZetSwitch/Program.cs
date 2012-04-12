@@ -116,7 +116,6 @@ namespace ZetSwitch
 		private static void InitServices() {
 			IViewFactory viewFactory = new ViewFactory();
 			var imageRepository = new ImageRepository();
-			imageRepository.SetPathPrefix(Application.StartupPath);
 			ClientServiceLocator.Register(viewFactory);
 			ClientServiceLocator.Register<IUserConfiguration>(new UserConfiguration());
 			ClientServiceLocator.Register<ISettingsController>(new SettingsController(viewFactory));

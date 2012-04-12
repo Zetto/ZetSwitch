@@ -19,43 +19,43 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
+using System;
 using System.IO;
 using System.Xml;
 
-namespace ZetSwitchData.Configuration
-{
-	class LoaderFactoryXML : ILoaderFactory {
+namespace ZetSwitchData.Configuration {
+	internal class LoaderFactoryXML : ILoaderFactory {
 		private const string IdVersion = "version";
 		private const string DefActualVersion = "0.3.0";
-		string fileName;
+		private string saveName; 
+		private string loadName;
 
-		private static string GetVersion(XmlDocument document)
-		{
+
+
+		private static string GetVersion(XmlDocument document) {
 			XmlElement elmnt = document.DocumentElement;
 			return elmnt != null ? elmnt.GetAttribute(IdVersion) : "";
 		}
 
-		public void InitString(string init)
-		{
-			fileName = init;
+		public void Init() {
+			string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ZetSwitch";
+			if (!Directory.Exists(dir))
+				Directory.CreateDirectory(dir);
+			saveName = dir+ "\\profiles.xml";
+			loadName = File.Exists(saveName) ? saveName : ".\\Data\\profiles.xml";
 		}
 
-		public ILoader GetLoader()
-		{
-			if (fileName == null)
-				return new LoaderDefault();
+		public ILoader GetLoader() {
 			var version = DefActualVersion;
 			var document = new XmlDocument();
-			if (File.Exists(fileName))
-			{
-				document.Load(fileName);
+			if (File.Exists(loadName)) {
+				document.Load(loadName);
 				version = GetVersion(document);
 			}
-			switch (version)
-			{
+			switch (version) {
 				case "0.3.0":
 					var xmlLoader = new LoaderXmlv03();
-					xmlLoader.SetDocument(document,fileName);
+					xmlLoader.SetDocument(document, saveName);
 					return xmlLoader;
 				default:
 					return new LoaderDefault();

@@ -105,7 +105,7 @@ namespace ZetSwitchData {
 		public void LoadProfiles() {
 			var data = new DataStore();
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
-			factory.InitString(".\\Data\\profiles.xml");
+			factory.Init();
 			profiles = factory.GetLoader().LoadProfiles();
 		}
 
@@ -118,7 +118,7 @@ namespace ZetSwitchData {
 				profile.PrepareSave();
 			var data = new DataStore();
 			ILoaderFactory factory = data.GetLoaderFactory(LOADERS.XML);
-			factory.InitString(".\\Data\\profiles.xml");
+			factory.Init();
 			factory.GetLoader().SaveProfiles(profiles);
 		}
 

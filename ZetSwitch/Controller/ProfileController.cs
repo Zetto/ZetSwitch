@@ -80,11 +80,12 @@ namespace ZetSwitch {
 		}
 
 		private void OnSelectProfileIcon(object o, EventArgs e) {
-			string path = AppDomain.CurrentDomain.BaseDirectory + "Data\\Images\\";
+			var images = ClientServiceLocator.GetService<IImageRepository>();
+			string path = images.GetDirectory();
 			string filter = Resources.imagesDialogString;
 			string fileName = actView.AskToSelectNewIcon(path, filter);
 			if (!String.IsNullOrEmpty(fileName)) {
-				var images = ClientServiceLocator.GetService<IImageRepository>();
+				
 				actProfile.IconFile = images.InitImage(fileName);
 				actView.UpdateIcon();
 			}

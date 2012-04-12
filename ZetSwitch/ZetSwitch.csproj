@@ -200,8 +200,8 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\IPAddressControlLib.dll" />
-    <Content Include="libs\IPAddressControlLib.txt" />
+    <Content Include="Forms\libs\IPAddressControlLib.dll" />
+    <Content Include="Forms\libs\IPAddressControlLib.txt" />
     <Content Include="icon.ico" />
     <Content Include="license.txt" />
     <None Include="Resources\about.png" />
