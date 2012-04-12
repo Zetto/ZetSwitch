@@ -85,7 +85,7 @@ namespace Tests {
 			view.Stub(x => x.GetSelectedProfile()).Return(Name);
 			manager.Stub(x => x.GetProfile(Name)).Return(profile);
 			view.Stub(x => x.AskToApplyProfile(Name)).Repeat.Once().Return(true);
-			manager.Stub(x => x.Apply(Name)).Repeat.Once().Return(true);
+			manager.Stub(x => x.RequestApply(Name)).Repeat.Once().Return(true);
 			view.Stub(x => x.ShowInfoMessage("", "")).IgnoreArguments().Repeat.Once();
 			view.Stub(x => x.ShowErrorMessage("")).IgnoreArguments().Repeat.Never();
 

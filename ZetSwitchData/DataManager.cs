@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using ZetSwitchData.Configuration;
@@ -74,6 +76,21 @@ namespace ZetSwitchData {
 
 		public Dictionary<BROWSERS, Browser> GetBrowsers() {
 			return new Dictionary<BROWSERS, Browser>(browsers);
+		}
+
+		public bool RequestApply(string name) {
+			var runner = new ProcessRunner();
+			try {
+				return runner.Apply(name);
+			}
+			catch(Exception e ) {
+				if (e is InvalidOperationException || e is Win32Exception) {
+					Trace.WriteLine(e.Message);
+					Trace.WriteLine(e.StackTrace);
+					return false;
+				}
+				throw;
+			}
 		}
 
 		private bool ApplyProfile(Profile profile) {

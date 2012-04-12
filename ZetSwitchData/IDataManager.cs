@@ -17,5 +17,6 @@ namespace ZetSwitchData {
 		event EventHandler DataLoaded;
 		List<NetworkInterfaceSettings> GetNetworkInterfaceSettings();
 		void StartDelayedLoading();
+		bool RequestApply(string profile);
 	}
 }

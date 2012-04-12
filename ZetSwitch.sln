@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZetSwitch", "ZetSwitch\ZetS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{277E63B9-36C5-4896-9F6D-29F1D32E1445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZetswitcWorker", "ZetswitcWorker\ZetswitcWorker.csproj", "{C312A207-80A6-4108-AE44-54371C72159C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZetswitchWorker", "ZetswitcWorker\ZetswitchWorker.csproj", "{C312A207-80A6-4108-AE44-54371C72159C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZetSwitchData", "ZetSwitchData\ZetSwitchData.csproj", "{19D2D19A-C25D-469C-AE17-C1A2BACEA90D}"
 EndProject

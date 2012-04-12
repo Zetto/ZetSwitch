@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections;
 
 namespace ZetSwitchData {
 	public enum ConsoleActions {
@@ -32,37 +31,45 @@ namespace ZetSwitchData {
 
 	public class Arguments {
 		private readonly StringBuilder errors;
+		private readonly bool console;
 
 		public string Errors {
 			get { return errors.ToString(); }
 		}
 
-		public ArrayList Actions { get; private set; }
-		public ArrayList Profiles { get; private set; }
+		public List<ConsoleActions> Actions { get; set; }
+		public List<string> Profiles { get; set; }
 		public bool ConsoleMode { get; private set; }
 		public bool Minimalize { get; private set; }
 		public int Count { get; private set; }
 
-		public Arguments() {
+		public Arguments(bool console) {
+			Actions = new List<ConsoleActions>();
+			Profiles = new List<string>();
+			this.console = console;
 			errors = new StringBuilder();
-			Actions = new ArrayList();
-			Profiles = new ArrayList();
 		}
 
 		public bool Parse(string[] args) {
 			var c = args.Length;
-
+			if (console && c < 2) {
+				errors.Append(ClientServiceLocator.GetService<ILanguage>().GetText("ConsoleInvalidArgument"));
+				return false;
+			}
 			for (int i = 0; i < c; i++) {
 				switch (args[i]) {
 					case "-autorun":
+						if (console) {
+							errors.Append(ClientServiceLocator.GetService<ILanguage>().GetText("FormInvalidArgument"));
+							return false;
+						}
 						Minimalize = true;
 						return true;
-
 					case "-p":
 						++i;
 						if (i >= c) {
 							errors.Append(ClientServiceLocator.GetService<ILanguage>().GetText("ConsoleNotProfiles"));
-							break;
+							return false;
 						}
 						GetProfilesString(i, args);
 						Actions.Add(ConsoleActions.UseProfile);
@@ -70,7 +77,7 @@ namespace ZetSwitchData {
 						ConsoleMode = true;
 						break;
 					default:
-						errors.Append(ClientServiceLocator.GetService<ILanguage>().GetText("ConsoleInvalidArgument"));
+						errors.Append(ClientServiceLocator.GetService<ILanguage>().GetText(console ? "ConsoleInvalidArgument" : "FormInvalidArgument"));
 						break;
 				}
 			}

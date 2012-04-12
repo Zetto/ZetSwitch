@@ -1,0 +1,69 @@
+NewUserWeb;zetswitch.com
+ProgramName;Zet Switch
+MenuFile;File
+MenuAction;Action
+MenuHelp;Help
+Exit;Exit
+MenuAbout;About Zet Switch
+Ok;Ok
+Cancel;Cancel
+ProfileNew;New Profile
+ProfileChange;Change Profile
+ProfileDelete;Delete Profile
+ProfileApply;Apply Profile
+New;New
+Profile;Profile
+Change;Change
+Delete;Delete
+Apply;Apply
+StatusBarVer;Zet Switch version 
+Name;Name
+TextConSelect;Select connection:
+TextObtainIP;Obtain IP from DHCP server
+TextUseThisSetting;Use this settings
+TextMask;Subnet Mask
+TextDefGate;Default GW
+TextOtainDNS;Obtain DNS from DHCP server
+TrayOpen;Open Zet Switch
+Welcome;Welcome
+WelcomeMess;ZetSwitch
+ProgramSite;Program site:
+Forum;Forum:
+Support;Support:
+Author;Author:
+Lang;Language:
+DontShowAgain;Don't show again
+ProgramDesc;The program is free for noncommercial use. I hope it makes easy to use your computer and you are satisfied with it. If you find anythig to improve or correct, please write to our e-mail address. I would like to know all your suggestions.
+RunAuto;Run automatically after windows start.
+Settings;Settings
+OnlineHelp;Online Help
+CanLoadIconFile;Can't load icon file
+ProfileApplied;Profile was successfully applied
+CannotApply;Profile cannot be applied
+Succes;Succes
+Error;Error
+UseProfile;Use profile 
+DeleteQuestion;Do you really want to delete: 
+DeleteProfile;Delete profile
+CannotSetProfile;Can't set profile
+CantWorkSetFile;Can't work with settings file. Program will be close.
+CantLoadSetFile;It is impossible either load or create file
+SettingFileCorrupted;Settings file is corrupted. Do you want to recreate it? All data will be lost.  
+NonValidSubNetMask;- The subnet mask is not valid.
+NonValidIPAgainMask;- The IP is bad.
+NonValidGWAgainMask;- The gateway is bad.
+GWAndIPNotInSameNet;- The gateway and IP address aren't in same network.
+GWNotInIPQuest;IP address and gateway aren't in the same segment. Do you want to use it?.
+ProfileNameIsEmpty;- Profile name is empty.
+AtLeastOneConSel;- At least one connection must be selected.
+RequiredIP;- IP address is required.
+loading;loading
+DesktopShortcut;Desktop shortcut
+ConsoleInvalidArgument;Invalid arguments! Valid arguments are -p ProfileName
+FormInvalidArgument;Invalid arguments! Valid argument is -autorun
+ConsoleNotProfiles;Please specify profile to apply.
+
+
+
+
+

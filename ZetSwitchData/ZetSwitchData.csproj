@@ -63,10 +63,12 @@
     <Compile Include="IDataManager.cs" />
     <Compile Include="ILanguage.cs" />
     <Compile Include="ImageRepository.cs" />
+    <Compile Include="Lanugage.cs" />
     <Compile Include="Network\AdapterDataHelper.cs" />
     <Compile Include="Network\IPAddress.cs" />
     <Compile Include="Network\NetworkInterfaceSettings.cs" />
     <Compile Include="Network\NetworkManager.cs" />
+    <Compile Include="ProcessRunner.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProfileNetworkSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,6 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\default1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultLang.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

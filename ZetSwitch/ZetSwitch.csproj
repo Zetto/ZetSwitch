@@ -98,7 +98,6 @@
       <DependentUpon>IPPageView.cs</DependentUpon>
     </Compile>
     <Compile Include="IUserConfiguration.cs" />
-    <Compile Include="Lanugage.cs" />
     <Compile Include="Model\ConfigurationState.cs" />
     <Compile Include="UserConfiguration.cs" />
     <Compile Include="View\IAboutView.cs" />

@@ -22,51 +22,13 @@
 using System;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using ZetSwitch.Forms;
 using ZetSwitchData;
 
 namespace ZetSwitch
 {
     static class Program {
-		private const int AttachParentProcess = -1;
-
-        static private void BadArgs(Arguments arg) {
-            NativeMethods.AttachConsole(AttachParentProcess);
-            Console.Write(arg.Errors);
-            NativeMethods.FreeConsole();
-        }
-
-        static private void ConsoleApp(Arguments arg) {
-            NativeMethods.AttachConsole(AttachParentProcess);
-        	var manager = new DataManager();
-        	try {
-                manager.LoadProfiles();
-            }
-            catch (Exception e) {
-                Console.WriteLine(ClientServiceLocator.GetService<ILanguage>().GetText("Error") + ": " + e.Message);
-                UseTrace(e);
-                manager.Dispose();
-                return;
-            }
-
-            foreach (ConsoleActions act in arg.Actions) {
-                switch (act) {
-                    case ConsoleActions.UseProfile:
-                        foreach (string profile in arg.Profiles) {
-                            if (manager.Apply(profile))
-                                Console.WriteLine(profile + ": OK");
-                            else
-                                Console.WriteLine(profile + ": FAILED");
-                        }
-                        break;
-                }
-            }
-            manager.Dispose();
-            NativeMethods.FreeConsole();
-        }
-
-        static void WinFormApp(Arguments arg) {
+		static void WinFormApp(Arguments arg) {
             InitServices();
 
 			var welcome = new WelcomeController(new ViewFactory());
@@ -90,10 +52,16 @@ namespace ZetSwitch
 				if (arg.Minimalize) {
 					frm.GoToTray();
 					Application.Run();
+					manager.SaveSettings();
 				}
-				else
+				else if (arg.ConsoleMode) {
+					ApplyProfile(manager, arg.Profiles[0]);
+				}
+				else {
 					Application.Run(frm);
-				manager.SaveSettings();
+					manager.SaveSettings();
+				}
+
 			}
 			catch (Exception e) {
 				using (var form = new ExceptionForm(e.Message + "\n\n" + e.StackTrace)) {
@@ -111,7 +79,20 @@ namespace ZetSwitch
             
         }
 
-        /// <summary>
+    	private static void ApplyProfile(DataManager manager, string profile) {
+    		if (manager.RequestApply(profile)) {
+				MessageBox.Show(ClientServiceLocator.GetService<ILanguage>().GetText("ProfileApplied"), 
+					ClientServiceLocator.GetService<ILanguage>().GetText("Succes"), MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+    		}
+			else {
+				MessageBox.Show(ClientServiceLocator.GetService<ILanguage>().GetText("CannotApply"), 
+					ClientServiceLocator.GetService<ILanguage>().GetText("Error"), MessageBoxButtons.OK, 
+					MessageBoxIcon.Error);
+    		}
+    	}
+
+    	/// <summary>
         /// The main entry point for the application.
         /// </summary>
 		/// 
@@ -124,16 +105,10 @@ namespace ZetSwitch
             SetDebugSettings();
             LoadLanguage();
 
-            var arg = new Arguments();
-            if (!arg.Parse(args))  {  //bad arguments
-                BadArgs(arg);
-            }
-            else if (arg.Count != 0)  { //console
-                ConsoleApp(arg); 
-            }
-            else {   //win form
-                WinFormApp(arg);
-			}
+            var arg = new Arguments(false);
+            if (arg.Parse(args))  
+				WinFormApp(arg);
+
             FlushDebug();
         }
 
@@ -142,7 +117,7 @@ namespace ZetSwitch
 			IViewFactory viewFactory = new ViewFactory();
 			var imageRepository = new ImageRepository();
 			imageRepository.SetPathPrefix(Application.StartupPath);
-			ClientServiceLocator.Register<IViewFactory>(viewFactory);
+			ClientServiceLocator.Register(viewFactory);
 			ClientServiceLocator.Register<IUserConfiguration>(new UserConfiguration());
 			ClientServiceLocator.Register<ISettingsController>(new SettingsController(viewFactory));
 			ClientServiceLocator.Register<IAboutController>(new AboutController(viewFactory));
@@ -190,16 +165,6 @@ namespace ZetSwitch
             }
         }
     }
-
-
-	internal static class NativeMethods
-    {
-		[DllImport("kernel32.dll")]
-		internal static extern bool AttachConsole(int dwProcessId);
-		[DllImport("kernel32.dll")]
-		internal static extern Boolean FreeConsole();
-    }
-
 	#endregion
 
 }

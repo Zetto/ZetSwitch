@@ -52,6 +52,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZetSwitchData\ZetSwitchData.csproj">
+      <Project>{19D2D19A-C25D-469C-AE17-C1A2BACEA90D}</Project>
+      <Name>ZetSwitchData</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

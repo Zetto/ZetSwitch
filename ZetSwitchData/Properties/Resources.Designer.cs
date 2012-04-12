@@ -66,5 +66,37 @@ namespace ZetSwitchData.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NewUserWeb;zetswitch.com
+        ///ProgramName;Zet Switch
+        ///MenuFile;File
+        ///MenuAction;Action
+        ///MenuHelp;Help
+        ///Exit;Exit
+        ///MenuAbout;About Zet Switch
+        ///Ok;Ok
+        ///Cancel;Cancel
+        ///ProfileNew;New Profile
+        ///ProfileChange;Change Profile
+        ///ProfileDelete;Delete Profile
+        ///ProfileApply;Apply Profile
+        ///New;New
+        ///Profile;Profile
+        ///Change;Change
+        ///Delete;Delete
+        ///Apply;Apply
+        ///StatusBarVer;Zet Switch version 
+        ///Name;Name
+        ///TextConSelect;Select connection:
+        ///TextObtainIP;Obtain IP from DHCP server
+        ///TextUseThisSetting;Use this settings
+        ///TextMask;Subn [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DefaultLang {
+            get {
+                return ResourceManager.GetString("DefaultLang", resourceCulture);
+            }
+        }
     }
 }

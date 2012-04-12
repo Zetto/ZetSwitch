@@ -58,13 +58,10 @@ namespace ZetSwitch {
 			if (!view.AskToApplyProfile(profile))
 				return;
 
-			try {
-				manager.Apply(profile);
-			} catch (Exception E) {
-				view.ShowErrorMessage(E.Message);
-				return;
-			}
-			view.ShowInfoMessage(ClientServiceLocator.GetService<ILanguage>().GetText("ProfileApplied"), ClientServiceLocator.GetService<ILanguage>().GetText("Succes"));
+			if (manager.RequestApply(profile))
+				view.ShowInfoMessage(ClientServiceLocator.GetService<ILanguage>().GetText("ProfileApplied"), ClientServiceLocator.GetService<ILanguage>().GetText("Succes"));
+			else
+				view.ShowErrorMessage(ClientServiceLocator.GetService<ILanguage>().GetText("CannotApply"));
 		}
 
 		private void OnRemoveProfile(object sender, EventArgs e) {

@@ -139,9 +139,6 @@
   <data name="Version" xml:space="preserve">
     <value>0.3.0</value>
   </data>
-  <data name="DefaultLang" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DefaultLang.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
-  </data>
   <data name="about" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\about.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

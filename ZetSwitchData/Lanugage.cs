@@ -21,11 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
-using ZetSwitchData;
+using System.Reflection;
 
-namespace ZetSwitch
+namespace ZetSwitchData
 {
 	public class LanguageDescription {
 		public string Name { get; private set; }
@@ -62,7 +62,8 @@ namespace ZetSwitch
 
 		public Dictionary<string, string> LoadLanguage(string name) {
 			Dictionary<string, string> words;
-			using (var reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\" + name + ".lng")) {
+			string currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			using (var reader = new StreamReader(currentDirectory + "\\Data\\Lang\\" + name + ".lng")) {
 				words = LoadData(reader);
 			}
 			return words;
@@ -89,7 +90,8 @@ namespace ZetSwitch
 		private void ReloadLanguageList() {
 			StreamReader reader = null;
 			try {
-				reader = new StreamReader(Application.StartupPath + "\\Data\\Lang\\languages.info");
+				string currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				reader = new StreamReader(currentDirectory + "\\Data\\Lang\\languages.info");
 				string line;
 				while ((line = reader.ReadLine()) != null) {
 					string[] buf = line.Split(';');
@@ -101,7 +103,8 @@ namespace ZetSwitch
 				}
 			}
 			catch(Exception e) {
-				Program.UseTrace(e);
+				Trace.WriteLine(e.StackTrace);
+				Trace.WriteLine(e.Message);
 			}
 			finally {
 				if (reader != null)
@@ -133,7 +136,8 @@ namespace ZetSwitch
 			try {
 				defaultLang = store.LoadDefaultLanguage();
 			} catch (Exception e) {
-				Program.UseTrace(e);
+				Trace.WriteLine(e.StackTrace);
+				Trace.WriteLine(e.Message);
 			}
 		}
 
@@ -142,7 +146,8 @@ namespace ZetSwitch
 				actualLang = store.LoadLanguage(name);
 			}
 			catch (Exception e) {
-				Program.UseTrace(e);
+				Trace.WriteLine(e.StackTrace);
+				Trace.WriteLine(e.Message);
 			}
             return true;
         }
