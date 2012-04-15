@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using ZetSwitchData;
 
-namespace ZetswitcWorker {
+namespace ZetswitchWorker {
 	class Program {
 
 		static private int ConsoleApp(Arguments arg) {

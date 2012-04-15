@@ -19,12 +19,14 @@
 //
 ///////////////////////////////////////////////////////////////////////////// 
 
+using ZetSwitchData.Browsers.FF;
+
 namespace ZetSwitchData.Browsers {
 	class BrowserFactory {
 		public static Browser CreateBrowser(BROWSERS browser)  {
 			switch (browser) {
-				case BROWSERS.Ie:
-					return new IE();
+			/*	case BROWSERS.Ie:
+					return new IE();*/
 				case BROWSERS.Firefox:
 					return new Firefox();
 				default:

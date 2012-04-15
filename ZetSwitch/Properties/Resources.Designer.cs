@@ -142,7 +142,7 @@ namespace ZetSwitch.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.3.0.
+        ///   Looks up a localized string similar to 0.4.0.
         /// </summary>
         internal static string Version {
             get {

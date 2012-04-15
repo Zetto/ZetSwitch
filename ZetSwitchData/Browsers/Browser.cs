@@ -31,54 +31,18 @@ namespace ZetSwitchData.Browsers
 
 	[Serializable]
 	public abstract class Browser {
-
-		public ProxySettings Proxy { set; get; }
-		public string HomePage { set; get; }
 		public bool IsDetected { get; set; }
 
 		protected Browser() {
-			Proxy = new ProxySettings();
 			IsDetected = false;
 		}
 
-		protected abstract bool LoadProxySettings();
-		protected abstract bool LoadHomePage();
-		protected abstract bool SaveProxySettings();
-		protected abstract bool SaveHomePage();
-		protected abstract bool Find();
-
-	
-		public virtual bool LoadData()
-		{
-			try
-			{
-				IsDetected = Find();
-				if (!IsDetected)
-					return false;
-				LoadProxySettings();
-				LoadHomePage();
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public virtual bool SaveData()
-		{
-			if (!IsDetected)
-				return false;
-			try
-			{
-				SaveHomePage();
-				SaveProxySettings();
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-		}
+		
+		public abstract bool Init();
+		public abstract ProxySettings ProxySettings();
+		public abstract void SetProxySettings(ProxySettings settings);
+		public abstract void Save();
+		public abstract string HomePage();
+		public abstract void SetHomePage(string page);
 	}
 }

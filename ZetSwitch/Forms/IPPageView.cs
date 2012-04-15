@@ -9,7 +9,7 @@ namespace ZetSwitch {
 
 		public IPPageView() {
 			InitializeComponent();
-			ResetLanguage();
+		//	ResetLanguage();
 		}
 
 		private void ResetLanguage() {

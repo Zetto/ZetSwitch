@@ -67,7 +67,7 @@ namespace ZetSwitchData {
 		private void LoadData() {
 			interfaceManager.StartLoad();
 			foreach (KeyValuePair<BROWSERS, Browser> pair in browsers)
-				pair.Value.LoadData();
+				pair.Value.Init();
 		}
 
 		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() {
@@ -134,7 +134,7 @@ namespace ZetSwitchData {
 		}
 
 		public Profile New() {
-			var profile = new Profile {Name = GetNewProfileName(), Browsers = GetBrowsers()};
+			var profile = new Profile {Name = GetNewProfileName()};
 			return profile;
 		}
 

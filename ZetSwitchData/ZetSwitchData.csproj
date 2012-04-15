@@ -47,7 +47,9 @@
     <Compile Include="Arguments.cs" />
     <Compile Include="Browsers\Browser.cs" />
     <Compile Include="Browsers\BrowserFactory.cs" />
+    <Compile Include="Browsers\Browsers.cs" />
     <Compile Include="Browsers\Firefox.cs" />
+    <Compile Include="Browsers\FirefoxConfigFile.cs" />
     <Compile Include="Browsers\IE.cs" />
     <Compile Include="Browsers\ProxySettings.cs" />
     <Compile Include="ClientServiceLocator.cs" />

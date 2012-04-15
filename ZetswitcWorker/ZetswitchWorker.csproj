@@ -8,8 +8,8 @@
     <ProjectGuid>{C312A207-80A6-4108-AE44-54371C72159C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZetswitcWorker</RootNamespace>
-    <AssemblyName>ZetswitcWorker</AssemblyName>
+    <RootNamespace>ZetswitchWorker</RootNamespace>
+    <AssemblyName>ZetswitchWorker</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

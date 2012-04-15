@@ -33,16 +33,16 @@ namespace ZetSwitchData {
 	[Serializable]
 	public class Profile {
 		private bool useBrowser;
+		private BrowsersManager browsers = new BrowsersManager();
 
 		public ProfileNetworkSettingsList Connections { get; set; }
-		public Dictionary<BROWSERS, Browser> Browsers { protected get; set; }
-
+		public BrowsersManager Browsers { get { return browsers; }}
+		
 		public Profile() {
 			Name = "New";
 			IconFile = "default";
 			useBrowser = false;
 			Connections = new ProfileNetworkSettingsList();
-			Browsers = new Dictionary<BROWSERS, Browser>();
 		}
 
 		public Profile(Profile other) {
@@ -50,7 +50,7 @@ namespace ZetSwitchData {
 			IconFile = other.IconFile;
 			useBrowser = other.useBrowser;
 			Connections = new ProfileNetworkSettingsList(other.Connections);
-			Browsers = new Dictionary<BROWSERS, Browser>(other.Browsers);
+			browsers = new BrowsersManager(other.browsers);
 		}
 
 		public Profile CloneProfile() {
@@ -73,10 +73,6 @@ namespace ZetSwitchData {
 		public bool UseBrowser {
 			get { return useBrowser; }
 			set { useBrowser = value; }
-		}
-
-		public Browser GetBrowser(BROWSERS browser) {
-			return Browsers[browser];
 		}
 
 		public List<string> GetNetworkInterfaceNames() {

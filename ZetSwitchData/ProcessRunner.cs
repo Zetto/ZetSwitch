@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ZetSwitchData {
 	public class ProcessRunner {
-		const string ProgramName = @"\ZetswitcWorker.exe";
+		const string ProgramName = @"\ZetswitchWorker.exe";
 
 		public bool Apply(string name)  {
 			using (var proces = new Process()) {

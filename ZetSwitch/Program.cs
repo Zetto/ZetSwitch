@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using ZetSwitch.Forms;
 using ZetSwitchData;
+using ZetSwitchData.Browsers;
 
 namespace ZetSwitch
 {
@@ -80,16 +81,19 @@ namespace ZetSwitch
         }
 
     	private static void ApplyProfile(DataManager manager, string profile) {
-    		if (manager.RequestApply(profile)) {
-				MessageBox.Show(ClientServiceLocator.GetService<ILanguage>().GetText("ProfileApplied"), 
-					ClientServiceLocator.GetService<ILanguage>().GetText("Succes"), MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-    		}
-			else {
-				MessageBox.Show(ClientServiceLocator.GetService<ILanguage>().GetText("CannotApply"), 
-					ClientServiceLocator.GetService<ILanguage>().GetText("Error"), MessageBoxButtons.OK, 
-					MessageBoxIcon.Error);
-    		}
+			using (var tmpForm = new Form() { TopMost = true }) {
+				if (manager.RequestApply(profile)) {
+
+					MessageBox.Show(tmpForm, ClientServiceLocator.GetService<ILanguage>().GetText("ProfileApplied"),
+					                ClientServiceLocator.GetService<ILanguage>().GetText("Succes"), MessageBoxButtons.OK,
+					                MessageBoxIcon.Information);
+				}
+				else {
+					MessageBox.Show(tmpForm, ClientServiceLocator.GetService<ILanguage>().GetText("CannotApply"),
+					                ClientServiceLocator.GetService<ILanguage>().GetText("Error"), MessageBoxButtons.OK,
+					                MessageBoxIcon.Error);
+				}
+			}
     	}
 
     	/// <summary>

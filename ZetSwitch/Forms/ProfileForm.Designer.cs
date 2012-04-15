@@ -43,10 +43,13 @@ namespace ZetSwitch
 			this.TabControl = new System.Windows.Forms.TabControl();
 			this.tabPageIP = new System.Windows.Forms.TabPage();
 			this.ipPageView = new ZetSwitch.IPPageView();
+			this.tabPageProxy = new System.Windows.Forms.TabPage();
+			this.proxyPage1 = new ZetSwitch.Forms.ProxyPage();
 			((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.TabControl.SuspendLayout();
 			this.tabPageIP.SuspendLayout();
+			this.tabPageProxy.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label6
@@ -141,6 +144,7 @@ namespace ZetSwitch
 			// 
 			this.TabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
 			this.TabControl.Controls.Add(this.tabPageIP);
+			this.TabControl.Controls.Add(this.tabPageProxy);
 			this.TabControl.ImeMode = System.Windows.Forms.ImeMode.NoControl;
 			this.TabControl.Location = new System.Drawing.Point(222, 17);
 			this.TabControl.Name = "TabControl";
@@ -167,6 +171,24 @@ namespace ZetSwitch
 			this.ipPageView.Size = new System.Drawing.Size(237, 264);
 			this.ipPageView.TabIndex = 0;
 			// 
+			// tabPageProxy
+			// 
+			this.tabPageProxy.Controls.Add(this.proxyPage1);
+			this.tabPageProxy.Location = new System.Drawing.Point(4, 25);
+			this.tabPageProxy.Name = "tabPageProxy";
+			this.tabPageProxy.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageProxy.Size = new System.Drawing.Size(249, 289);
+			this.tabPageProxy.TabIndex = 1;
+			this.tabPageProxy.Text = "Proxy";
+			this.tabPageProxy.UseVisualStyleBackColor = true;
+			// 
+			// proxyPage1
+			// 
+			this.proxyPage1.Location = new System.Drawing.Point(4, 7);
+			this.proxyPage1.Name = "proxyPage1";
+			this.proxyPage1.Size = new System.Drawing.Size(242, 162);
+			this.proxyPage1.TabIndex = 0;
+			// 
 			// ProfileForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -188,6 +210,7 @@ namespace ZetSwitch
 			this.groupBox3.PerformLayout();
 			this.TabControl.ResumeLayout(false);
 			this.tabPageIP.ResumeLayout(false);
+			this.tabPageProxy.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -207,5 +230,7 @@ namespace ZetSwitch
 		private System.Windows.Forms.GroupBox groupBox3;
 		private TabPage tabPageIP;
 		private IPPageView ipPageView;
+		private TabPage tabPageProxy;
+		private Forms.ProxyPage proxyPage1;
     }
 }
