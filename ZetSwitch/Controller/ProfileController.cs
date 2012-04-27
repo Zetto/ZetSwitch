@@ -14,9 +14,8 @@ namespace ZetSwitch {
 
 		public void SetProfile(Profile profile, bool isNew) {
 			actProfile = profile;
-			if (!isNew)
-				oldProfileName = actProfile.Name;
-
+			oldProfileName = isNew ? "" : actProfile.Name ;
+			actProfile.AddBrowsersNames(manager.GetBrowsersNames());
 			actView.SetProfile(actProfile);
 			if (manager != null && manager.IsIFLoaded())
 				LoadData();

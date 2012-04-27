@@ -60,6 +60,14 @@ namespace ZetSwitchData {
 		public ProfileNetworkSettings(NetworkInterfaceSettings settings) {
 			this.settings = settings;
 		}
+
+
+		public ProfileNetworkSettings(ProfileNetworkSettings other) {
+			use = other.use;
+			useMac = other.useMac;
+			useNetwork = other.useNetwork;
+			settings = new NetworkInterfaceSettings(other.settings);
+		}
 	}
 
 	[Serializable]
@@ -67,11 +75,8 @@ namespace ZetSwitchData {
 		public ProfileNetworkSettingsList() {
 		}
 
-		public ProfileNetworkSettingsList(IEnumerable<ProfileNetworkSettings> other) : base(other) {
-		}
-
-		public ProfileNetworkSettingsList(IEnumerable<NetworkInterfaceSettings> other) {
-			foreach (NetworkInterfaceSettings setting in other) {
+		public ProfileNetworkSettingsList(IEnumerable<ProfileNetworkSettings> other) {
+			foreach (ProfileNetworkSettings setting in other) {
 				Add(new ProfileNetworkSettings(setting));
 			}
 		}

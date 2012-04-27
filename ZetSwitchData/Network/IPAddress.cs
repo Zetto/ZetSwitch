@@ -36,6 +36,8 @@ namespace ZetSwitchData.Network {
 
 		public IPAddress(IPAddress old) {
 			IP = new byte[4];
+			if (old == null)
+				return;
 			for (var i = 0; i < 4; i++) {
 				IP[i] = old.IP[i];
 			}

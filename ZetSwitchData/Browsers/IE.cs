@@ -20,148 +20,95 @@
 ///////////////////////////////////////////////////////////////////////////// 
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using Microsoft.Win32;
 
-namespace ZetSwitchData.Browsers
-{
+namespace ZetSwitchData.Browsers {
 	[Serializable]
-	public class IE {
-
-		/*		#region private
-
-				private void EnableProxy()
-				{
-					var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-					if (key != null) 
-						key.SetValue("ProxyEnable", 1);
-				}
-
-				private void DisableProxy()
-				{
-					var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-					if (key != null) 
-						key.SetValue("ProxyEnable", 0);
-				}
-
-				#endregion
-
-				#region Browser
-				protected override bool LoadProxySettings()
-				{
-					var key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-					if (key == null)
-						throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
-			
-					Proxy.Enabled = Convert.ToBoolean((int) key.GetValue("ProxyEnable"));
-					if (Proxy.Enabled) {
-						var servers = key.GetValue("ProxyServer").ToString().Split(';');
-						if (servers.Length == 1)
-						{
-							var item = servers[0].Split(':');
-							if (item.Length < 2)
-								return false;
-							Proxy.HTTP = item[0];
-							Proxy.HTTPPort = Convert.ToInt32(item[1]);
-							Proxy.UseAdrForAll = true;
-						}
-						else if (servers.Length > 1)
-						{
-							Proxy.UseAdrForAll = false;
-							foreach (var item in servers.Select(adr => adr.Split('=', ':')).Where(item => item.Length >= 3)) {
-								switch (item[0]) {
-									case "http":
-										Proxy.HTTP = item[1];
-										Proxy.HTTPPort = Convert.ToInt32(item[2]);
-										break;
-									case "ftp":
-										Proxy.FTP = item[1];
-										Proxy.FTPPort = Convert.ToInt32(item[2]);
-										break;
-									case "socks":
-										Proxy.Socks = item[1];
-										Proxy.SocksPort = Convert.ToInt32(item[2]);
-										break;
-									case "https":
-										Proxy.SSL = item[1];
-										Proxy.SSLPort = Convert.ToInt32(item[2]);
-										break;
-									default:
-										continue;
-								}
-							}
-						}
-						else
-							return false;
-					}
+	public class IE : Browser {
+		
+		private bool EnableProxy() {
+			try {
+				var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+				if (key != null) {
+					key.SetValue("ProxyEnable", 1);
 					return true;
 				}
-
-				protected override bool SaveProxySettings() {
-					var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-					if (key == null)
-						throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
-
-					if (Proxy.HTTP.Length == 0 && Proxy.FTP.Length == 0 && Proxy.Socks.Length == 0 && Proxy.SSL.Length == 0)
-						return true;
-					var servers = new StringBuilder();
-					if (Proxy.Enabled) {
-						if (Proxy.UseAdrForAll) {
-							servers.Append(Proxy.HTTP + ":" + Proxy.HTTPPort.ToString(CultureInfo.InvariantCulture));
-						}
-						else {
-							if (Proxy.HTTP.Length != 0)
-								servers.Append("http=" + Proxy.HTTP + ":" + Proxy.HTTPPort.ToString(CultureInfo.InvariantCulture) + ";");
-							if (Proxy.FTP.Length != 0)
-								servers.Append("ftpp=" + Proxy.FTP + ":" + Proxy.FTPPort.ToString(CultureInfo.InvariantCulture) + ";");
-							if (Proxy.Socks.Length != 0)
-								servers.Append("socks=" + Proxy.Socks + ":" + Proxy.SocksPort.ToString(CultureInfo.InvariantCulture) + ";");
-							if (Proxy.HTTP.Length != 0)
-								servers.Append("https=" + Proxy.SSL + ":" + Proxy.SSLPort.ToString(CultureInfo.InvariantCulture) + ";");
-						}
-						if (servers.Length != 0) {
-							key.SetValue("ProxyServer", servers.ToString());
-							EnableProxy();
-						}
-						else
-							return false;
-					}
-					else
-					{
-						DisableProxy();
-					}
-					return true;
-				}
-
-       
-
-				protected override bool LoadHomePage() {
-					var key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer\\Main");
-					if (key == null)
-						throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
-					HomePage = (string) key.GetValue("Start Page");
-					return true;
-				}
-
-				protected override bool SaveHomePage() {
-					var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main");
-					if (key == null)
-						throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
-					key.SetValue("Start Page", HomePage);
-					return true;
-				}
-
-				protected override bool Find() {
-					var key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer");
-					return key != null;
-				}
-
-				#endregion
-
 			}
-			*/
+			catch(Exception) {}
+			return false;
+		}
+
+		private bool DisableProxy() {
+			try {
+				var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+				if (key != null) {
+					key.SetValue("ProxyEnable", 0);
+					return true;
+				}
+			}
+			catch(Exception) {
+			}
+			return false;
+		}
+
+		protected bool SaveProxySettings(ProxySettings proxy) {
+			var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+			if (key == null)
+				throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
+
+			if (proxy.HTTP.Length == 0 && proxy.FTP.Length == 0 && proxy.Socks.Length == 0 && proxy.SSL.Length == 0) 
+				return DisableProxy();
+			var servers = new StringBuilder();
+			if (proxy.UseAdrForAll) {
+				servers.Append(proxy.HTTP + ":" + proxy.HTTPPort.ToString(CultureInfo.InvariantCulture));
+			}
+			else {
+				if (proxy.HTTP.Length != 0)
+					servers.Append("http=" + proxy.HTTP + ":" + proxy.HTTPPort.ToString(CultureInfo.InvariantCulture) + ";");
+				if (proxy.FTP.Length != 0)
+					servers.Append("ftp=" + proxy.FTP + ":" + proxy.FTPPort.ToString(CultureInfo.InvariantCulture) + ";");
+				if (proxy.Socks.Length != 0)
+					servers.Append("socks=" + proxy.Socks + ":" + proxy.SocksPort.ToString(CultureInfo.InvariantCulture) + ";");
+				if (proxy.HTTP.Length != 0)
+					servers.Append("https=" + proxy.SSL + ":" + proxy.SSLPort.ToString(CultureInfo.InvariantCulture) + ";");
+			}
+			if (servers.Length != 0) {
+				key.SetValue("ProxyServer", servers.ToString());
+				return EnableProxy();
+			}
+			return true;
+		}
+
+		private void SaveHomePage(string homePage) {
+			try {
+				var key = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main");
+				if (key == null)
+					throw new Exception(ClientServiceLocator.GetService<ILanguage>().GetText("CannotOpenRegistry"));
+				key.SetValue("Start Page", homePage);
+			}
+			catch(Exception) {
+			}
+		}
+
+		public override string Name() {
+			return @"Internet Explorer";
+		}
+
+		public override void SetBrowserSettings(BrowserSettings settings) {
+			SaveHomePage(settings.HomePage);
+			SaveProxySettings(settings.Proxy);
+		}
+
+		public override bool IsDetected() {
+			try {
+				var key = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer");
+				return key != null;
+			}
+			catch(Exception) {
+			}
+			return false;
+		}
 	}
 }

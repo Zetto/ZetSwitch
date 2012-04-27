@@ -39,6 +39,8 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.IpIpAddress = new IPAddressControlLib.IPAddressControl();
 			this.label3 = new System.Windows.Forms.Label();
+			this.ListBoxInterfaces = new ZetSwitch.InterfaceListBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -63,7 +65,7 @@
 			this.groupBox2.Controls.Add(this.IpDNS2);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.IpDNS1);
-			this.groupBox2.Location = new System.Drawing.Point(3, 153);
+			this.groupBox2.Location = new System.Drawing.Point(192, 154);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(231, 107);
 			this.groupBox2.TabIndex = 37;
@@ -153,7 +155,7 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.IpIpAddress);
 			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Location = new System.Drawing.Point(3, 3);
+			this.groupBox1.Location = new System.Drawing.Point(192, 4);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(231, 128);
 			this.groupBox1.TabIndex = 36;
@@ -246,19 +248,40 @@
 			this.label3.TabIndex = 32;
 			this.label3.Text = "Default gateway";
 			// 
+			// ListBoxInterfaces
+			// 
+			this.ListBoxInterfaces.FormattingEnabled = true;
+			this.ListBoxInterfaces.Location = new System.Drawing.Point(3, 26);
+			this.ListBoxInterfaces.Name = "ListBoxInterfaces";
+			this.ListBoxInterfaces.Size = new System.Drawing.Size(183, 184);
+			this.ListBoxInterfaces.TabIndex = 42;
+			this.ListBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.ListBoxInterfacesSelectedIndexChanged);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(0, 10);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(107, 13);
+			this.label7.TabIndex = 43;
+			this.label7.Text = "Choose connections:";
+			// 
 			// IPPageView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.ListBoxInterfaces);
+			this.Controls.Add(this.label7);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "IPPageView";
-			this.Size = new System.Drawing.Size(237, 264);
+			this.Size = new System.Drawing.Size(432, 264);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -280,5 +303,7 @@
 		private IPAddressControlLib.IPAddressControl IpMask;
 		private System.Windows.Forms.Label label1;
 		private IPAddressControlLib.IPAddressControl IpIpAddress;
+		private InterfaceListBox ListBoxInterfaces;
+		private System.Windows.Forms.Label label7;
 	}
 }

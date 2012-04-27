@@ -29,20 +29,9 @@ namespace ZetSwitchData.Browsers
 		Firefox
 	}
 
-	[Serializable]
 	public abstract class Browser {
-		public bool IsDetected { get; set; }
-
-		protected Browser() {
-			IsDetected = false;
-		}
-
-		
-		public abstract bool Init();
-		public abstract ProxySettings ProxySettings();
-		public abstract void SetProxySettings(ProxySettings settings);
-		public abstract void Save();
-		public abstract string HomePage();
-		public abstract void SetHomePage(string page);
+		public abstract string Name();
+		public abstract void SetBrowserSettings(BrowserSettings settings);
+		public abstract bool IsDetected();
 	}
 }

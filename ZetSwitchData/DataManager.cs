@@ -36,17 +36,18 @@ namespace ZetSwitchData {
 		private List<Profile> profiles = new List<Profile>();
 
 		private readonly NetworkManager interfaceManager = new NetworkManager();
-		private readonly Dictionary<BROWSERS, Browser> browsers = new Dictionary<BROWSERS, Browser>();
+		private readonly Dictionary<string, Browser> browsers = new Dictionary<string, Browser>();
 
 		public List<Profile> Profiles {
 			get { return profiles; }
 		}
 
 		public DataManager() {
-			browsers[BROWSERS.Ie] = BrowserFactory.CreateBrowser(BROWSERS.Ie);
-			browsers[BROWSERS.Firefox] = BrowserFactory.CreateBrowser(BROWSERS.Firefox);
+			foreach (BROWSERS type in Enum.GetValues(typeof(BROWSERS))) {
+				Browser browser = BrowserFactory.CreateBrowser(type);
+				browsers.Add(browser.Name(),browser);
+			}
 			interfaceManager.DataLoaded += InterfaceManagerDataLoaded;
-
 		}
 
 		~DataManager() {
@@ -66,16 +67,14 @@ namespace ZetSwitchData {
 
 		private void LoadData() {
 			interfaceManager.StartLoad();
-			foreach (KeyValuePair<BROWSERS, Browser> pair in browsers)
-				pair.Value.Init();
 		}
 
 		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() {
 			return new List<NetworkInterfaceSettings>(interfaceManager.GetNetworkInterfaceSettings());
 		}
 
-		public Dictionary<BROWSERS, Browser> GetBrowsers() {
-			return new Dictionary<BROWSERS, Browser>(browsers);
+		public List<string> GetBrowsersNames() {
+			return browsers.Select(browser => browser.Value.Name()).ToList();
 		}
 
 		public bool RequestApply(string name) {
@@ -95,7 +94,12 @@ namespace ZetSwitchData {
 
 		private bool ApplyProfile(Profile profile) {
 			// TODO: MAC address
-			// TODO: browsers
+			foreach(string name in profile.BrowserNames.Where(x => x.Used == true).Select(x => x.Name).ToList()) {
+				if (!browsers.ContainsKey(name))
+					continue;
+				Browser browser = browsers[name];
+				browser.SetBrowserSettings(profile.BrowserSettings);
+			}
 			foreach (ProfileNetworkSettings settings in profile.Connections.Where(settings => settings.Use)) {
 				interfaceManager.Save(settings.Settings);
 			}

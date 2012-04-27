@@ -26,20 +26,32 @@ using System.Text;
 namespace ZetSwitchData
 {
     [Serializable]
-    public class ProxySettings
-    {
-        public bool Enabled;
-        public bool UseAdrForAll;
-        public string HTTP;
-        public int HTTPPort;
-        public string FTP;
-        public int FTPPort;
-        public string SSL;
-        public int SSLPort;
-        public string Socks;
-        public int SocksPort;
+    public class ProxySettings {
+    	public readonly bool Enabled;
+        public readonly bool UseAdrForAll;
+    	public readonly string HTTP = "";
+        public readonly int HTTPPort;
+    	public readonly string FTP = "";
+        public readonly int FTPPort;
+    	public readonly string SSL = "";
+        public readonly int SSLPort;
+    	public readonly string Socks = "";
+        public readonly int SocksPort;
 
 		public ProxySettings() {
+		}
+
+		public ProxySettings(bool enable, string http, int httpport, string ftp, 
+			int ftpport, string ssl, int sslport, string socks, int socksport) {
+			Enabled = enable;
+			HTTP = http;
+			HTTPPort = httpport;
+			FTP = ftp;
+			FTPPort = ftpport;
+			SSL = ssl;
+			SSLPort = sslport;
+			Socks = socks;
+			SocksPort = socksport;
 		}
 
     	public ProxySettings(ProxySettings other) {
@@ -95,6 +107,19 @@ namespace ZetSwitchData
 			b.Append(SocksPort.ToString(CultureInfo.InvariantCulture));
 			return b.ToString();
 		}
+
+    	public bool IsValid() {
+			if ((HTTP.Length!=0 || HTTPPort != 0) && (HTTP.Length == 0 || HTTPPort == 0))
+				return false;
+			if ((FTP.Length != 0 || FTPPort != 0) && (FTP.Length == 0 || FTPPort == 0))
+				return false;
+			if ((Socks.Length != 0 || SocksPort != 0) && (Socks.Length == 0 || SocksPort == 0))
+				return false;
+			if ((SSL.Length != 0 || SSLPort != 0) && (SSL.Length == 0 || SSLPort == 0))
+				return false;
+				
+    		return true;
+    	}
     }
 }
 

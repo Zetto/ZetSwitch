@@ -38,10 +38,16 @@
 			this.SSL = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.HTTTPort = new System.Windows.Forms.TextBox();
+			this.HTTPPort = new System.Windows.Forms.TextBox();
 			this.HTTP = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.HomePage = new System.Windows.Forms.TextBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.lbBrowsers = new System.Windows.Forms.CheckedListBox();
+			this.label10 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -60,10 +66,10 @@
 			this.groupBox1.Controls.Add(this.SSL);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.HTTTPort);
+			this.groupBox1.Controls.Add(this.HTTPPort);
 			this.groupBox1.Controls.Add(this.HTTP);
 			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(4, 4);
+			this.groupBox1.Location = new System.Drawing.Point(192, 3);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(233, 151);
 			this.groupBox1.TabIndex = 0;
@@ -186,12 +192,13 @@
 			this.label2.TabIndex = 4;
 			this.label2.Text = ":";
 			// 
-			// HTTTPort
+			// HTTPPort
 			// 
-			this.HTTTPort.Location = new System.Drawing.Point(186, 19);
-			this.HTTTPort.Name = "HTTTPort";
-			this.HTTTPort.Size = new System.Drawing.Size(38, 20);
-			this.HTTTPort.TabIndex = 3;
+			this.HTTPPort.Location = new System.Drawing.Point(186, 19);
+			this.HTTPPort.Name = "HTTPPort";
+			this.HTTPPort.Size = new System.Drawing.Size(38, 20);
+			this.HTTPPort.TabIndex = 3;
+			this.HTTPPort.TextChanged += new System.EventHandler(this.HTTPPortTextChanged);
 			// 
 			// HTTP
 			// 
@@ -199,6 +206,7 @@
 			this.HTTP.Name = "HTTP";
 			this.HTTP.Size = new System.Drawing.Size(124, 20);
 			this.HTTP.TabIndex = 2;
+			this.HTTP.TextChanged += new System.EventHandler(this.HTTPTextChanged);
 			// 
 			// label1
 			// 
@@ -209,16 +217,66 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "HTTP:";
 			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.HomePage);
+			this.groupBox2.Controls.Add(this.label9);
+			this.groupBox2.Location = new System.Drawing.Point(191, 160);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(236, 65);
+			this.groupBox2.TabIndex = 18;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Home page";
+			// 
+			// HomePage
+			// 
+			this.HomePage.Location = new System.Drawing.Point(50, 25);
+			this.HomePage.Name = "HomePage";
+			this.HomePage.Size = new System.Drawing.Size(175, 20);
+			this.HomePage.TabIndex = 18;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(9, 28);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(32, 13);
+			this.label9.TabIndex = 0;
+			this.label9.Text = "URL:";
+			// 
+			// lbBrowsers
+			// 
+			this.lbBrowsers.FormattingEnabled = true;
+			this.lbBrowsers.Location = new System.Drawing.Point(3, 26);
+			this.lbBrowsers.Name = "lbBrowsers";
+			this.lbBrowsers.Size = new System.Drawing.Size(183, 184);
+			this.lbBrowsers.TabIndex = 19;
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(3, 10);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(53, 13);
+			this.label10.TabIndex = 44;
+			this.label10.Text = "Browsers:";
+			// 
 			// ProxyPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label10);
+			this.Controls.Add(this.lbBrowsers);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "ProxyPage";
-			this.Size = new System.Drawing.Size(242, 162);
+			this.Size = new System.Drawing.Size(535, 235);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -228,7 +286,7 @@
 		private System.Windows.Forms.TextBox HTTP;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox HTTTPort;
+		private System.Windows.Forms.TextBox HTTPPort;
 		private System.Windows.Forms.CheckBox cbUseAll;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.TextBox SocksPort;
@@ -242,5 +300,10 @@
 		private System.Windows.Forms.TextBox SSLPort;
 		private System.Windows.Forms.TextBox SSL;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.TextBox HomePage;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.CheckedListBox lbBrowsers;
+		private System.Windows.Forms.Label label10;
 	}
 }

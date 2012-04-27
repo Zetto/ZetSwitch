@@ -18,5 +18,6 @@ namespace ZetSwitchData {
 		List<NetworkInterfaceSettings> GetNetworkInterfaceSettings();
 		void StartDelayedLoading();
 		bool RequestApply(string profile);
+		List<string> GetBrowsersNames();
 	}
 }

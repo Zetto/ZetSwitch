@@ -22,8 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
+using System.Linq;
 using System.Xml;
+using ZetSwitchData.Browsers;
 using ZetSwitchData.Network;
 
 namespace ZetSwitchData.Configuration {
@@ -48,7 +49,15 @@ namespace ZetSwitchData.Configuration {
 		private const string IdDNSDHCP = "DNSDHCP";
 		private const string IdDHCP = "DHCP";
 
-		#region private
+		private const string IDBrowsers = "browsers";
+		private const string IDBrowser = "browser";
+		private const string IDProxy = "proxy";
+		private const string IDHTTP = "HTTP";
+		private const string IDSSL = "SSL";
+		private const string IDFTP = "FTP";
+		private const string IDSocks = "Socks";
+		private const string IDPort = "port";
+		private const string IDHomePage = "homePage";
 
 		private ProfileNetworkSettingsList GetNetworkSettingsList(XmlNode node) {
 			var list = new ProfileNetworkSettingsList();
@@ -89,6 +98,12 @@ namespace ZetSwitchData.Configuration {
 					case IdNetwork:
 						profile.Connections = GetNetworkSettingsList(actNode);
 						break;
+					case IDBrowsers:
+						profile.BrowserSettings.Proxy = GetProxySettings((XmlElement)actNode);
+						profile.BrowserSettings.HomePage = GetHomePage((XmlElement)actNode);
+						profile.BrowserNames = GetBrowsersList((XmlElement)actNode);
+						break;
+
 				}
 				actNode = actNode.NextSibling;
 			}
@@ -96,7 +111,60 @@ namespace ZetSwitchData.Configuration {
 			return profile;
 		}
 
-		#endregion
+		private List<UsedBrowser> GetBrowsersList(XmlElement node) {
+			XmlNodeList lst = node.GetElementsByTagName(IDBrowser);
+			var browsers = new List<UsedBrowser>();
+			foreach (XmlElement elmnt in lst) 
+				browsers.Add(new UsedBrowser(elmnt.GetAttribute(IdName), true));
+
+			return browsers;
+		}
+
+		private string GetHomePage(XmlElement node) {
+			return node.GetAttribute(IDHomePage);
+		}
+
+		private int GetInt(string v) {
+			int o;
+			Int32.TryParse(v, out o);
+			return o;
+		} 
+
+		private ProxySettings GetProxySettings(XmlElement node) {
+			XmlElement proxy = node.ChildNodes.OfType<XmlElement>().First(x => x.Name == IDProxy);
+			string HTTP = "";
+			int HTTPPort = 0;
+			string FTP = "";
+			int FTPPort = 0;
+			string Socks = "";
+			int SocksPort = 0;
+			string SSL = "";
+			int SSLPort = 0;
+			XmlElement elmnt = proxy.ChildNodes.OfType<XmlElement>().First(x => x.Name == IDHTTP);
+			if (elmnt != null) {
+				HTTP = elmnt.GetAttribute(IdIp);
+				HTTPPort = GetInt(elmnt.GetAttribute(IDPort));
+			}
+
+			elmnt = proxy.ChildNodes.OfType<XmlElement>().First(x => x.Name == IDFTP);
+			if (elmnt != null) {
+				FTP = elmnt.GetAttribute(IdIp);
+				FTPPort = GetInt(elmnt.GetAttribute(IDPort));
+			}
+
+			elmnt = proxy.ChildNodes.OfType<XmlElement>().First(x => x.Name == IDSSL);
+			if (elmnt != null) {
+				SSL = elmnt.GetAttribute(IdIp);
+				SSLPort = GetInt(elmnt.GetAttribute(IDPort));
+			}
+
+			elmnt = proxy.ChildNodes.OfType<XmlElement>().First(x => x.Name == IDSocks);
+			if (elmnt != null) {
+				Socks = elmnt.GetAttribute(IdIp);
+				SocksPort = GetInt(elmnt.GetAttribute(IDPort));
+			}
+			return new ProxySettings(true,HTTP,HTTPPort,FTP,FTPPort,SSL,SSLPort,Socks,SocksPort);
+		}
 
 		#region public
 
@@ -117,6 +185,47 @@ namespace ZetSwitchData.Configuration {
 					profiles.Add(profile);
 			}
 			return profiles;
+		}
+
+		private void SaveBrowsers(BrowserSettings browserSettings, List<string> names, XmlDocument doc, XmlElement parent) {
+			XmlElement browsers = doc.CreateElement(IDBrowsers);
+
+			browsers.SetAttribute(IDHomePage, browserSettings.HomePage);
+
+			foreach (var name in names) {
+				XmlElement browser = doc.CreateElement(IDBrowser);
+				browser.SetAttribute(IdName, name);
+				browsers.AppendChild(browser);
+			}
+			
+		
+			XmlElement proxy = doc.CreateElement(IDProxy);
+
+			ProxySettings settings = browserSettings.Proxy;
+
+			XmlElement elmnt = doc.CreateElement(IDHTTP);
+			elmnt.SetAttribute(IdIp, settings.HTTP);
+			elmnt.SetAttribute(IDPort, settings.HTTPPort.ToString(CultureInfo.InvariantCulture));
+			proxy.AppendChild(elmnt);
+
+			elmnt = doc.CreateElement(IDFTP);
+			elmnt.SetAttribute(IdIp, settings.FTP);
+			elmnt.SetAttribute(IDPort, settings.FTPPort.ToString(CultureInfo.InvariantCulture));
+			proxy.AppendChild(elmnt);
+
+			elmnt = doc.CreateElement(IDSSL);
+			elmnt.SetAttribute(IdIp, settings.SSL);
+			elmnt.SetAttribute(IDPort, settings.SSLPort.ToString(CultureInfo.InvariantCulture));
+			proxy.AppendChild(elmnt);
+
+			elmnt = doc.CreateElement(IDSocks);
+			elmnt.SetAttribute(IdIp, settings.Socks);
+			elmnt.SetAttribute(IDPort, settings.SocksPort.ToString(CultureInfo.InvariantCulture));
+			proxy.AppendChild(elmnt);
+
+			browsers.AppendChild(proxy);
+			parent.AppendChild(browsers);
+
 		}
 
 		private void SaveNetworkSettingsList(IEnumerable<ProfileNetworkSettings> list, XmlDocument doc, XmlElement parent) {
@@ -148,6 +257,8 @@ namespace ZetSwitchData.Configuration {
 			elmnt.SetAttribute(IdIconFile, profile.IconFile);
 			parent.AppendChild(elmnt);
 			SaveNetworkSettingsList(profile.Connections, doc, elmnt);
+			SaveBrowsers(profile.BrowserSettings, profile.BrowserNames.Where(x=>x.Used).Select(x => x.Name).ToList(), 
+				doc, elmnt);
 		}
 
 		public bool SaveProfiles(List<Profile> list) {

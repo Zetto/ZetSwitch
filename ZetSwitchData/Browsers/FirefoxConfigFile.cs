@@ -106,9 +106,7 @@ namespace ZetSwitchData.Browsers.FF {
 		}
 
 		private string GetConfig(string item) {
-			if (config.ContainsKey(item))
-				return config[item].Value;
-			return   "";
+			return config.ContainsKey(item) ? config[item].Value : "";
 		}
 
 		private int GetConfigInt(string item) {
@@ -118,18 +116,16 @@ namespace ZetSwitchData.Browsers.FF {
 
 
 		public ProxySettings ProxySettings() {
-			var settings = new ProxySettings(	);
-
-			settings.HTTP = GetConfig("network.proxy.http");
-			settings.HTTPPort = GetConfigInt("network.proxy.http_port");
-			settings.FTP = GetConfig("network.proxy.ftp");
-			settings.FTPPort = GetConfigInt("network.proxy.ftp_port");
-			settings.Socks = GetConfig("network.proxy.socks");
-			settings.SocksPort = GetConfigInt("network.proxy.socks_port");
-			settings.SSL = GetConfig("network.proxy.ssl");
-			settings.SSLPort = GetConfigInt("network.proxy.ssl_port");
-
-			settings.Enabled = GetConfigInt("network.proxy.type") == 1;
+			var settings = new ProxySettings(GetConfigInt("network.proxy.type") == 1,
+			                                 GetConfig("network.proxy.http"),
+			                                 GetConfigInt("network.proxy.http_port"),
+			                                 GetConfig("network.proxy.ftp"),
+			                                 GetConfigInt("network.proxy.ftp_port"),
+											 GetConfig("network.proxy.ssl"),
+			                                 GetConfigInt("network.proxy.ssl_port"),
+			                                 GetConfig("network.proxy.socks"),
+			                                 GetConfigInt("network.proxy.socks_port")
+				);
 			return settings;
 		}
 
@@ -216,11 +212,13 @@ namespace ZetSwitchData.Browsers.FF {
 					configWriter = null;
 				}
 				disposed = true;
+				GC.SuppressFinalize(this);
 			}
 		}
 
 		public void Dispose() {
 			Dispose(true);
+			
 		}
 	}
 }

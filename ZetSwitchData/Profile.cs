@@ -22,57 +22,53 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-
 using ZetSwitchData.Browsers;
 using ZetSwitchData.Network;
 
 
 namespace ZetSwitchData {
 	[Serializable]
-	public class Profile {
-		private bool useBrowser;
-		private BrowsersManager browsers = new BrowsersManager();
-
-		public ProfileNetworkSettingsList Connections { get; set; }
-		public BrowsersManager Browsers { get { return browsers; }}
+	public class UsedBrowser {
+		public bool Used;
+		public string Name = "";
 		
+		public UsedBrowser() {
+		}
+
+		public  UsedBrowser(string name, bool used) {
+			Used = used;
+			Name = name;
+		}
+	}
+
+	public class Profile {
+
+		public List<UsedBrowser> BrowserNames { get; set; }
+		public BrowserSettings BrowserSettings { get; set; }
+
+		public ProfileNetworkSettingsList Connections { get; set; }		
 		public Profile() {
+			BrowserSettings = new BrowserSettings();
+			BrowserNames = new List<UsedBrowser>();
 			Name = "New";
 			IconFile = "default";
-			useBrowser = false;
 			Connections = new ProfileNetworkSettingsList();
 		}
 
 		public Profile(Profile other) {
+			BrowserSettings = new BrowserSettings(other.BrowserSettings);
 			Name = other.Name;
+			BrowserNames = new List<UsedBrowser>(other.BrowserNames);
 			IconFile = other.IconFile;
-			useBrowser = other.useBrowser;
 			Connections = new ProfileNetworkSettingsList(other.Connections);
-			browsers = new BrowsersManager(other.browsers);
 		}
 
 		public Profile CloneProfile() {
-			Profile result;
-
-			using (var ms = new MemoryStream()) {
-				var formatter = new BinaryFormatter();
-				formatter.Serialize(ms, this);
-				ms.Position = 0;
-				result = (Profile) formatter.Deserialize(ms);
-			}
-
-			return result;
+			return new Profile(this);
 		}
 
 		public bool ContainsIF(string name) {
 			return Connections.Contains(name);
-		}
-
-		public bool UseBrowser {
-			get { return useBrowser; }
-			set { useBrowser = value; }
 		}
 
 		public List<string> GetNetworkInterfaceNames() {
@@ -126,9 +122,19 @@ namespace ZetSwitchData {
 			Connections.Add(new ProfileNetworkSettings(setting));
 		}
 
+		public void AddBrowsersNames(List<string> names ) {
+			foreach (var name in names) {
+				if (!BrowserNames.Exists(x => x.Name == name)) {
+					BrowserNames.Add(new UsedBrowser(name, false));
+				}
+			}
+		}
+
 		public bool Validation(List<string> errors) {
 			if (Name.Length == 0)
-				errors.Add("Jméno profilu nesmí být prázdné");
+				errors.Add("Jméno profilu nesmí být prázdné.");
+			if (!BrowserSettings.Proxy.IsValid())
+				errors.Add("Chyba v nastavení proxy.");
 			return errors.Count == 0;
 		}
 	}

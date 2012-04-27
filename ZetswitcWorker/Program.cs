@@ -20,7 +20,15 @@ namespace ZetswitchWorker {
 				switch (act) {
 					case ConsoleActions.UseProfile:
 						foreach (string profile in arg.Profiles) {
-							bool r = manager.Apply(profile);
+							bool r = false;
+							try {
+								r = manager.Apply(profile);
+							}
+							catch(Exception e) {
+								Trace.WriteLine(e.Message);
+								Trace.WriteLine(e.StackTrace);
+								r = false;
+							}
 							result &= r;
 							if (r)
 								Console.WriteLine(profile + ": OK");

@@ -6,23 +6,23 @@ using ZetSwitchData.Browsers.FF;
 
 namespace Tests.Model {
 	[TestFixture]
-	class FirefoxFileTests {
-		const string HomePage = @"http://www.seznam.cz/";
+	internal class FirefoxFileTests {
+		private const string HomePage = @"http://www.seznam.cz/";
 
-		readonly ProxySettings testProxy = new ProxySettings {
-			Enabled = true,
-			HTTP = "1.1.1.1",
-			SSL = "2.2.2.2",
-			FTP = "3.3.3.3",
-			Socks = "4.4.4.4",
-			HTTPPort = 80,
-			SSLPort = 81,
-			FTPPort = 82,
-			SocksPort = 83,
-			UseAdrForAll = false
-		};
+		private readonly ProxySettings testProxy = new ProxySettings(
+			true,
+			"1.1.1.1",
+			80,
+			"3.3.3.3",
+			82,
+			"2.2.2.2",
+			81,
+			"4.4.4.4",
+			83
 
-		[Test]
+	);
+
+	[Test]
 		public void ShouldParseConfigLine() {
 			var config = new FirefoxConfigReader();
 			// comments

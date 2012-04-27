@@ -34,6 +34,8 @@ namespace Tests {
 		IProfileView view;
 		IDataManager manager;
 
+		readonly List<string> browsers = new List<string> { "Firefox", "Internet Explorer" };
+
 		[SetUp]
 		public void Init() {
 			mocks = new MockRepository();
@@ -62,10 +64,12 @@ namespace Tests {
 		[Test]
 		public void ShouldAcceptNewProfile() {
 			const string name = "test";
+			
 			var evnt = new EventHelper(() => { view.Confirm += null; });
 			
 			var profile = new Profile {Name = name};
 			manager.Stub(x => x.ContainsProfile(name)).Repeat.Once().Return(false);
+			manager.Stub(x => x.GetBrowsersNames()).Repeat.Once().Return(browsers);
 			view.Stub(x => x.ShowError(new[] {""})).IgnoreArguments().Repeat.Never();
 			mocks.ReplayAll();
 			var controller = new ProfileController();
@@ -82,6 +86,7 @@ namespace Tests {
 
 			var profile = new Profile { Name = name };
 			manager.Stub(x => x.ContainsProfile(name)).Repeat.Once().Return(true);
+			manager.Stub(x => x.GetBrowsersNames()).Repeat.Once().Return(browsers);
 			view.Stub(x => x.ShowError(new[] { "" })).IgnoreArguments().Repeat.Once();
 			mocks.ReplayAll();
 			var controller = new ProfileController();
@@ -99,6 +104,7 @@ namespace Tests {
 
 			var profile = new Profile { Name = name };
 			manager.Stub(x => x.ContainsProfile(name2)).Repeat.Once().Return(false);
+			manager.Stub(x => x.GetBrowsersNames()).Repeat.Once().Return(browsers);
 			view.Stub(x => x.ShowError(new[] { "" })).IgnoreArguments().Repeat.Never();
 			mocks.ReplayAll();
 			var controller = new ProfileController();
@@ -130,6 +136,7 @@ namespace Tests {
 																	new ProfileNetworkSettings { Settings = new NetworkInterfaceSettings { Name = allNames[2] } }};
 			manager.Stub(x => x.IsIFLoaded()).Return(false);
 			manager.Stub(x => x.GetNetworkInterfaceSettings()).Return(ifs);
+			manager.Stub(x => x.GetBrowsersNames()).Repeat.Once().Return(browsers);
 
 			mocks.ReplayAll();
 			var controller = new ProfileController();

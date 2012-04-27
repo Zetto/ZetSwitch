@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management;
 using System.Diagnostics;
 using Microsoft.Win32;
@@ -218,7 +219,7 @@ namespace ZetSwitchData.Network {
 		}
 
 		public List<NetworkInterfaceSettings> GetNetworkInterfaceSettings() {
-			return connections;
+			return connections.Select(settings => new NetworkInterfaceSettings(settings)).ToList();
 		}
 
 		#endregion

@@ -24,39 +24,33 @@ using System.IO;
 namespace ZetSwitchData.Browsers.FF {
 	public class Firefox : Browser {
 		private string profileName = "";
-		private ProxySettings proxy = new ProxySettings();
-		private string homePage = "";
+		private bool init;
+		private bool detected;
 
-		public Firefox() {
-		}
-
-		public Firefox(Firefox other) {
-			IsDetected = other.IsDetected;
-			proxy = new ProxySettings(other.proxy);
-			homePage = other.homePage;
-			profileName = other.profileName;
-		}
-
-		public override  bool Init() {
+		private void Init() {
 			var config = new FirefoxConfigReader();
+			init = true;
 			using (var file = new FirefoxConfigFile()) {
 				TextReader reader = file.GetProfileFileReader();
 				if (reader == null)
-					return false;
+					return;
 				profileName = config.GetProfileName(reader);
 				file.SetConfigFileName(profileName);
 				reader = file.GetConfigFileReader();
 				if (reader == null)
-					return false;
+					return;
 				config.LoadConfig(reader);
-				proxy = config.ProxySettings();
-				homePage = config.Homepage();
 			}
-			IsDetected = true;
-			return true;
+			detected = true;
 		}
 
-		public override void Save() {
+		public override string Name() {
+			return @"Firefox";
+		}
+
+		public override void SetBrowserSettings(BrowserSettings settings) {
+			if (!init)
+				Init();
 			var config = new FirefoxConfigReader();
 			using (var file = new FirefoxConfigFile()) {
 				file.SetConfigFileName(profileName);
@@ -64,26 +58,17 @@ namespace ZetSwitchData.Browsers.FF {
 				if (reader == null)
 					return;
 				config.LoadConfig(reader);
-				config.SetHomePage(homePage);
-				config.SetProxySettings(proxy);
+				reader.Dispose();
+				config.SetHomePage(settings.HomePage);
+				config.SetProxySettings(settings.Proxy);
 				config.SaveConfig(file.GetConfigFileWriter());
 			}
 		}
 
-		public override ProxySettings ProxySettings() {
-			return proxy;
-		}
-
-		public override void SetProxySettings(ProxySettings settings) {
-			proxy = settings;
-		}
-
-		public override  string HomePage() {
-			return homePage;
-		}
-
-		public override void SetHomePage(string page) {
-			homePage = page;
+		public override bool IsDetected() {
+			if (!init)
+				Init();
+			return detected;
 		}
 	}
 }

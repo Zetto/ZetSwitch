@@ -5,14 +5,17 @@ using ZetSwitchData.Network;
 
 namespace ZetSwitch {
 	public partial class IPPageView : UserControl, ISettingPanel {
-		private NetworkInterfaceSettings settings;
+		private bool changingIf;
+		private Profile actProfile;
+		private NetworkInterfaceSettings actualSettings = new NetworkInterfaceSettings();
+
 
 		public IPPageView() {
 			InitializeComponent();
 		//	ResetLanguage();
 		}
 
-		private void ResetLanguage() {
+		public void ResetLanguage() {
 			IPDHCPManual.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextUseThisSetting");
 			DNSDHCPManual.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextUseThisSetting");
 			label3.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextDefGate");
@@ -22,35 +25,59 @@ namespace ZetSwitch {
 		}
 
 		public void UpdatePanel() {
-			IpMask.SetAddressBytes(settings.Mask);
-			IpIpAddress.SetAddressBytes(settings.IP);
-			IpGW.SetAddressBytes(settings.GateWay);
-			if (settings.DNS1 != null && !settings.DNS1.IsZero()) 
-				IpDNS1.SetAddressBytes(settings.DNS1);
-				if (settings.DNS2 != null && !settings.DNS2.IsZero())
-					IpDNS2.SetAddressBytes(settings.DNS2);
-			SetDisableControl(settings.IsDHCP, settings.IsDNSDHCP);
+			IpMask.SetAddressBytes(actualSettings.Mask);
+			IpIpAddress.SetAddressBytes(actualSettings.IP);
+			IpGW.SetAddressBytes(actualSettings.GateWay);
+			if (actualSettings.DNS1 != null && !actualSettings.DNS1.IsZero()) 
+				IpDNS1.SetAddressBytes(actualSettings.DNS1);
+				if (actualSettings.DNS2 != null && !actualSettings.DNS2.IsZero())
+					IpDNS2.SetAddressBytes(actualSettings.DNS2);
+			SetDisableControl(actualSettings.IsDHCP, actualSettings.IsDNSDHCP);
 		}
 
 		public void UpdateData() {
-			settings.IsDHCP = IPDHCPAuto.Checked;
-			settings.GateWay = IpGW.Text;
-			settings.IP = IpIpAddress.Text;
-			settings.Mask = IpMask.Text;
+			foreach (string name in ListBoxInterfaces.Items)
+				actProfile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
+
+			actualSettings.IsDHCP = IPDHCPAuto.Checked;
+			actualSettings.GateWay = IpGW.Text;
+			actualSettings.IP = IpIpAddress.Text;
+			actualSettings.Mask = IpMask.Text;
 			if (DNSDHCPAuto.Checked) {
-				settings.DNS1 = null;
-				settings.DNS2 = null;
-				settings.IsDNSDHCP = true;
+				actualSettings.DNS1 = null;
+				actualSettings.DNS2 = null;
+				actualSettings.IsDNSDHCP = true;
 			}
 			else {
-				settings.DNS1 = IpDNS1.Text;
-				settings.DNS2 = IpDNS2.Text;
-				settings.IsDNSDHCP = false;
+				actualSettings.DNS1 = IpDNS1.Text;
+				actualSettings.DNS2 = IpDNS2.Text;
+				actualSettings.IsDNSDHCP = false;
 			}
+
 		}
 
-		public void SetData(Profile profile, NetworkInterfaceSettings actualInterface) {
-			settings = actualInterface;
+		private void SetUseActualSelection() {
+			int index = ListBoxInterfaces.SelectedIndex;
+			if (index < 0 || changingIf)
+				return;
+			ListBoxInterfaces.SetItemChecked(index, true);
+		}
+
+		public void UpdateInterfaceList() {
+			ListBoxInterfaces.Items.Clear();
+			ListBoxInterfaces.IsLoaded = true;
+			var names = actProfile.GetNetworkInterfaceNames();
+			foreach (var name in names) {
+				ListBoxInterfaces.Items.Add(name);
+				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, actProfile.IsNetworkInterfaceInProfile(name));
+			}
+
+			if (ListBoxInterfaces.Items.Count > 0)
+				ListBoxInterfaces.SetSelected(0, true);
+		}
+
+		public void SetData(Profile profile) {
+			actProfile = profile;
 			UpdatePanel();
 		}
 
@@ -73,16 +100,22 @@ namespace ZetSwitch {
 
 		private void OnSelectionChanged(object sender, EventArgs e) {
 			SetDisableControl(IPDHCPAuto.Checked, DNSDHCPAuto.Checked);
-			if (DataChanged != null)
-				DataChanged(this, null);
+			SetUseActualSelection();
 		}
 
 		private void OnDataChanged(object sender, EventArgs e) {
-			if (DataChanged != null)
-				DataChanged(this, null);
+			SetUseActualSelection();
 		}
 
-		public event EventHandler DataChanged;
+		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e) {
+			if (ListBoxInterfaces.SelectedIndex < 0)
+				return;
+			changingIf = true;
+			UpdateData();
+			actualSettings = actProfile.Connections.GetProfileNetworkSettings((string)ListBoxInterfaces.Items[ListBoxInterfaces.SelectedIndex]).Settings;
+			UpdatePanel();
+			changingIf = false;
+		}
 	}
 
 }

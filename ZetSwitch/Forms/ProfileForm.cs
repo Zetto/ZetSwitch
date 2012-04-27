@@ -25,53 +25,44 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ZetSwitchData;
-using ZetSwitchData.Network;
-
 
 namespace ZetSwitch {
 	public partial class ProfileForm : Form, IProfileView {
 		private readonly List<ISettingPanel> panels = new List<ISettingPanel>();
-		private Profile actProfile;
-		private bool changingIf = false;
-		
+
 		public ProfileForm() {
 			InitializeComponent();
 			ResetLanguage();
-
-			ipPageView.DataChanged += OnDataChange;
-
 			panels.Add(ipPageView);
+			panels.Add(profilePageView);
+			panels.Add(proxyPageView);
+			profilePageView.SelectProfileIcon += OnSelectIcon;
+		}
+
+		private void OnSelectIcon(object sender, EventArgs e) {
+			if (SelectProfileIcon != null)
+				SelectProfileIcon(this, null);
 		}
 
 		public void SetProfile(Profile profile) {
-			actProfile = profile;
-			TextBoxName.Text = actProfile.Name;
-			UpdateIcon();
-		}
-
-		public bool ShowView() {
-			return ShowDialog() == DialogResult.OK;
+			foreach (var panel in panels) 
+				panel.SetData(profile);
 		}
 
 		public void UpdateInterfaceList() {
 			if (IsHandleCreated && InvokeRequired) {
-				BeginInvoke(new MethodInvoker(UpdateInterfaceList),null);
+				BeginInvoke(new MethodInvoker(UpdateInterfaceList), null);
 				return;
 			}
-
-			ListBoxInterfaces.IsLoaded = true;
-			var names = actProfile.GetNetworkInterfaceNames();
-			foreach (var name in names) {
-				ListBoxInterfaces.Items.Add(name);
-				ListBoxInterfaces.SetItemChecked(ListBoxInterfaces.Items.Count - 1, actProfile.IsNetworkInterfaceInProfile(name));
-			}
-
-			if (ListBoxInterfaces.Items.Count > 0)
-				ListBoxInterfaces.SetSelected(0, true);
+			ipPageView.UpdateInterfaceList();
 		}
 
 		public void UpdateIcon() {
-			Picture.Image = actProfile.GetIcon();
+			profilePageView.UpdateIcon();
+		}
+
+		public bool ShowView() {
+			return ShowDialog() == DialogResult.OK;
 		}
 
 		public string AskToSelectNewIcon(string path, string filter) {
@@ -99,28 +90,9 @@ namespace ZetSwitch {
 			Close();
 		}
 
-		private void ButtonPictureChangeClick(object sender, EventArgs e) {
-			if (SelectProfileIcon != null)
-				SelectProfileIcon(this, null);
-		}
-
 		private void UpdateData() {
-			actProfile.Name = TextBoxName.Text;
-
-			foreach (string name in ListBoxInterfaces.Items) 
-				actProfile.UseNetworkInterface(name, ListBoxInterfaces.GetItemChecked(ListBoxInterfaces.Items.IndexOf(name)));
-
 			foreach (var settingPanel in panels) 
 				settingPanel.UpdateData();
-		}
-
-		private void ListBoxInterfacesSelectedIndexChanged(object sender, EventArgs e) {
-			if (ListBoxInterfaces.SelectedIndex < 0 )
-				return;
-			changingIf = true;
-			foreach (var settingPanel in panels)
-				settingPanel.SetData(actProfile, actProfile.Connections.GetProfileNetworkSettings((string)ListBoxInterfaces.Items[ListBoxInterfaces.SelectedIndex]).Settings);
-			changingIf = false;
 		}
 
 		private void OkButtonClick(object sender, EventArgs e) {
@@ -133,25 +105,12 @@ namespace ZetSwitch {
 			Close();
 		}
 
-		private void OnDataChange(object o, EventArgs e) {
-			if (!changingIf)
-				SetUseActualSelection();
-		}
-
-		private void SetUseActualSelection() {
-			int index = ListBoxInterfaces.SelectedIndex;
-			if (index < 0)
-				return;
-			ListBoxInterfaces.SetItemChecked(index, true);
-		}
-
-
 		private void ResetLanguage() {
-			label6.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Name");
-			ButtonPictureChange.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Change");
 			CButton.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Cancel");
 			OkButton.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Ok");
-			label7.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextConSelect");
+			foreach (var panel in panels) {
+				panel.ResetLanguage();
+			}
 		}
 
 		public event EventHandler SelectProfileIcon;
@@ -160,6 +119,7 @@ namespace ZetSwitch {
 
 	public interface ISettingPanel {
 		void UpdateData();
-		void SetData(Profile profile, NetworkInterfaceSettings actualInterface);
+		void SetData(Profile profile);
+		void ResetLanguage();
 	}
 }
