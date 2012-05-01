@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ZetSwitch"
-#define MyAppVersion "0.3.0"
+#define MyAppVersion "0.4.0"
 #define MyAppPublisher "Tomas Skarecky"
 #define MyAppURL "https://sourceforge.net/projects/zetswitch/"
-#define MyAppExeName "Zet Switch.exe"
+#define MyAppExeName "ZetSwitch.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-LicenseFile=..\LICENSE.txt
+LicenseFile=..\license.txt
 OutputDir=..\Setup
 OutputBaseFilename=ZetSwitch {#MyAppVersion}
 SetupIconFile=..\icon.ico
@@ -37,9 +37,11 @@ Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\bin\Release\Zet Switch.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\ZetSwitch.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Data\*"; DestDir: "{app}\Data"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\IPAddressControlLib*"; DestDir: "{app}"; 
+Source: "..\IPAddressControlLib.dll"; DestDir: "{app}"; 
+Source: "..\ZetSwitchData.dll"; DestDir: "{app}"; 
+Source: "..\ZetswitchWorker.exe"; DestDir: "{app}"; 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
