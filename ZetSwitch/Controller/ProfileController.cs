@@ -39,8 +39,8 @@ namespace ZetSwitch {
 
 			if (!String.IsNullOrEmpty(oldProfileName) && actProfile.Name == oldProfileName)
 				return null;
-			
-			return manager.ContainsProfile(actProfile.Name) ? "Profile se zadaným jménem již existuje" : null;
+
+			return manager.ContainsProfile(actProfile.Name) ? ClientServiceLocator.GetService<ILanguage>().GetText("ProfileExists") : null;
 		}
 
 		void OnActViewConfirm(object sender, EventArgs e) {

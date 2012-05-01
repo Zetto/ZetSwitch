@@ -25,7 +25,6 @@ using System.Linq;
 using ZetSwitchData.Network;
 
 namespace ZetSwitchData {
-	[Serializable]
 	public class ProfileNetworkSettings {
 		private bool use;
 		private bool useNetwork;
@@ -70,7 +69,6 @@ namespace ZetSwitchData {
 		}
 	}
 
-	[Serializable]
 	public class ProfileNetworkSettingsList : List<ProfileNetworkSettings> {
 		public ProfileNetworkSettingsList() {
 		}

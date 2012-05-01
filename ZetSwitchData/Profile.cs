@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using ZetSwitchData.Browsers;
 using ZetSwitchData.Network;
+using System.Linq;
 
 
 namespace ZetSwitchData {
-	[Serializable]
 	public class UsedBrowser {
 		public bool Used;
 		public string Name = "";
@@ -132,9 +132,14 @@ namespace ZetSwitchData {
 
 		public bool Validation(List<string> errors) {
 			if (Name.Length == 0)
-				errors.Add("Jméno profilu nesmí být prázdné.");
+				errors.Add(ClientServiceLocator.GetService<ILanguage>().GetText("ProfileNameIsEmpty"));
 			if (!BrowserSettings.Proxy.IsValid())
-				errors.Add("Chyba v nastavení proxy.");
+				errors.Add("");
+			foreach (var settings in Connections.Where(x => x.Use).Select(x => x.Settings)) {
+				string error = "";
+				if (!settings.Validate(out error))
+					errors.Add(error);
+			}
 			return errors.Count == 0;
 		}
 	}

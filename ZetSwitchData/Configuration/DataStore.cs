@@ -23,8 +23,7 @@ namespace ZetSwitchData.Configuration
 {
 	public enum LOADERS
 	{
-		XML,
-		Serialization
+		XML
 	}
 
 	class DataStore
@@ -35,8 +34,6 @@ namespace ZetSwitchData.Configuration
 			{
 				case LOADERS.XML:
 					return new LoaderFactoryXML();
-				case LOADERS.Serialization:
-					return new LoaderFactorySerialization();
 			}
 			return null;
 		}

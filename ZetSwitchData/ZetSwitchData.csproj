@@ -57,9 +57,7 @@
     <Compile Include="Configuration\ILoader.cs" />
     <Compile Include="Configuration\ILoaderFactory.cs" />
     <Compile Include="Configuration\LoaderDefault.cs" />
-    <Compile Include="Configuration\LoaderFactorySerialization.cs" />
     <Compile Include="Configuration\LoaderFactoryXML.cs" />
-    <Compile Include="Configuration\LoaderSerializationV0_3.cs" />
     <Compile Include="Configuration\LoaderXMLV_03.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="IDataManager.cs" />

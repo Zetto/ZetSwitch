@@ -7,6 +7,7 @@ namespace ZetSwitch.Forms {
 		private Profile actProfile;
 		public ProfilePage() {
 			InitializeComponent();
+			ResetLanguage();
 		}
 
 		private void ButtonPictureChangeClick(object sender, EventArgs e) {
@@ -25,6 +26,7 @@ namespace ZetSwitch.Forms {
 		}
 
 		public void ResetLanguage() {
+			label1.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Icon");
 			label6.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Name");
 			ButtonPictureChange.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Change");
 		}

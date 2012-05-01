@@ -23,7 +23,6 @@ using System;
 using System.Text;
 
 namespace ZetSwitchData.Network {
-	[Serializable]
 	public class IPAddress {
 		public IPAddress() {
 			IP = new byte[4];

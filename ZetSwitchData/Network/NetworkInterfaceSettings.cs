@@ -23,7 +23,6 @@ using System;
 using System.Text;
 
 namespace ZetSwitchData.Network {
-	[Serializable]
 	public class NetworkInterfaceSettings {
 		#region variables
 
@@ -97,12 +96,6 @@ namespace ZetSwitchData.Network {
 
 			if (!Mask.SubnetMaskValidation())
 				message.Append(ClientServiceLocator.GetService<ILanguage>().GetText("NonValidSubNetMask") + "\n");
-			else {
-				if (!IP.ValidateIPWithMask(Mask))
-					message.Append(ClientServiceLocator.GetService<ILanguage>().GetText("NonValidIPAgainMask") + "\n");
-				if (!GateWay.IsZero() && !GateWay.ValidateIPWithMask(Mask))
-					message.Append(ClientServiceLocator.GetService<ILanguage>().GetText("NonValidGWAgainMask") + "\n");
-			}
 			error = message.ToString();
 			return error.Length == 0;
 		}

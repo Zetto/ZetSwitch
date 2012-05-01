@@ -7,8 +7,18 @@ using System.Linq;
 namespace ZetSwitch.Forms {
 	public partial class ProxyPage : UserControl, ISettingPanel {
 		private Profile actProfile;
+		
 		public ProxyPage() {
 			InitializeComponent();
+			ResetLanguage();
+		}
+
+		public void ResetLanguage() {
+			Text = ClientServiceLocator.GetService<ILanguage>().GetText("ProfileSettings");
+			label10.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Browsers");
+			groupBox1.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Servers");
+			groupBox2.Text = ClientServiceLocator.GetService<ILanguage>().GetText("Homepage");
+			cbUseAll.Text = ClientServiceLocator.GetService<ILanguage>().GetText("UseForAll");
 		}
 
 		private int GetInt(string txt) {
@@ -60,9 +70,6 @@ namespace ZetSwitch.Forms {
 			cbUseAll.Checked = (settings.HTTP == settings.FTP && settings.HTTP == settings.SSL && settings.HTTP == settings.Socks &&
 				settings.HTTPPort == settings.FTPPort && settings.HTTPPort == settings.SocksPort && settings.HTTPPort == settings.SSLPort);
 			actProfile = profile;
-		}
-
-		public void ResetLanguage() {
 		}
 
 		private void CopyHTTPInfo() {

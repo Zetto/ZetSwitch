@@ -18,6 +18,7 @@ Delete;Smazat
 Apply;Použít
 StatusBarVer;Zet Switch verze 
 Name;Jméno:
+Icon;Ikonka:
 TextConSelect;Výběr připojení:
 TextObtainIP;Získat IP z DHCP serveru
 TextUseThisSetting;Použít toto nastavení
@@ -45,16 +46,22 @@ CannotSetProfile;Profil nelze nastavit
 CantWorkSetFile;Nelze pracovat se souborem s nastavenim. Program bude ukončen.
 CantLoadSetFile;Soubor s nastavenim nelze načíst ani vytvořit.
 SettingFileCorrupted;Soubor s nastavenim je poškozen. Chcete vytvořit nový? Všechna nastaveni budou ztracena.
-NonValidSubNetMask;- Neplatna maska podsítě.
-NonValidIPAgainMask;- IP adresa neodpovídá masce podsítě
-NonValidGWAgainMask;- Výchozí brána neodpovídá masce podsítě
-GWAndIPNotInSameNet;- Výchozí brána a IP adresa nejsou ve stejné síti.
-GWNotInIPQuest;- IP adresa a výchozí brána nejsou na stejném segmentu. Chcete přesto použít toto nastavení?.
-ProfileNameIsEmpty;- Jméno profilu je povinné.
-AtLeastOneConSel;- Minimálně jedno připojení musí být vybráno.
-RequiredIP;- IP adresa je vyžadována.
+NonValidSubNetMask;Neplatná maska podsítě.
+NonValidIPAgainMask;IP adresa neodpovídá masce podsítě
+NonValidGWAgainMask;Výchozí brána neodpovídá masce podsítě
+GWAndIPNotInSameNet;Výchozí brána a IP adresa nejsou ve stejné síti.
+GWNotInIPQuest;IP adresa a výchozí brána nejsou na stejném segmentu. Chcete přesto použít toto nastavení?.
+ProfileNameIsEmpty;Jméno profilu je povinné.
+AtLeastOneConSel;Minimálně jedno připojení musí být vybráno.
+RequiredIP;IP adresa je vyžadována.
 ExecptionError;Něco je opravdu moc špatně. Nepropadejte panice a napište mi:
 ExceptionAttach;Prosím přiložte i následující informace:
 loading;nahrávám
 DesktopShortcut;Zástupce na ploše
-
+Servers;Proxy
+Browsers;Prohlížeče
+Homepage;Domovská stránka
+UseForAll;Použít stejné nastavení pro všechny.
+ProfileExists;Profil se zadaným jménem již existuje.
+InvalidProxy;Chyba v nastavení proxy.
+ProfileSettings;Nastavení profilu

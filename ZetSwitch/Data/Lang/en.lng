@@ -17,7 +17,8 @@ Change;Change
 Delete;Delete
 Apply;Apply
 StatusBarVer;Zet Switch version 
-Name;Name
+Name;Name:
+Icon;Icon:
 TextConSelect;Select connection:
 TextObtainIP;Obtain IP from DHCP server
 TextUseThisSetting;Use this settings
@@ -45,15 +46,22 @@ CannotSetProfile;Can't set profile
 CantWorkSetFile;Can't work with settings file. Program will be close.
 CantLoadSetFile;It is impossible either load or create file
 SettingFileCorrupted;Settings file is corrupted. Do you want to recreate it? All data will be lost.  
-NonValidSubNetMask;- The subnet mask is not valid.
-NonValidIPAgainMask;- The IP is bad.
-NonValidGWAgainMask;- The gateway is bad.
-GWAndIPNotInSameNet;- The gateway and IP address aren't in same network.
+NonValidSubNetMask;The subnet mask is not valid.
+NonValidIPAgainMask;The IP is bad.
+NonValidGWAgainMask;The gateway is bad.
+GWAndIPNotInSameNet;The gateway and IP address aren't in same network.
 GWNotInIPQuest;IP address and gateway aren't in the same segment. Do you want to use it?.
-ProfileNameIsEmpty;- Profile name is empty.
-AtLeastOneConSel;- At least one connection must be selected.
-RequiredIP;- IP address is required.
-ExecptionError;Ooops something is very wrong. Do not panic and contact us at:
+ProfileNameIsEmpty;Profile name is empty.
+AtLeastOneConSel;At least one connection must be selected.
+RequiredIP;IP address is required.
+ExecptionError;Ooops something is really wrong. Do not panic and contact us at:
 ExceptionAttach;Please attach the following information:
 loading;loading
 DesktopShortcut;Desktop shortcut
+Servers;Servers
+Browsers;Browsers
+Homepage;Homepage
+UseForAll;Use the same settings for all protocols.
+ProfileExists;Profile with the same name already exists.
+InvalidProxy;Invalid proxy settings.
+ProfileSettings;Profile settings

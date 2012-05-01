@@ -12,7 +12,7 @@ namespace ZetSwitch {
 
 		public IPPageView() {
 			InitializeComponent();
-		//	ResetLanguage();
+			ResetLanguage();
 		}
 
 		public void ResetLanguage() {
@@ -21,6 +21,7 @@ namespace ZetSwitch {
 			label3.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextDefGate");
 			IPDHCPAuto.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextOtainDNS");
 			label2.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextMask");
+			label7.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextConSelect");
 			DNSDHCPAuto.Text = ClientServiceLocator.GetService<ILanguage>().GetText("TextOtainDNS");
 		}
 

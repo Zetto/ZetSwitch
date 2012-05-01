@@ -25,7 +25,6 @@ using System.Text;
 
 namespace ZetSwitchData
 {
-    [Serializable]
     public class ProxySettings {
     	public readonly bool Enabled;
         public readonly bool UseAdrForAll;

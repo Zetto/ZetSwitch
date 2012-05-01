@@ -25,7 +25,6 @@ using System.Text;
 using Microsoft.Win32;
 
 namespace ZetSwitchData.Browsers {
-	[Serializable]
 	public class IE : Browser {
 		
 		private bool EnableProxy() {
@@ -93,7 +92,7 @@ namespace ZetSwitchData.Browsers {
 		}
 
 		public override string Name() {
-			return @"Internet Explorer";
+			return @"Internet Explorer (Global)";
 		}
 
 		public override void SetBrowserSettings(BrowserSettings settings) {
