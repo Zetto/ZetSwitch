@@ -40,9 +40,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\bin\Release\ZetSwitch.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Data\*"; DestDir: "{app}\Data"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\bin\Release\IPAddressControlLib.dll"; DestDir: "{app}"; 
-Source: "..\bin\Release\ZetSwitchData.dll"; DestDir: "{app}"; 
-Source: "..\..\ZetswitcWorker\bin\Release\ZetswitchWorker.exe"; DestDir: "{app}"; 
+Source: "..\bin\Release\IPAddressControlLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\ZetSwitchData.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\ZetswitcWorker\bin\Release\ZetswitchWorker.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
