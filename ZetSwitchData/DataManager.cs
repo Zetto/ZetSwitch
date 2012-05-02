@@ -153,6 +153,7 @@ namespace ZetSwitchData {
 			if (profiles.Contains(profile))
 				return;
 			profiles.Add(profile);
+			SaveSettings();
 		}
 
 		public void Delete(string name) {
@@ -170,6 +171,7 @@ namespace ZetSwitchData {
 			}
 			else
 				profiles.Add(profile);
+			SaveSettings();
 		}
 
 		public bool ContainsProfile(string name) {

@@ -38,6 +38,7 @@ Settings;Nastavení
 OnlineHelp;Online nápověda
 CanLoadIconFile;Nebylo možné načíst soubor ikonky: 
 ProfileApplied;Profil byl úspěšně aplikován.
+CannotApply;Nebylo možné nastavit vybraný profil.
 Succes;Úspěch
 UseProfile;Použít profil
 DeleteQuestion;Opravdu chcete smazat profil:  

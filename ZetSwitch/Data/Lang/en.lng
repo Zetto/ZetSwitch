@@ -38,6 +38,7 @@ Settings;Settings
 OnlineHelp;Online Help
 CanLoadIconFile;Can't load icon file:
 ProfileApplied;Profile was successfully applied.
+CannotApply;Profile cannot be applied.
 Succes;Succes
 UseProfile;Use profile
 DeleteQuestion;Do you really want to delete: 
